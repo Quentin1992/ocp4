@@ -45,8 +45,6 @@
 
             </form>
 
-            <!--A l'envoi du formulaire, on ajoute une nouvelle entrée avec id de l'article actuel (post_id), le nom (comment_author), le commentaire (comment_content), et la date actuelle (comment_date).-->
-
         <h4>Voir les commentaires</h4>
 
        <?php $commentsController-> ?>
