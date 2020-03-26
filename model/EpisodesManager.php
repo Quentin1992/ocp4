@@ -45,7 +45,17 @@ class EpisodesManager extends Database{
     }
 
 
+    public function getFullLastEpisode(){
 
+        $sql = 'SELECT * FROM episodes WHERE episode_publication_date < date() ORDER BY episode_publication_date DESC LIMIT 1,1'
+
+        $query = $this->_db->query($sql);
+
+        $data = $query->fetch(PDO::FETCH_ASSOC);
+
+        return new Episode($data);
+        
+    }
 
 
 

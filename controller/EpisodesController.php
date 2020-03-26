@@ -33,11 +33,13 @@ class EpisodesController extends EpisodesManager{
     }
 
 
-    public function fullLastEpisode(Episode $episode){
+    public function fullLastEpisode(){
 
-        echo '<h3>' . $episode['episode_id'] . ' - ' . $episode['episode_title'] . '</h3>';
+        $fullLastEpisode = $this->getFullLastEpisode();
 
-        echo '<p>' . $episode['episode_content'] . '</p>';
+        echo '<h3>' . $fullLastEpisode->id() . ' - ' . $fullLastEpisode->title() . '</h3>';
+
+        echo '<p>' . $fullLastEpisode->content() . '</p>';
 
     }
 
