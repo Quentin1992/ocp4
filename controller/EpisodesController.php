@@ -22,11 +22,11 @@ class EpisodesController extends EpisodesManager{
 
     public function publishedList(){
 
-        $episodes = $this->getPublishedList();
+        $publishedEpisodes = $this->getPublishedList();
 
         echo '<ol>';
-        foreach($episodes as $episode){
-            echo '<li><a>' . $episode['episode_id'] . ' : ' . $episode['episode_title'] . '</a></li>';
+        foreach($publishedEpisodes as $publishedEpisode){
+            echo '<li><a>' . $publishedEpisode->id() . ' : ' . $publishedEpisode->title() . '</a></li>';
         }
         echo '</ol>';
 
