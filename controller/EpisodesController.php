@@ -8,9 +8,11 @@ class EpisodesController extends EpisodesManager{
 
     public function upcomingEpisode(){
 
-        if(isset($episode)){
+        $upcomingEpisode = $this->getUpcomingEpisode();
 
-            echo 'Prochain épisode <span>' . $episode['episode_title'] .  '</span> le ' . $episode['episode_date'] . '.';
+        if($upcomingEpisode != null){
+
+            echo 'Prochain épisode : <span>' . $upcomingEpisode->title() .  '</span>, le ' . $upcomingEpisode->publicationDate() . '.';
 
         }
         else echo 'Le prochain épisode arrive bientôt !';

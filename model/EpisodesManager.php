@@ -3,7 +3,8 @@ require_once('Database.php');
 
 class EpisodesManager extends Database{
 
-  //properties
+
+    //properties
 
     private $_db;
 
@@ -14,7 +15,29 @@ class EpisodesManager extends Database{
     }
 
 
-    //methods
+    //methods for reader
+
+    public function getUpcomingEpisode(){
+
+        $sql = 'SELECT episode_id, episode_publication_date, episode_title FROM episodes WHERE episode_publication_date > date() ORDER BY episode_publication_date DESC LIMIT 1, 1';
+        $data = $this->_db->query($sql);
+
+        $upcomingEpisode = new Episode($data);
+
+        return $upcomingEpisode;
+
+    }
+
+
+    public function getPublishedList(){
+
+
+
+    }
+
+
+
+
 
 
     public function sendEpisode(Episode $episode){
