@@ -4,12 +4,12 @@
 
     <div>
         <h3>Episodes publiés</h3>
-        <?php echo $this->publishedList(); ?>
+        <?php echo $episodesController->publishedList(); ?>
     </div>
 
     <div>
         <h3>Episodes en attente</h3>
-        <?php $this->upcomingEpisodes(); ?>
+        <?php echo $episodesController->upcomingEpisodes(); ?>
     </div>
 
 </div>
@@ -21,53 +21,12 @@
 
     <div>
         <h3>Nouveaux commentaires</h3>
-        <?php $newComments ?>
-        <!--$cs = SELECT comment_date, post_id, comment_content FROM comments WHERE comment_checked === false;
-            for($cs as comment){
-
-                Créer un li avec
-
-                en-tête :
-                <div>
-                    echo CONCAT "Le " . comment.comment_date . " par " . comment.comment_author;
-                </div>
-
-                contenu :
-                <p>SUBSTRING(comment.comment_content, 1, 100)</p>
-                Evènement au clic : comment.comment_content en entier et comment_checked = true;
-
-                et bouton de suppression :
-                <div>
-                    <a>Supprimer le commentaire</a>
-                    Evènement au clic : DELETE FROM comments WHERE id ===
-                </div>
-            }-->
+        <?php $commentsController->authorCommentsList($unckecked); ?>
     </div>
 
     <div>
         <h3>Commentaires signalés</h3>
-        <?php $reportedComments ?>
-        <ul></ul>
-        <!--$cs = SELECT comment_date, post_id, comment_content FROM comments WHERE comment_reported === true;
-            for($cs as comment){
-
-                Créer un li avec
-
-                en-tête :
-                <div>
-                    echo CONCAT "Le " . comment.comment_date . " par " . comment.comment_author;
-                </div>
-
-                contenu :
-                <p>SUBSTRING(comment.comment_content, 1, 100)</p>
-                Evènement au clic : comment.comment_content en entier et comment_checked = true;
-
-                et bouton de suppression :
-                <div>
-                    <a>Supprimer le commentaire</a>
-                    Evènement au clic : DELETE FROM comments WHERE id ===
-                </div>
-            }-->
+        <?php $commentsController->authorCommentsList($reported); ?>
     </div>
 
 </div>

@@ -37,38 +37,17 @@
 
         <h4>Commenter</h4>
 
-            <form method="post" action="?">
+        <form method="post" action="?">
 
-                <input type="text" name="pseudo">
-                <textarea name="content"></textarea>
-                <input type="submit" label="envoyer">
+            <input type="text" name="pseudo">
+            <textarea name="content"></textarea>
+            <input type="submit" label="envoyer">
 
-            </form>
+        </form>
 
-        <h4>Voir les commentaires</h4>
+        <h4>Commentaires</h4>
 
-       <?php $commentsController-> ?>
-
-        <!--On va chercher la liste des commentaires correspondant au post
-
-            On crée les blocs de commentaires et on les affiche dans la liste :
-
-                for($comments as comment){
-
-                    Créer un nouveau li sur ce modèle :
-
-                    <div>
-                        <div>CONCAT $comment_author . ", le " . $comment_date <a UPDATE comment_reported = true>Signaler</a></div>
-                        <p>echo $comment_content</p>
-                    </div>
-
-                    Et l'afficher dans la liste.
-
-                }-->
-
-        <ul id="commentsList">
-
-        </ul>
+        <?php $commentsController->episodeCommentsList($episodeId); ?>
 
     </div>
 
