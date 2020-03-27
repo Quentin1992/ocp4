@@ -54,9 +54,36 @@ class EpisodesManager extends Database{
         $data = $query->fetch(PDO::FETCH_ASSOC);
 
         return new Episode($data);
-        
+
     }
 
+
+    //methds for author
+
+
+    public function getUpcomingEpisodes(){
+
+        $upcomingEpisodes = [];
+
+        $sql = 'SELECT episode_id, episode_author, episode_publication_date, episode_content FROM episodes ORDER BY ASC episode_publication_date'
+
+        $query = $this->_db->query($sql);
+
+        while ($data = $query->fetch(PDO::FETCH_ASSOC)){
+
+            $upcomingEpisodes[] = new Episode($data);
+
+        }
+
+        return $upcomingEpisodes;
+
+    }
+
+
+
+
+
+    //maybe delete this later
 
 
     public function sendEpisode(Episode $episode){

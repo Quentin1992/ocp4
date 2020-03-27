@@ -48,12 +48,13 @@ class EpisodesController extends EpisodesManager{
 
 
     public function upcomingEpisodes(){
+        
 
-        $episodes = $this->getUpcomingList();
+        $upcomingEpisodes = $this->getUpcomingList();
 
         echo '<ol>';
-        foreach($episodes as $episode){
-            echo '<li><a>' . $episode['episode_id'] . ' : ' . $episode['episode_title'] . '</a></li>';
+        foreach($upcomingEpisodes as $upcomingEpisode){
+            echo '<li><a>' . $upcomingEpisode->id() . ' : ' . $upcomingEpisode->title() . '</a></li>';
         }
         echo '</ol>';
 
