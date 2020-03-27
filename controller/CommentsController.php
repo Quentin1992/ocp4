@@ -8,16 +8,16 @@ class CommentsController extends CommentsManager{
 
     public function episodeCommentsList(int $episodeId){
 
-        $comments = $this->getEpisodeCommentsList(int $episodeId);
+        $commentsList = $this->getEpisodeCommentsList(int $episodeId);
 
         echo '<ol>';
-        foreach($comments as $comment){
+        foreach($commentsList as $comment){
             echo '<li>
                     <div>'
-                        . $comment['comment_author'] . ' le ' . $comment['comment_creation_date'] .
+                        . $comment->author() . ' le ' . $comment->creationDate() .
                     '</div>
 
-                    <p>' . $comment['comment_content'] . '</p>
+                    <p>' . $comment->content() . '</p>
 
                     <div>
                         <a href="#">Signaler</a>

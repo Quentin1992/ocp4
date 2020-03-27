@@ -4,6 +4,38 @@ require_once('Database.php');
 class CommentsManager extends Database{
 
 
+    //methods for reader
+
+    public function getEpisodeCommentsList(int $episodeId){
+
+        $commentsList = [];
+
+        $sql = 'SELECT * FROM comments WHERE episode_id =' . $episodeId . ' ORDER BY comment_creation_date DESC';
+        $query = $this->db->query($sql);
+
+        $data = $q->execute();
+
+        while ($data = $q->fetch(PDO::FETCH_ASSOC)){
+
+            $commentsList[] = new Comment($data['comment_author'], $data['comment_content'], $data['episode_id']);
+
+        }
+
+        return $commentsList;
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     public function add(Comment $comment){
 
         $bdd = $this->db;
