@@ -1,3 +1,11 @@
+<?php
+require_once('../controller/EpisodesController.php');
+require_once('../controller/CommentsController.php');
+
+$episodesController = new EpisodesController;
+$commentsController = new CommentsController;
+?>
+
 <div>
 
     <h2>Episodes</h2>
@@ -21,12 +29,12 @@
 
     <div>
         <h3>Nouveaux commentaires</h3>
-        <?php $commentsController->authorCommentsList($unckecked); ?>
+        <?php $commentsController->authorCommentsList("new"); ?>
     </div>
 
     <div>
         <h3>Commentaires signalés</h3>
-        <?php $commentsController->authorCommentsList($reported); ?>
+        <?php $commentsController->authorCommentsList("reported"); ?>
     </div>
 
 </div>

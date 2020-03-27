@@ -1,7 +1,19 @@
 <?php
 require_once('Database.php');
+require_once('Comment.php');
 
 class CommentsManager extends Database{
+
+
+    //properties
+
+    private $db;
+
+    public function __construct(){
+
+        $this->db = $this->setDbConnection();
+
+    }
 
 
     //methods for reader
@@ -42,7 +54,7 @@ class CommentsManager extends Database{
 
         $data = $query->execute();
 
-        while ($data = $q->fetch(PDO::FETCH_ASSOC)){
+        while ($data = $query->fetch(PDO::FETCH_ASSOC)){
 
             $commentsList[] = new Comment($data['comment_author'], $data['comment_content'], $data['episode_id']);
 
@@ -54,11 +66,7 @@ class CommentsManager extends Database{
 
 
 
-
-
-
-
-
+    //maybe I delete these later
 
     public function add(Comment $comment){
 

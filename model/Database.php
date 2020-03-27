@@ -5,7 +5,7 @@ class Database{
   //properties
 
   private $host = "localhost";
-  private $dbname = "minichat";
+  private $dbname = "writer_blog";
   private $user = "root";
   private $pass = "";
 

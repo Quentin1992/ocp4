@@ -1,16 +1,17 @@
 <?php
 require_once('Database.php');
+require_once('Episode.php');
 
 class EpisodesManager extends Database{
 
 
     //properties
 
-    private $_db;
+    private $db;
 
     public function __construct(){
 
-        this->db = $this->setDbConnection($db);
+        $this->db = $this->setDbConnection();
 
     }
 
@@ -20,7 +21,7 @@ class EpisodesManager extends Database{
     public function getUpcomingEpisode(){
 
         $sql = 'SELECT episode_id, episode_publication_date, episode_title FROM episodes WHERE episode_publication_date < date() ORDER BY episode_id ASC';
-        $data = $this->_db->query($sql);
+        $data = $this->db->query($sql);
 
         $upcomingEpisode = new Episode($data);
 
@@ -31,8 +32,10 @@ class EpisodesManager extends Database{
 
     public function getPublishedList(){
 
+        $publishedEpisodes = [];
+
         $sql = 'SELECT episode_id, episode_publication_date, episode_title FROM episodes WHERE episode_publication_date > date() ORDER BY episode_publication_date DESC LIMIT 1, 1';
-        $query = $this->_db->prepare($sql);
+        $query = $this->db->prepare($sql);
 
         while($data = $query->fetch(PDO::FETCH_ASSOC)){
 
@@ -47,9 +50,9 @@ class EpisodesManager extends Database{
 
     public function getFullLastEpisode(){
 
-        $sql = 'SELECT * FROM episodes WHERE episode_publication_date < date() ORDER BY episode_publication_date DESC LIMIT 1,1'
+        $sql = 'SELECT * FROM episodes WHERE episode_publication_date < date() ORDER BY episode_publication_date DESC LIMIT 1,1';
 
-        $query = $this->_db->query($sql);
+        $query = $this->db->query($sql);
 
         $data = $query->fetch(PDO::FETCH_ASSOC);
 
@@ -65,9 +68,9 @@ class EpisodesManager extends Database{
 
         $upcomingEpisodes = [];
 
-        $sql = 'SELECT episode_id, episode_author, episode_publication_date, episode_content FROM episodes ORDER BY ASC episode_publication_date'
+        $sql = 'SELECT * FROM episodes ORDER BY episode_publication_date ASC';
 
-        $query = $this->_db->query($sql);
+        $query = $this->db->query($sql);
 
         while ($data = $query->fetch(PDO::FETCH_ASSOC)){
 
@@ -88,7 +91,7 @@ class EpisodesManager extends Database{
 
     public function sendEpisode(Episode $episode){
 
-        $q = $this->_db->prepare('INSERT INTO episodes(author, title, content) VALUES(:author, :title, :content)');
+        $q = $this->db->prepare('INSERT INTO episodes(author, title, content) VALUES(:author, :title, :content)');
 
         $q->bindValue(':author', $comment->author());
         $q->bindValue(':title', $comment->title());
@@ -101,7 +104,7 @@ class EpisodesManager extends Database{
 
     public function delete(Episode $episode){
 
-        $q = $this->_db->exec('DELETE FROM episodes WHERE id = '.$comment->_id());
+        $q = $this->db->exec('DELETE FROM episodes WHERE id = '.$comment->_id());
 
     }
 
@@ -110,7 +113,7 @@ class EpisodesManager extends Database{
 
         $id= (int) $id;
 
-        $q = $this->_db->query('SELECT episode_id, episode_author, episode_publication_date, episode_content, episode_id FROM episodes WHERE id = '.$id);
+        $q = $this->db->query('SELECT episode_id, episode_author, episode_publication_date, episode_content, episode_id FROM episodes WHERE id = '.$id);
 
         $data = $q->fetch(PDO::FETCH_ASSOC);
 
@@ -123,7 +126,7 @@ class EpisodesManager extends Database{
 
         $episodes = [];
 
-        $q = $this->_db->query('SELECT episode_id, episode_author, episode_publication_date, episode_content FROM episodes ORDER BY ASC episode_publication_date');
+        $q = $this->db->query('SELECT episode_id, episode_author, episode_publication_date, episode_content FROM episodes ORDER BY ASC episode_publication_date');
 
         while ($data = $q->fetch(PDO::FETCH_ASSOC)){
 
@@ -138,7 +141,7 @@ class EpisodesManager extends Database{
 
     public function update(Episode $episode){
 
-        $q = $this->_db->prepare('UPDATE episodes SET episode_author = :author, episode_publication_date = :publicationDate, episode_title = :title, episode_content = :content WHERE comment_id = :id');
+        $q = $this->db->prepare('UPDATE episodes SET episode_author = :author, episode_publication_date = :publicationDate, episode_title = :title, episode_content = :content WHERE comment_id = :id');
 
         $q->bindValue(':author', $comment->author(), PDO::PARAM_INT);
         $q->bindValue(':publicationDate', $comment->publicationDate(), PDO::PARAM_INT);
@@ -152,7 +155,7 @@ class EpisodesManager extends Database{
 
 
     public function setDb(PDO $db){
-        $this->_db = $db;
+        $this->db = $db;
     }
 
 }

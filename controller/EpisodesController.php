@@ -48,9 +48,9 @@ class EpisodesController extends EpisodesManager{
 
 
     public function upcomingEpisodes(){
-        
 
-        $upcomingEpisodes = $this->getUpcomingList();
+
+        $upcomingEpisodes = $this->getUpcomingEpisodes();
 
         echo '<ol>';
         foreach($upcomingEpisodes as $upcomingEpisode){

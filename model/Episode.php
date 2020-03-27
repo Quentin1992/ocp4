@@ -4,11 +4,11 @@ class Episode{
 
     //properties
 
-    private $_id;
-    private $_author;
-    private $_publication_date;
-    private $_title;
-    private $_content;
+    private $id;
+    private $author;
+    private $publication_date;
+    private $title;
+    private $content;
 
 
     public function hydrate(array $donnees){
@@ -26,11 +26,11 @@ class Episode{
 
     //getters
 
-    public function id(){ return this->_id; }
-    public function author(){ return this->_author; }
-    public function publicationDate(){ return this->_publication_date; }
-    public function title(){ return this->_title; }
-    public function content(){ return this->_content; }
+    public function id(){ return $this->id; }
+    public function author(){ return $this->author; }
+    public function publicationDate(){ return $this->publication_date; }
+    public function title(){ return $this->title; }
+    public function content(){ return $this->content; }
 
 
     //setters
@@ -39,7 +39,7 @@ class Episode{
         $id = (int) $id;
 
         if($id > 0)
-            $this->_id = $id;
+            $this->id = $id;
     }
 
     public function setAuthor($author){
@@ -49,17 +49,17 @@ class Episode{
 
     public function setPublicationDate($publicationDate){
         //vérifier le type
-        $this->_publication_date = $publicationDate;
+        $this->publication_date = $publicationDate;
     }
 
     public function setTitle($title){
         if(is_string($author))
-            $this->_title = $title;
+            $this->title = $title;
     }
 
     public function setContent($content){
         if(is_string($content))
-            $this->_content = $content;
+            $this->content = $content;
     }
 
 }
