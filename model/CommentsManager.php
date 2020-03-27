@@ -26,7 +26,31 @@ class CommentsManager extends Database{
     }
 
 
+    //$category : 'comment_checked = false' or 'comment_reported = true'
+    public function getAuthorCommentsList($category){
 
+        $commentsList = [];
+
+        if($category = "new")
+            $where = "comment_checked = false";
+        else if($category = "reported")
+                $where = "comment_reported = true";
+        else throw new \Error("Error Processing Request", 1);
+
+        $sql = 'SELECT * FROM comments WHERE ' . $where . ' = true ORDER BY comment_creation_date DESC';
+        $query = $this->db->query($sql);
+
+        $data = $query->execute();
+
+        while ($data = $q->fetch(PDO::FETCH_ASSOC)){
+
+            $commentsList[] = new Comment($data['comment_author'], $data['comment_content'], $data['episode_id']);
+
+        }
+
+        return $commentsList;
+
+    }
 
 
 

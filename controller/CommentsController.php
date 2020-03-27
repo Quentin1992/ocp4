@@ -29,18 +29,19 @@ class CommentsController extends CommentsManager{
     }
 
 
+    //$category : comment_checked or comment_reported
     public function authorCommentsList($category){
 
-        $newComments = $this->getCommentsList($category);
+        $comments = $this->getCommentsList($category);
 
         echo '<ol>';
         foreach($comments as $comment){
             echo '<li>
                     <div>'
-                        . $comment['comment_author'] . ' le ' . $comment['comment_creation_date'] .
+                        . $comment->author() . ' le ' . $comment->creationDate() .
                     '</div>
 
-                    <p>' . SUBSTRING($comment['comment_content'], 1, 100) . '</p>
+                    <p>' . SUBSTRING($comment->content(), 1, 100) . '</p>
 
                     <div>
                         <a href="#">Valider</a><a href="#">Supprimer</a>
