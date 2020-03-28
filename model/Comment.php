@@ -4,18 +4,19 @@ class Comment{
 
     //properties
 
-    private $_id;
-    private $_author;
-    private $_creation_date;
-    private $_content;
-    private $_is_checked;
-    private $_is_reported;
-    private $_episode_id;
+    private $id;
+    private $author;
+    private $creationDate;
+    private $content;
+    private $isChecked;
+    private $isReported;
+    private $episodeId;
 
 
-    public function __construct($author, $content, $episodeId){
+    public function __construct($author, $creationDate, $content, $episodeId){
         $this->hydrate([
             'author' => $author,
+            'creationDate' => $creationDate,
             'content' => $content,
             'episodeId' => $episodeId
         ]);
@@ -37,13 +38,13 @@ class Comment{
 
     //getters
 
-    public function id(){ return $this->_id; }
-    public function author(){ return $this->_author; }
-    public function creationDate(){ return $this->_creation_date; }
-    public function content(){ return $this->_content; }
-    public function isChecked(){ return $this->_is_checked; }
-    public function isReported(){ return $this->_is_reported; }
-    public function episodeId(){ return $this->_episode_id; }
+    public function id(){ return $this->id; }
+    public function author(){ return $this->author; }
+    public function creationDate(){ return $this->creationDate; }
+    public function content(){ return $this->content; }
+    public function isChecked(){ return $this->isChecked; }
+    public function isReported(){ return $this->isReported; }
+    public function episodeId(){ return $this->episodeId; }
 
 
     //setters
@@ -52,28 +53,33 @@ class Comment{
         $id = (int) $id;
 
         if($id > 0)
-            $this->_id = $id;
+            $this->id = $id;
     }
 
     public function setAuthor($author){
         if(is_string($author))
-            $this->_author = $author;
+            $this->author = $author;
+    }
+
+    public function setCreationDate($creationDate){
+        //test format date
+            $this->creationDate = $creationDate;
     }
 
     public function setContent($content){
         if(is_string($content))
-            $this->_content = $content;
+            $this->content = $content;
     }
 
     public function setIsChecked($isChecked){
         if($isChecked == "true" || $isChecked == "false"){
-            $this->_is_checked = $isChecked;
+            $this->isChecked = $isChecked;
         }
     }
 
     public function setIsReported($isReported){
         if($isReported == "true" || $isReported == "false"){
-            $this->_is_reported = $isReported;
+            $this->isReported = $isReported;
         }
     }
 
@@ -81,7 +87,7 @@ class Comment{
         $episodeId = (int) $episodeId;
 
         if($episodeId > 0)
-            $this->_episode_id = $episodeId;
+            $this->episodeId = $episodeId;
     }
 
 }

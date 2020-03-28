@@ -29,7 +29,7 @@ class CommentsManager extends Database{
 
         while ($data = $q->fetch(PDO::FETCH_ASSOC)){
 
-            $commentsList[] = new Comment($data['comment_author'], $data['comment_content'], $data['episode_id']);
+            $commentsList[] = new Comment($data['comment_author'], $data['comment_creation_date'], $data['comment_content'], $data['episode_id']);
 
         }
 
@@ -49,18 +49,18 @@ class CommentsManager extends Database{
                 $where = "comment_reported = true";
         else throw new \Error("Error Processing Request", 1);
 
-        $sql = 'SELECT * FROM comments WHERE ' . $where . ' = true ORDER BY comment_creation_date DESC';
+        $sql = 'SELECT * FROM comments WHERE ' . $where . ' ORDER BY comment_creation_date DESC';
         $query = $this->db->query($sql);
 
         $data = $query->execute();
 
         while ($data = $query->fetch(PDO::FETCH_ASSOC)){
 
-            $commentsList[] = new Comment($data['comment_author'], $data['comment_content'], $data['episode_id']);
+            $comments[] = new Comment($data['comment_author'], $data['comment_creation_date'], $data['comment_content'], $data['episode_id']);
 
         }
 
-        return $commentsList;
+        return $comments;
 
     }
 

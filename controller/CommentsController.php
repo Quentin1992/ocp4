@@ -8,13 +8,13 @@ class CommentsController extends CommentsManager{
 
     public function episodeCommentsList(int $episodeId){
 
-        $commentsList = $this->getEpisodeCommentsList($episodeId);
+        $comments = $this->getEpisodeCommentsList($episodeId);
 
         echo '<ol>';
-        foreach($commentsList as $comment){
+        foreach($comments as $comment){
             echo '<li>
                     <div>'
-                        . $comment->author() . ' le ' . $comment->creationDate() .
+                        . $comment->author() . ', le ' . $comment->creationDate() .
                     '</div>
 
                     <p>' . $comment->content() . '</p>
@@ -38,7 +38,7 @@ class CommentsController extends CommentsManager{
         foreach($comments as $comment){
             echo '<li>
                     <div>'
-                        . $comment->author() . ' le ' . $comment->creationDate() .
+                        . $comment->author() . ', le ' . $comment->creationDate() .
                     '</div>
 
                     <p>' . $comment->content() . '</p>
