@@ -20,7 +20,7 @@ class EpisodesManager extends Database{
 
     public function getUpcomingEpisode(){
 
-        $sql = 'SELECT episode_id, episode_publication_date, episode_title FROM episodes WHERE episode_publication_date < date() ORDER BY episode_id ASC';
+        $sql = 'SELECT episode_id, episode_publication_date, episode_title FROM episodes WHERE episode_publication_date < now() ORDER BY episode_id ASC';
         $data = $this->db->query($sql);
 
         $upcomingEpisode = new Episode($data);
@@ -34,12 +34,12 @@ class EpisodesManager extends Database{
 
         $publishedEpisodes = [];
 
-        $sql = 'SELECT episode_id, episode_publication_date, episode_title FROM episodes WHERE episode_publication_date > date() ORDER BY episode_publication_date DESC LIMIT 1, 1';
-        $query = $this->db->prepare($sql);
+        $sql = 'SELECT * FROM episodes WHERE episode_publication_date < now() ORDER BY episode_publication_date DESC';
+        $query = $this->db->query($sql);
 
         while($data = $query->fetch(PDO::FETCH_ASSOC)){
 
-            $publishedEpisodes[] = new Episode($data['episode_id'], $data['episode_publication_date'], $data['episode_title']);
+            $publishedEpisodes[] = new Episode($data['episode_id'], $data['episode_author'], $data['episode_publication_date'], $data['episode_title'], $data['episode_content']);
 
         }
 
@@ -50,8 +50,7 @@ class EpisodesManager extends Database{
 
     public function getFullLastEpisode(){
 
-        $sql = 'SELECT * FROM episodes WHERE episode_publication_date < date() ORDER BY episode_publication_date DESC LIMIT 1,1';
-
+        $sql = 'SELECT * FROM episodes WHERE episode_publication_date < now() ORDER BY episode_publication_date DESC LIMIT 1,1';
         $query = $this->db->query($sql);
 
         $data = $query->fetch(PDO::FETCH_ASSOC);
@@ -68,8 +67,7 @@ class EpisodesManager extends Database{
 
         $upcomingEpisodes = [];
 
-        $sql = 'SELECT * FROM episodes ORDER BY episode_publication_date ASC';
-
+        $sql = 'SELECT * FROM episodes WHERE episode_publication_date > now() ORDER BY episode_publication_date';
         $query = $this->db->query($sql);
 
         while ($data = $query->fetch(PDO::FETCH_ASSOC)){

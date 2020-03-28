@@ -51,6 +51,8 @@ class EpisodesController extends EpisodesManager{
 
 
         $upcomingEpisodes = $this->getUpcomingEpisodes();
+        if(empty($upcomingEpisodes))
+            echo "Aucun épisode en attente.";
 
         echo '<ol>';
         foreach($upcomingEpisodes as $upcomingEpisode){

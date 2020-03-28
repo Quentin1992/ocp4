@@ -6,9 +6,20 @@ class Episode{
 
     private $id;
     private $author;
-    private $publication_date;
+    private $publicationDate;
     private $title;
     private $content;
+
+
+    public function __construct($id, $author, $publicationDate, $title, $content){
+        $this->hydrate([
+            'id' => $id,
+            'author' => $author,
+            'publicationDate' => $publicationDate,
+            'title' => $title,
+            'content' => $content
+        ]);
+    }
 
 
     public function hydrate(array $donnees){
@@ -53,7 +64,7 @@ class Episode{
     }
 
     public function setTitle($title){
-        if(is_string($author))
+        if(is_string($title))
             $this->title = $title;
     }
 

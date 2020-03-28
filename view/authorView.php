@@ -4,6 +4,7 @@ require_once('../controller/CommentsController.php');
 
 $episodesController = new EpisodesController;
 $commentsController = new CommentsController;
+
 ?>
 
 <div>
