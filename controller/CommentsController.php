@@ -33,6 +33,8 @@ class CommentsController extends CommentsManager{
     public function authorCommentsList($category){
 
         $comments = $this->getAuthorCommentsList($category);
+        if(empty($comments))
+            echo "Aucun commentaire à afficher.";
 
         echo '<ol>';
         foreach($comments as $comment){
