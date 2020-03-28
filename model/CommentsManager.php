@@ -20,7 +20,7 @@ class CommentsManager extends Database{
 
     public function getEpisodeCommentsList(int $episodeId){
 
-        $commentsList = [];
+        $comments = [];
 
         $sql = 'SELECT * FROM comments WHERE episode_id =' . $episodeId . ' ORDER BY comment_creation_date DESC';
         $query = $this->db->query($sql);
@@ -29,11 +29,11 @@ class CommentsManager extends Database{
 
         while ($data = $q->fetch(PDO::FETCH_ASSOC)){
 
-            $commentsList[] = new Comment($data['comment_author'], $data['comment_creation_date'], $data['comment_content'], $data['episode_id']);
+            $comments[] = new Comment($data['comment_author'], $data['comment_creation_date'], $data['comment_content'], $data['episode_id']);
 
         }
 
-        return $commentsList;
+        return $comments;
 
     }
 
@@ -41,13 +41,15 @@ class CommentsManager extends Database{
     //$category : 'comment_checked = false' or 'comment_reported = true'
     public function getAuthorCommentsList($category){
 
-        $commentsList = [];
+        $comments = [];
 
-        if($category = "new")
+        if($category == "new"){
             $where = "comment_checked = false";
-        else if($category = "reported")
-                $where = "comment_reported = true";
-        else throw new \Error("Error Processing Request", 1);
+
+        }
+        if($category == "reported"){
+            $where = "comment_reported = true";
+        }
 
         $sql = 'SELECT * FROM comments WHERE ' . $where . ' ORDER BY comment_creation_date DESC';
         $query = $this->db->query($sql);
