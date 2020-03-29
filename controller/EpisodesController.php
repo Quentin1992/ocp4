@@ -10,7 +10,7 @@ class EpisodesController extends EpisodesManager{
 
         $upcomingEpisode = $this->getUpcomingEpisode();
 
-        if($upcomingEpisode != null){
+        if(!empty($upcomingEpisode)){
 
             echo 'Prochain épisode : <span>' . $upcomingEpisode->title() .  '</span>, le ' . $upcomingEpisode->publicationDate() . '.';
 
@@ -40,6 +40,15 @@ class EpisodesController extends EpisodesManager{
         echo '<h3>' . $fullLastEpisode->id() . ' - ' . $fullLastEpisode->title() . '</h3>';
 
         echo '<p>' . $fullLastEpisode->content() . '</p>';
+
+    }
+
+
+    public function lastEpisodeId(){
+
+        $fullLastEpisode = $this->getFullLastEpisode();
+
+        return $fullLastEpisode->id();
 
     }
 

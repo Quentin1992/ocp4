@@ -1,3 +1,11 @@
+<?php
+require_once('../controller/EpisodesController.php');
+$episodesController = new EpisodesController;
+
+require_once('../controller/CommentsController.php');
+$commentsController = new CommentsController;
+ ?>
+
 <header>
 
     <h1>Nouveau roman de Jean Forteroche</h1>
@@ -20,17 +28,10 @@
 
 <article>
 
-    <div>
-        <h3>
-            <?php
-            $fullLastEpisode = $episodesController->fullLastEpisode();
-            echo $fullLastEpisode['post_id'] . ': ' . $fullLastEpisode['post_title'];
-            ?>
-        </h3>
+    <h2>Dernier épisode publié</h2>
 
-        <p>
-            <?php echo $fullLastEpisode['post_content']; ?>
-        </p>
+    <div>
+        <?php $fullLastEpisode = $episodesController->fullLastEpisode(); ?>
     </div>
 
     <div>
@@ -38,16 +39,17 @@
         <h4>Commenter</h4>
 
         <form method="post" action="?">
-
             <input type="text" name="pseudo">
             <textarea name="content"></textarea>
             <input type="submit" label="envoyer">
-
         </form>
 
         <h4>Commentaires</h4>
 
-        <?php $commentsController->episodeCommentsList($episodeId); ?>
+        <?php
+        $episodeId = $episodesController->lastEpisodeId();
+        $commentsController->episodeCommentsList($episodeId);
+        ?>
 
     </div>
 

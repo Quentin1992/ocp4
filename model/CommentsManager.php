@@ -25,9 +25,9 @@ class CommentsManager extends Database{
         $sql = 'SELECT * FROM comments WHERE episode_id =' . $episodeId . ' ORDER BY comment_creation_date DESC';
         $query = $this->db->query($sql);
 
-        $data = $q->execute();
+        $data = $query->execute();
 
-        while ($data = $q->fetch(PDO::FETCH_ASSOC)){
+        while ($data = $query->fetch(PDO::FETCH_ASSOC)){
 
             $comments[] = new Comment($data['comment_author'], $data['comment_creation_date'], $data['comment_content'], $data['episode_id']);
 
