@@ -20,7 +20,7 @@ class EpisodesManager extends Database{
 
     public function getUpcomingEpisode(){
 
-        $sql = 'SELECT * FROM episodes WHERE episode_publication_date > now() ORDER BY episode_id ASC LIMIT 1,1';
+        $sql = 'SELECT * FROM episodes WHERE episode_publication_date > now() ORDER BY episode_id ASC LIMIT 1';
         $query = $this->db->query($sql);
 
         $data = $query->fetch(PDO::FETCH_ASSOC);
