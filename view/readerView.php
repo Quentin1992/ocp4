@@ -4,6 +4,7 @@ $episodesController = new EpisodesController;
 
 require_once('../controller/CommentsController.php');
 $commentsController = new CommentsController;
+
  ?>
 
 <header>
@@ -38,7 +39,7 @@ $commentsController = new CommentsController;
 
         <h4>Commenter</h4>
 
-        <form method="post" action="?">
+        <form method="post" action="readerView.php">
             <input type="text" name="pseudo">
             <textarea name="content"></textarea>
             <input type="submit" label="envoyer">
@@ -48,6 +49,11 @@ $commentsController = new CommentsController;
 
         <?php
         $episodeId = $episodesController->lastEpisodeId();
+
+        if(isset($_POST['pseudo']) && isset($_POST['content'])){
+            $commentsController->addComment($_POST['pseudo'], "", $_POST['content'], $episodeId);
+        }
+
         $commentsController->episodeCommentsList($episodeId);
         ?>
 

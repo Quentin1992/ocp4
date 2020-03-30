@@ -67,22 +67,21 @@ class CommentsManager extends Database{
     }
 
 
+    public function sendComment(Comment $comment){
 
-    //maybe I delete these later
+        $sql = 'INSERT INTO comments(comment_author, comment_content, episode_id) VALUES(:author, :content, :episode_id)';
+        $query = $this->db->prepare($sql);
 
-    public function add(Comment $comment){
-
-        $bdd = $this->db;
-        $query = "INSERT INTO comments(comment_author, comment_content, episode_id) VALUES(:author, :content, :episode_id)";
-        $q = $bdd->prepare($query);
-
-
-        $q->bindValue(':author', $comment->author(), PDO::PARAM_STR);
-        $q->bindValue(':content', $comment->content(), PDO::PARAM_STR);
-        $q->bindValue(':episode_id', $comment->episodeId(), PDO::PARAM_INT);
-        $q->execute();
+        $query->bindValue(':author', $comment->author(), PDO::PARAM_STR);
+        $query->bindValue(':content', $comment->content(), PDO::PARAM_STR);
+        $query->bindValue(':episode_id', $comment->episodeId(), PDO::PARAM_INT);
+        $query->execute();
 
     }
+
+
+
+    //maybe I delete these later
 
 
     public function delete(Comment $comment){

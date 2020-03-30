@@ -54,4 +54,13 @@ class CommentsController extends CommentsManager{
 
     }
 
+
+    public function addComment($pseudo, $creationDate, $content, $episodeId){
+
+        $comment = new Comment($pseudo, $creationDate, $content, $episodeId);
+
+        $this->sendComment($comment);
+
+    }
+
 }
