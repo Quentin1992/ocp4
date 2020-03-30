@@ -74,7 +74,7 @@ class EpisodesManager extends Database{
 
         while ($data = $query->fetch(PDO::FETCH_ASSOC)){
 
-            $upcomingEpisodes[] = new Episode($data);
+            $upcomingEpisodes[] = new Episode($data['episode_id'], $data['episode_author'], $data['episode_publication_date'], $data['episode_title'], $data['episode_content']);
 
         }
 

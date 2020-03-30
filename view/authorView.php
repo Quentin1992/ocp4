@@ -42,6 +42,7 @@ $commentsController = new CommentsController;
 
 
 <div>
+    <h2>Rédaction d'un article</h2>
     <!--édition d'un article-->
     <form method="post" action="../controller/authorManager.php">
        <input type="text" name="title">

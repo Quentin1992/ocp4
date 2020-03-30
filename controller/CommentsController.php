@@ -20,11 +20,21 @@ class CommentsController extends CommentsManager{
                     <p>' . $comment->content() . '</p>
 
                     <div>
-                        <a href="#">Signaler</a>
+                        <a href="readerView.php?action=report&commentId=' . $comment->id() . '">Signaler</a>
                     </div>
                 </li>';
+
+            if(isset($_GET['action']) && $_GET['action'] == "report" && $_GET['commentId'] == $comment->id())
+                echo "Ce commentaire a été signalé. Il sera vérifié par l'auteur.";
+
         }
         echo '</ol>';
+
+        if(isset($_GET['action']) && $_GET['action'] == "report"){
+
+            $this->sendCommentReport($_GET['commentId']);
+
+        }
 
     }
 
@@ -55,9 +65,9 @@ class CommentsController extends CommentsManager{
     }
 
 
-    public function addComment($pseudo, $creationDate, $content, $episodeId){
+    public function addComment($id, $pseudo, $creationDate, $content, $episodeId){
 
-        $comment = new Comment($pseudo, $creationDate, $content, $episodeId);
+        $comment = new Comment($id, $pseudo, $creationDate, $content, $episodeId);
 
         $this->sendComment($comment);
 

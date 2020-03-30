@@ -29,7 +29,7 @@ class CommentsManager extends Database{
 
         while ($data = $query->fetch(PDO::FETCH_ASSOC)){
 
-            $comments[] = new Comment($data['comment_author'], $data['comment_creation_date'], $data['comment_content'], $data['episode_id']);
+            $comments[] = new Comment($data['comment_id'], $data['comment_author'], $data['comment_creation_date'], $data['comment_content'], $data['episode_id']);
 
         }
 
@@ -58,7 +58,7 @@ class CommentsManager extends Database{
 
         while ($data = $query->fetch(PDO::FETCH_ASSOC)){
 
-            $comments[] = new Comment($data['comment_author'], $data['comment_creation_date'], $data['comment_content'], $data['episode_id']);
+            $comments[] = new Comment($data['comment_id'], $data['comment_author'], $data['comment_creation_date'], $data['comment_content'], $data['episode_id']);
 
         }
 
@@ -75,6 +75,19 @@ class CommentsManager extends Database{
         $query->bindValue(':author', $comment->author(), PDO::PARAM_STR);
         $query->bindValue(':content', $comment->content(), PDO::PARAM_STR);
         $query->bindValue(':episode_id', $comment->episodeId(), PDO::PARAM_INT);
+        $query->execute();
+
+    }
+
+
+    public function sendCommentReport($commentId){
+
+        $sql = 'UPDATE `comments` SET `comment_reported`= 1 WHERE `comment_id` = :commentId';
+
+        $query = $this->db->prepare($sql);
+
+        $query->bindValue(':commentId', $commentId, PDO::PARAM_INT);
+
         $query->execute();
 
     }

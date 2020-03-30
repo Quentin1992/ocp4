@@ -13,8 +13,9 @@ class Comment{
     private $episodeId;
 
 
-    public function __construct($author, $creationDate, $content, $episodeId){
+    public function __construct($id, $author, $creationDate, $content, $episodeId){
         $this->hydrate([
+            'id' => $id,
             'author' => $author,
             'creationDate' => $creationDate,
             'content' => $content,
