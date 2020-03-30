@@ -51,7 +51,7 @@ $commentsController = new CommentsController;
         $episodeId = $episodesController->lastEpisodeId();
 
         if(isset($_POST['pseudo']) && isset($_POST['content'])){
-            $commentsController->addComment($_POST['pseudo'], "", $_POST['content'], $episodeId);
+            $commentsController->addComment(null, $_POST['pseudo'], "", $_POST['content'], $episodeId);
         }
 
         $commentsController->episodeCommentsList($episodeId);

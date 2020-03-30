@@ -117,17 +117,23 @@ class CommentsManager extends Database{
     }
 
 
+    public function deleteComment($commentId){
+        var_dump($commentId);
+
+        $sql = 'DELETE FROM comments WHERE comment_id = ' . $commentId;
+
+        $query = $this->db->query($sql);
+
+        $query->execute();
+
+    }
 
 
 
     //maybe I delete these later
 
 
-    public function delete(Comment $comment){
 
-        $q = $this->db->exec('DELETE FROM comments WHERE id = '.$perso->_id());
-
-    }
 
 
     public function get($id){

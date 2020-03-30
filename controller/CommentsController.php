@@ -58,17 +58,27 @@ class CommentsController extends CommentsManager{
                         <a href="authorView.php?action=checkComment&commentId=' . $comment->id() . '">
                             Valider
                         </a>
-                        <a href="#">
+                        <a href="authorView.php?action=delete&commentId=' . $comment->id() . '">
                             Supprimer
                         </a>
                     </div>';
 
-            if(isset($_GET['action']) && $_GET['action'] == "checkComment" && $_GET['commentId'] == $comment->id()){
+            if(isset($_GET['action'])){
+                if($_GET['action'] == "checkComment" && $_GET['commentId'] == $comment->id()){
 
-                $this->sendCommentCheck($_GET['commentId']);
-                echo "Ce commentaire a été marqué comme lu et vérifié.";
+                    $this->sendCommentCheck($_GET['commentId']);
+                    echo "Ce commentaire a été marqué comme lu et vérifié.";
+
+                }
+                if($_GET['action'] == "delete" && $_GET['commentId'] == $comment->id()){
+
+                    $this->deleteComment($_GET['commentId']);
+                    echo "Ce commentaire a été supprimé.";
+
+                }
 
             }
+
             echo '</li>';
         }
         echo '</ol>';
