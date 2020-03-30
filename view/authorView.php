@@ -38,6 +38,10 @@ $commentsController = new CommentsController;
         <?php $commentsController->authorCommentsList("reported"); ?>
     </div>
 
+    <a href="authorView.php?action=checkAllComments">
+        Tout valider
+    </a>
+
 </div>
 
 

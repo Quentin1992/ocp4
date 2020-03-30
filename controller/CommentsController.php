@@ -21,20 +21,19 @@ class CommentsController extends CommentsManager{
 
                     <div>
                         <a href="readerView.php?action=report&commentId=' . $comment->id() . '">Signaler</a>
-                    </div>
-                </li>';
+                    </div>';
 
-            if(isset($_GET['action']) && $_GET['action'] == "report" && $_GET['commentId'] == $comment->id())
+            if(isset($_GET['action']) && $_GET['action'] == "report" && $_GET['commentId'] == $comment->id()){
+
+                $this->sendCommentReport($_GET['commentId']);
                 echo "Ce commentaire a été signalé. Il sera vérifié par l'auteur.";
+
+            }
+
+            echo '</li>';
 
         }
         echo '</ol>';
-
-        if(isset($_GET['action']) && $_GET['action'] == "report"){
-
-            $this->sendCommentReport($_GET['commentId']);
-
-        }
 
     }
 
@@ -56,11 +55,31 @@ class CommentsController extends CommentsManager{
                     <p>' . $comment->content() . '</p>
 
                     <div>
-                        <a href="#">Valider</a><a href="#">Supprimer</a>
-                    </div>
-                </li>';
+                        <a href="authorView.php?action=checkComment&commentId=' . $comment->id() . '">
+                            Valider
+                        </a>
+                        <a href="#">
+                            Supprimer
+                        </a>
+                    </div>';
+
+            if(isset($_GET['action']) && $_GET['action'] == "checkComment" && $_GET['commentId'] == $comment->id()){
+
+                $this->sendCommentCheck($_GET['commentId']);
+                echo "Ce commentaire a été marqué comme lu et vérifié.";
+
+            }
+            echo '</li>';
         }
         echo '</ol>';
+
+        if(isset($_GET['action']) && $_GET['action'] == "checkAllComments"){
+
+            $this->sendCheckAllComments();
+            echo "Tous les commentaires ont été marqués comme lus et vérifiés.";
+
+        }
+
 
     }
 
