@@ -39,7 +39,7 @@ class Episode{
 
     public function id(){ return $this->id; }
     public function author(){ return $this->author; }
-    public function publicationDate(){ return $this->publication_date; }
+    public function publicationDate(){ return $this->publicationDate; }
     public function title(){ return $this->title; }
     public function content(){ return $this->content; }
 
@@ -55,12 +55,12 @@ class Episode{
 
     public function setAuthor($author){
         if(is_string($author))
-            $this->_author = $author;
+            $this->author = $author;
     }
 
     public function setPublicationDate($publicationDate){
         //vérifier le type
-        $this->publication_date = $publicationDate;
+        $this->publicationDate = $publicationDate;
     }
 
     public function setTitle($title){

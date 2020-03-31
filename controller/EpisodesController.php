@@ -8,35 +8,21 @@ class EpisodesController extends EpisodesManager{
 
     public function upcomingEpisode(){
 
-        $upcomingEpisode = $this->getUpcomingEpisode();
-
-        if($upcomingEpisode != null)
-            echo 'Prochain épisode : ' . $upcomingEpisode->id() . ' - <span>' . $upcomingEpisode->title() .  '</span>, le ' . $upcomingEpisode->publicationDate() . '.';
-        else echo 'Le prochain épisode arrive bientôt !';
+        return $this->getUpcomingEpisode();
 
     }
 
 
     public function publishedList(){
 
-        $publishedEpisodes = $this->getPublishedList();
-
-        echo '<ol>';
-        foreach($publishedEpisodes as $publishedEpisode){
-            echo '<li><a>' . $publishedEpisode->id() . ' : ' . $publishedEpisode->title() . '</a></li>';
-        }
-        echo '</ol>';
+        return $this->getPublishedList();
 
     }
 
 
     public function fullLastEpisode(){
 
-        $fullLastEpisode = $this->getFullLastEpisode();
-
-        echo '<h3>' . $fullLastEpisode->id() . ' - ' . $fullLastEpisode->title() . '</h3>';
-
-        echo '<p>' . $fullLastEpisode->content() . '</p>';
+        return $this->getFullLastEpisode();
 
     }
 
@@ -55,15 +41,7 @@ class EpisodesController extends EpisodesManager{
 
     public function upcomingEpisodes(){
 
-        $upcomingEpisodes = $this->getUpcomingEpisodes();
-        if(empty($upcomingEpisodes))
-            echo "Aucun épisode en attente.";
-
-        echo '<ol>';
-        foreach($upcomingEpisodes as $upcomingEpisode){
-            echo '<li><a>' . $upcomingEpisode->id() . ' : ' . $upcomingEpisode->title() . '</a></li>';
-        }
-        echo '</ol>';
+        return $this->getUpcomingEpisodes();
 
     }
 

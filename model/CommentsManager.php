@@ -39,17 +39,9 @@ class CommentsManager extends Database{
 
 
     //$category : 'comment_checked = false' or 'comment_reported = true'
-    public function getAuthorCommentsList($category){
+    public function getAuthorCommentsList($where){
 
         $comments = [];
-
-        if($category == "new"){
-            $where = "comment_checked = false";
-
-        }
-        if($category == "reported"){
-            $where = "comment_reported = true";
-        }
 
         $sql = 'SELECT * FROM comments WHERE ' . $where . ' ORDER BY comment_creation_date DESC';
         $query = $this->db->query($sql);
