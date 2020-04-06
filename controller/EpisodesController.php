@@ -27,11 +27,11 @@ class EpisodesController extends EpisodesManager{
     }
 
 
-    public function lastEpisodeId(){
+    public function lastEpisodeNumber(){
 
         $fullLastEpisode = $this->getFullLastEpisode();
 
-        return $fullLastEpisode->id();
+        return $fullLastEpisode->number();
 
     }
 

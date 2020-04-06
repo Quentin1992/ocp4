@@ -18,11 +18,11 @@ class CommentsManager extends Database{
 
     //methods for reader
 
-    public function getEpisodeCommentsList(int $episodeId){
+    public function getEpisodeCommentsList(int $episodeId, $numberOfComments){
 
         $comments = [];
 
-        $sql = 'SELECT * FROM comments WHERE episode_id =' . $episodeId . ' ORDER BY comment_creation_date DESC';
+        $sql = 'SELECT * FROM comments WHERE episode_id =' . $episodeId . ' ORDER BY comment_creation_date DESC LIMIT ' . $numberOfComments;
         $query = $this->db->query($sql);
 
         $data = $query->execute();

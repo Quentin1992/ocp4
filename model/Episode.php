@@ -5,15 +5,17 @@ class Episode{
     //properties
 
     private $id;
+    private $number;
     private $author;
     private $publicationDate;
     private $title;
     private $content;
 
 
-    public function __construct($id, $author, $publicationDate, $title, $content){
+    public function __construct($id, $number, $author, $publicationDate, $title, $content){
         $this->hydrate([
             'id' => $id,
+            'number' => $number,
             'author' => $author,
             'publicationDate' => $publicationDate,
             'title' => $title,
@@ -38,6 +40,7 @@ class Episode{
     //getters
 
     public function id(){ return $this->id; }
+    public function number(){ return $this->number; }
     public function author(){ return $this->author; }
     public function publicationDate(){ return $this->publicationDate; }
     public function title(){ return $this->title; }
@@ -51,6 +54,13 @@ class Episode{
 
         if($id > 0)
             $this->id = $id;
+    }
+
+    public function setNumber($number){
+        $number = (int) $number;
+
+        if($number > 0)
+            $this->number = $number;
     }
 
     public function setAuthor($author){

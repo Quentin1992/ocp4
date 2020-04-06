@@ -177,7 +177,8 @@ $commentsController = new CommentsController;
     <h2>Rédaction d'un article</h2>
     <!--édition d'un article-->
     <form method="post" action="../controller/authorManager.php">
-       <input type="text" name="title">
+        <input type="number" name="episodeNumber">
+        <input type="text" name="title">
         <textarea id="myTextArea" name="content"></textarea>
         <input type="datetime" name="date">
         <input type="submit">

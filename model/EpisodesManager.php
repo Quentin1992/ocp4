@@ -20,12 +20,12 @@ class EpisodesManager extends Database{
 
     public function getUpcomingEpisode(){
 
-        $sql = 'SELECT * FROM episodes WHERE episode_publication_date > now() ORDER BY episode_id ASC LIMIT 1';
+        $sql = 'SELECT * FROM episodes WHERE episode_publication_date > now() ORDER BY episode_number ASC LIMIT 1';
         $query = $this->db->query($sql);
 
         $data = $query->fetch(PDO::FETCH_ASSOC);
 
-        $upcomingEpisode = new Episode($data['episode_id'], $data['episode_author'], $data['episode_publication_date'], $data['episode_title'], $data['episode_content']);
+        $upcomingEpisode = new Episode($data['episode_id'], $data['episode_number'], $data['episode_author'], $data['episode_publication_date'], $data['episode_title'], $data['episode_content']);
 
         return $upcomingEpisode;
 
@@ -41,7 +41,7 @@ class EpisodesManager extends Database{
 
         while($data = $query->fetch(PDO::FETCH_ASSOC)){
 
-            $publishedEpisodes[] = new Episode($data['episode_id'], $data['episode_author'], $data['episode_publication_date'], $data['episode_title'], $data['episode_content']);
+            $publishedEpisodes[] = new Episode($data['episode_id'], $data['episode_number'], $data['episode_author'], $data['episode_publication_date'], $data['episode_title'], $data['episode_content']);
 
         }
 
@@ -57,7 +57,7 @@ class EpisodesManager extends Database{
 
         $data = $query->fetch(PDO::FETCH_ASSOC);
 
-        return new Episode($data['episode_id'], $data['episode_author'], $data['episode_publication_date'], $data['episode_title'], $data['episode_content']);
+        return new Episode($data['episode_id'], $data['episode_number'], $data['episode_author'], $data['episode_publication_date'], $data['episode_title'], $data['episode_content']);
 
     }
 
@@ -74,7 +74,7 @@ class EpisodesManager extends Database{
 
         while ($data = $query->fetch(PDO::FETCH_ASSOC)){
 
-            $upcomingEpisodes[] = new Episode($data['episode_id'], $data['episode_author'], $data['episode_publication_date'], $data['episode_title'], $data['episode_content']);
+            $upcomingEpisodes[] = new Episode($data['episode_id'], $data['episode_number'], $data['episode_author'], $data['episode_publication_date'], $data['episode_title'], $data['episode_content']);
 
         }
 
@@ -91,11 +91,12 @@ class EpisodesManager extends Database{
 
     public function sendEpisode(Episode $episode){
 
-        $q = $this->db->prepare('INSERT INTO episodes(author, title, content) VALUES(:author, :title, :content)');
+        $q = $this->db->prepare('INSERT INTO episodes(number, author, title, content) VALUES(:number, :author, :title, :content)');
 
-        $q->bindValue(':author', $comment->author());
-        $q->bindValue(':title', $comment->title());
-        $q->bindValue(':content', $comment->content());
+        $q->bindValue(':number', $episode->number());
+        $q->bindValue(':author', $episode->author());
+        $q->bindValue(':title', $episode->title());
+        $q->bindValue(':content', $episode->content());
 
         $q->execute();
 
@@ -104,7 +105,7 @@ class EpisodesManager extends Database{
 
     public function delete(Episode $episode){
 
-        $q = $this->db->exec('DELETE FROM episodes WHERE id = '.$comment->_id());
+        $q = $this->db->exec('DELETE FROM episodes WHERE number = '.$episode->_number());
 
     }
 

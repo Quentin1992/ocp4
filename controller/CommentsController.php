@@ -1,14 +1,17 @@
 <?php
-require_once('../model/CommentsManager.php');
+$root = realpath($_SERVER["DOCUMENT_ROOT"]);
+$path = $root . '/ocp4/model/CommentsManager.php';
+
+require_once($path);
 
 class CommentsController extends CommentsManager{
 
 
     //methods for reader
 
-    public function episodeCommentsList(int $episodeId){
+    public function episodeCommentsList(int $episodeId, $numberOfComments){
 
-        return $this->getEpisodeCommentsList($episodeId);
+        return $this->getEpisodeCommentsList($episodeId, $numberOfComments);
 
     }
 
@@ -39,6 +42,13 @@ class CommentsController extends CommentsManager{
     public function checkComment($commentId){
 
         $this->sendCommentCheck($commentId);
+
+    }
+
+
+    public function reportComment($commentId){
+
+        $this->sendCommentReport($commentId);
 
     }
 

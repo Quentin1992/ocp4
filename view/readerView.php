@@ -7,11 +7,17 @@ $commentsController = new CommentsController;
 
  ?>
 
+ <head>
+     <link rel="stylesheet" type="text/css" href="../public/css/style.css">
+ </head>
+
 <header>
 
     <h1>Nouveau roman de Jean Forteroche</h1>
     <!--<img>-->
     <p>Découvrez les épisodes du nouveau roman de Jean Forteroche au fur et à mesure de son écriture.</p>
+
+    <a href="../loginView.php">Se connecter en tant qu'auteur</a>
 
 </header>
 
@@ -64,25 +70,21 @@ $commentsController = new CommentsController;
 
         <h4>Commenter</h4>
 
-        <form method="post" action="readerView.php">
-            <input type="text" name="pseudo" required>
+        <form id="commentForm" method="post" action="#">
+            <input hidden type="number" name="episodeId" value="<?php echo $fullLastEpisode->id() ?>" >
+            <input type="text" name="author" required>
             <textarea name="content" required></textarea>
-            <input type="submit" label="envoyer">
+            <input type="submit" value="Envoyer mon commentaire">
         </form>
 
         <h4>Commentaires</h4>
 
         <?php
-        $episodeId = $episodesController->lastEpisodeId();
-
-        if(isset($_POST['pseudo']) && isset($_POST['content'])){
-            $commentsController->addComment(null, $_POST['pseudo'], "", $_POST['content'], $episodeId);
-        }
-
-        $comments = $commentsController->episodeCommentsList($episodeId);
+        $episodeNumber = $episodesController->lastEpisodeNumber();
+        $comments = $commentsController->episodeCommentsList($episodeNumber, 10);
         ?>
 
-        <ol>
+        <ol id="commentsList">
             <?php foreach($comments as $comment){ ?>
                     <li>
                         <div>
@@ -91,23 +93,18 @@ $commentsController = new CommentsController;
 
                         <p><?php echo $comment->content() ?></p>
 
-                        <div>
-                            <a href="readerView.php?action=report&commentId=<?php echo $comment->id() ?>">Signaler</a>
-                        </div>
+                        <button id="reportButton">Signaler</button>
+                        <!-- utiliser info par formulaire et input caché ? -->
 
-                        <?php
-                        if(isset($_GET['action']) && $_GET['action'] == "report" && $_GET['commentId'] == $comment->id()){
-
-                            $this->sendCommentReport($_GET['commentId']);
-                            echo "Ce commentaire a été signalé. Il sera vérifié par l'auteur.";
-
-                        }
-                        ?>
                     </li>
 
             <?php } ?>
         </ol>
-        
+
     </div>
 
 </article>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript" src="../public/js/ajax.js"></script>
+<script type="text/javascript" src="../public/js/form.js"></script>
