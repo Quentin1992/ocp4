@@ -8,8 +8,7 @@
 </head>
 
 <body>
-    <?= $content ?>
-    <?php echo $comments[1]->author(); ?>    
+    <?= $content ?> 
 </body>
 
 </html>

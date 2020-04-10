@@ -1,10 +1,13 @@
 <?php
-require_once('../controller/EpisodesController.php');
+$root = realpath($_SERVER["DOCUMENT_ROOT"]);
+
+$path = $root . '/ocp4/controller/EpisodesController.php';
+require_once($path);
 $episodesController = new EpisodesController;
 
-require_once('../controller/CommentsController.php');
+$path = $root . '/ocp4/controller/CommentsController.php';
+require_once($path);
 $commentsController = new CommentsController;
-
  ?>
 
  <head>
@@ -29,7 +32,7 @@ $commentsController = new CommentsController;
 
     if($upcomingEpisode != null){ ?>
 
-        <p>Prochain épisode : <?php echo $upcomingEpisode->id() ?> - <span><?php echo $upcomingEpisode->title() ?></span>, le <?php echo $upcomingEpisode->publicationDate() ?></p>
+        <p>Prochain épisode : <?php echo $upcomingEpisode->number() ?> - <span><?php echo $upcomingEpisode->title() ?></span>, le <?php echo $upcomingEpisode->publicationDate() ?></p>
 
     <?php }else{ ?>
 
@@ -47,7 +50,7 @@ $commentsController = new CommentsController;
         } else{
             foreach($publishedEpisodes as $publishedEpisode){ ?>
             <li>
-                <a href="#"> <?php echo $publishedEpisode->id() . ' : ' . $publishedEpisode->title(); ?> </a>
+                <a class="episodeLink" href="#" data-episode-number="<?php echo $publishedEpisode->number() ?>"> <?php echo $publishedEpisode->number() . ' : ' . $publishedEpisode->title(); ?> </a>
             </li>
         <?php }
         } ?>
@@ -58,13 +61,9 @@ $commentsController = new CommentsController;
 
 <article>
 
-    <h2>Dernier épisode publié</h2>
-
-    <div>
-        <?php $fullLastEpisode = $episodesController->fullLastEpisode(); ?>
-        <h3><?php echo $fullLastEpisode->id() ?> - <?php echo $fullLastEpisode->title() ?></h3>
-        <p><?php echo $fullLastEpisode->content() ?></p>
-    </div>
+    <?php $fullLastEpisode = $episodesController->fullLastEpisode(); ?>
+    <h2><?php echo $fullLastEpisode->number() ?> - <?php echo $fullLastEpisode->title() ?></h2>
+    <p><?php echo $fullLastEpisode->content() ?></p>
 
     <div>
 
@@ -93,8 +92,10 @@ $commentsController = new CommentsController;
 
                         <p><?php echo $comment->content() ?></p>
 
-                        <button id="reportButton">Signaler</button>
-                        <!-- utiliser info par formulaire et input caché ? -->
+                        <form class="reportForm" method="post" action="#">
+                            <input hidden type="number" name="commentId" value="<?php echo $comment->id() ?>">
+                            <input type="submit" value="Signaler">
+                        </form>
 
                     </li>
 
@@ -107,4 +108,4 @@ $commentsController = new CommentsController;
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script type="text/javascript" src="../public/js/ajax.js"></script>
-<script type="text/javascript" src="../public/js/form.js"></script>
+<script type="text/javascript" src="../public/js/reader.js"></script>

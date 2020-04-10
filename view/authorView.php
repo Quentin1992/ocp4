@@ -6,7 +6,8 @@ $episodesController = new EpisodesController;
 $commentsController = new CommentsController;
 ?>
 
-<div>
+<!-- listing published and upcoming episodes -->
+<div id=episodes>
 
     <h2>Episodes</h2>
 
@@ -22,7 +23,8 @@ $commentsController = new CommentsController;
             } else{
                 foreach($publishedEpisodes as $publishedEpisode){ ?>
                 <li>
-                    <a href="#"> <?php echo $publishedEpisode->id() . ' : ' . $publishedEpisode->title(); ?> </a>
+                    <a class="episodeLink" href="#" data-episode-number="<?php echo $publishedEpisode->number() ?>"> <?php echo $publishedEpisode->number() . ' : ' . $publishedEpisode->title() . ', le ' . $publishedEpisode->publicationDate(); ?></a>
+                    <button class="deleteEpisodeButton" data-episode-id="<?php echo $publishedEpisode->id() ?>">Supprimer l'épisode</button>
                 </li>
             <?php }
             } ?>
@@ -41,16 +43,20 @@ $commentsController = new CommentsController;
             } else{
                 foreach($upcomingEpisodes as $upcomingEpisode){ ?>
                 <li>
-                    <a href="#"> <?php echo $upcomingEpisode->id() . ' : ' . $upcomingEpisode->title(); ?> </a>
+                    <a class="episodeLink" href="#" data-episode-number="<?php echo $upcomingEpisode->number() ?>"> <?php echo $upcomingEpisode->number() . ' : ' . $upcomingEpisode->title() . ', le ' . $upcomingEpisode->publicationDate(); ?></a>
+                    <button class="deleteEpisodeButton" data-episode-id="<?php echo $upcomingEpisode->id() ?>">Supprimer l'épisode</button>
                 </li>
             <?php }
             } ?>
         </ol>
     </div>
 
+    <button id="newEpisodeButton">Créer un nouvel épisode</button>
+
 </div>
 
 
+<!-- listing new and reported comments -->
 <div>
 
     <h2>Commentaires</h2>
@@ -73,42 +79,17 @@ $commentsController = new CommentsController;
                         <p><?php echo $comment->content() ?></p>
 
                         <div>
-                            <a href="authorView.php?action=checkComment&commentId=<?php echo $comment->id() ?>">
+                            <button class="validateCommentButton" data-comment-id="<?php echo $comment->id() ?>">
                                 Valider
-                            </a>
-                            <a href="authorView.php?action=delete&commentId=<?php echo $comment->id() ?>">
+                            </button>
+                            <button class="deleteCommentButton" data-comment-id="<?php echo $comment->id() ?>">
                                 Supprimer
-                            </a>
+                            </button>
                         </div>
-
-                        <?php if(isset($_GET['action'])){
-                            if($_GET['action'] == "checkComment" && $_GET['commentId'] == $comment->id()){
-
-                                $commentsController->sendCommentCheck($_GET['commentId']);
-                                echo "Ce commentaire a été marqué comme lu et vérifié.";
-
-                            }
-
-                            if($_GET['action'] == "delete" && $_GET['commentId'] == $comment->id()){
-
-                                $this->deleteComment($_GET['commentId']);
-                                echo "Ce commentaire a été supprimé.";
-
-                            }
-
-                        } ?>
                     </li>
                 <?php }
                 } ?>
             </ol>
-
-            <?php if(isset($_GET['action']) && $_GET['action'] == "checkAllComments"){
-
-                $this->sendCheckAllComments();
-                echo "Tous les commentaires ont été marqués comme lus et vérifiés.";
-
-            } ?>
-
     </div>
 
     <div>
@@ -129,65 +110,21 @@ $commentsController = new CommentsController;
                         <p><?php echo $comment->content() ?></p>
 
                         <div>
-                            <a href="authorView.php?action=checkComment&commentId=<?php echo $comment->id() ?>">
+                            <button class="validateCommentButton" data-comment-id="<?php echo $comment->id() ?>">
                                 Valider
-                            </a>
-                            <a href="authorView.php?action=delete&commentId=<?php echo $comment->id() ?>">
+                            </button>
+                            <button class="deleteCommentButton" data-comment-id="<?php echo $comment->id() ?>">
                                 Supprimer
-                            </a>
+                            </button>
                         </div>
-
-                        <?php if(isset($_GET['action'])){
-                            if($_GET['action'] == "checkComment" && $_GET['commentId'] == $comment->id()){
-
-                                $commentsController->sendCommentCheck($_GET['commentId']);
-                                echo "Ce commentaire a été marqué comme lu et vérifié.";
-
-                            }
-
-                            if($_GET['action'] == "delete" && $_GET['commentId'] == $comment->id()){
-
-                                $this->deleteComment($_GET['commentId']);
-                                echo "Ce commentaire a été supprimé.";
-
-                            }
-
-                        } ?>
                     </li>
                 <?php }
                 } ?>
             </ol>
-
-            <?php if(isset($_GET['action']) && $_GET['action'] == "checkAllComments"){
-
-                $this->sendCheckAllComments();
-                echo "Tous les commentaires ont été marqués comme lus et vérifiés.";
-
-            } ?>
     </div>
-
-    <a href="authorView.php?action=checkAllComments">
-        Tout valider
-    </a>
-
 </div>
 
 
-<div>
-    <h2>Rédaction d'un article</h2>
-    <!--édition d'un article-->
-    <form method="post" action="../controller/authorManager.php">
-        <input type="number" name="episodeNumber">
-        <input type="text" name="title">
-        <textarea id="myTextArea" name="content"></textarea>
-        <input type="datetime" name="date">
-        <input type="submit">
-    </form>
-    <!--apparaît neutre
-
-        envoi :
-            si actualisé suite à un clic sur un épisode dans la liste, associé à son id
-            sinon, nouvel id
-        case "publier maintenant" -> isPublished true ou false
-        date de publication-->
-</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript" src="../public/js/ajax.js"></script>
+<script type="text/javascript" src="../public/js/author.js"></script>

@@ -85,7 +85,7 @@ class CommentsManager extends Database{
     }
 
 
-    public function sendCommentCheck($commentId){
+    public function sendCommentValidation($commentId){
 
         $sql = 'UPDATE `comments` SET `comment_checked` = 1, `comment_reported` = 0 WHERE `comment_id` = :commentId';
 
@@ -98,21 +98,9 @@ class CommentsManager extends Database{
     }
 
 
-    public function sendCheckAllComments(){
+    public function sendDeleteComment($commentId){
 
-        $sql = 'UPDATE `comments` SET `comment_checked` = 1, `comment_reported` = 0 WHERE `comment_checked` = 0 OR `comment_reported` = 1';
-
-        $query = $this->db->query($sql);
-
-        $query->execute();
-
-    }
-
-
-    public function deleteComment($commentId){
-        var_dump($commentId);
-
-        $sql = 'DELETE FROM comments WHERE comment_id = ' . $commentId;
+        $sql = 'DELETE FROM `comments` WHERE `comment_id` = ' . $commentId;
 
         $query = $this->db->query($sql);
 

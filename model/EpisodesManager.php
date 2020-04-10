@@ -16,7 +16,37 @@ class EpisodesManager extends Database{
     }
 
 
-    //methods for reader
+    //CREATE
+
+    public function sendNewEpisode(Episode $episode){
+
+        $sql = 'INSERT INTO episodes(episode_number, episode_publication_date, episode_title, episode_content) VALUES(:number, :publicationDate, :title, :content)';
+        $query = $this->db->prepare($sql);
+
+        $query->bindValue(':number', $episode->number(), PDO::PARAM_INT);
+        $query->bindValue(':publicationDate', $episode->publicationDate(), PDO::PARAM_STR);
+        $query->bindValue(':title', $episode->title(), PDO::PARAM_STR);
+        $query->bindValue(':content', $episode->content(), PDO::PARAM_STR);
+        $query->execute();
+
+    }
+
+
+    //READ
+
+    public function getEpisode($episodeNumber){
+
+        $sql = 'SELECT * FROM episodes WHERE episode_number = ' . $episodeNumber;
+        $query = $this->db->query($sql);
+
+        $data = $query->fetch(PDO::FETCH_ASSOC);
+
+        $episode = new Episode($data['episode_id'], $data['episode_number'], $data['episode_author'], $data['episode_publication_date'], $data['episode_title'], $data['episode_content']);
+
+        return $episode;
+
+    }
+
 
     public function getUpcomingEpisode(){
 
@@ -62,9 +92,6 @@ class EpisodesManager extends Database{
     }
 
 
-    //methds for author
-
-
     public function getUpcomingEpisodes(){
 
         $upcomingEpisodes = [];
@@ -83,80 +110,30 @@ class EpisodesManager extends Database{
     }
 
 
+    //UPDATE
 
+    public function sendUpdateEpisode(Episode $episode){
 
+        $sql = 'UPDATE episodes SET episode_number = :number, episode_publication_date = :publicationDate, episode_title = :title, episode_content = :content WHERE episode_id = :id';
+        $query = $this->db->prepare($sql);
 
-    //maybe delete this later
+        $query->bindValue(':number', $episode->number(), PDO::PARAM_INT);
+        $query->bindValue(':publicationDate', $episode->publicationDate(), PDO::PARAM_STR);
+        $query->bindValue(':title', $episode->title(), PDO::PARAM_STR);
+        $query->bindValue(':content', $episode->content(), PDO::PARAM_STR);
+        $query->bindValue(':id', $episode->id(), PDO::PARAM_INT);
 
-
-    public function sendEpisode(Episode $episode){
-
-        $q = $this->db->prepare('INSERT INTO episodes(number, author, title, content) VALUES(:number, :author, :title, :content)');
-
-        $q->bindValue(':number', $episode->number());
-        $q->bindValue(':author', $episode->author());
-        $q->bindValue(':title', $episode->title());
-        $q->bindValue(':content', $episode->content());
-
-        $q->execute();
+        $query->execute();
 
     }
 
 
-    public function delete(Episode $episode){
+    //DELETE
 
-        $q = $this->db->exec('DELETE FROM episodes WHERE number = '.$episode->_number());
+    public function sendDeleteEpisode($episodeId){
 
-    }
+        $query = $this->db->exec('DELETE FROM episodes WHERE episode_id = ' . $episodeId);
 
-
-    public function get($id){
-
-        $id= (int) $id;
-
-        $q = $this->db->query('SELECT episode_id, episode_author, episode_publication_date, episode_content, episode_id FROM episodes WHERE id = '.$id);
-
-        $data = $q->fetch(PDO::FETCH_ASSOC);
-
-        return new Episode($data);
-
-    }
-
-
-    public function getList(){
-
-        $episodes = [];
-
-        $q = $this->db->query('SELECT episode_id, episode_author, episode_publication_date, episode_content FROM episodes ORDER BY ASC episode_publication_date');
-
-        while ($data = $q->fetch(PDO::FETCH_ASSOC)){
-
-            $episodes[] = new Episode($data);
-
-        }
-
-        return $episodes;
-
-    }
-
-
-    public function update(Episode $episode){
-
-        $q = $this->db->prepare('UPDATE episodes SET episode_author = :author, episode_publication_date = :publicationDate, episode_title = :title, episode_content = :content WHERE comment_id = :id');
-
-        $q->bindValue(':author', $comment->author(), PDO::PARAM_INT);
-        $q->bindValue(':publicationDate', $comment->publicationDate(), PDO::PARAM_INT);
-        $q->bindValue(':title', $comment->title(), PDO::PARAM_INT);
-        $q->bindValue(':content', $comment->content(), PDO::PARAM_INT);
-        $q->bindValue(':id', $comment->id(), PDO::PARAM_INT);
-
-        $q->execute();
-
-    }
-
-
-    public function setDb(PDO $db){
-        $this->db = $db;
     }
 
 }

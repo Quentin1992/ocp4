@@ -3,7 +3,6 @@ $root = realpath($_SERVER["DOCUMENT_ROOT"]);
 $path = $root . '/ocp4/model/CommentsManager.php';
 
 require_once($path);
-
 class CommentsController extends CommentsManager{
 
 
@@ -16,7 +15,6 @@ class CommentsController extends CommentsManager{
     }
 
 
-    //$category : comment_checked or comment_reported
     public function authorCommentsList($category){
 
         if($category == "new")
@@ -39,9 +37,9 @@ class CommentsController extends CommentsManager{
     }
 
 
-    public function checkComment($commentId){
+    public function validateComment($commentId){
 
-        $this->sendCommentCheck($commentId);
+        $this->sendCommentValidation($commentId);
 
     }
 
@@ -49,6 +47,13 @@ class CommentsController extends CommentsManager{
     public function reportComment($commentId){
 
         $this->sendCommentReport($commentId);
+
+    }
+
+
+    public function deleteComment($commentId){
+
+        $this->sendDeleteComment($commentId);
 
     }
 
