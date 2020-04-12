@@ -20,7 +20,7 @@ $commentsController = new CommentsController;
     <!--<img>-->
     <p>Découvrez les épisodes du nouveau roman de Jean Forteroche au fur et à mesure de son écriture.</p>
 
-    <a href="../loginView.php">Se connecter en tant qu'auteur</a>
+    <a href="../view/loginView.php">Se connecter</a>
 
 </header>
 
@@ -30,9 +30,10 @@ $commentsController = new CommentsController;
     <h2>Prochain épisode</h2>
     <?php $upcomingEpisode = $episodesController->upcomingEpisode();
 
-    if($upcomingEpisode != null){ ?>
+    if($upcomingEpisode != null){
 
-        <p>Prochain épisode : <?php echo $upcomingEpisode->number() ?> - <span><?php echo $upcomingEpisode->title() ?></span>, le <?php echo $upcomingEpisode->publicationDate() ?></p>
+        $date = date_create($upcomingEpisode->publicationDate()); ?>
+        <p>Prochain épisode : <?php echo $upcomingEpisode->number() ?> - <span><?php echo $upcomingEpisode->title() ?></span>, le <?php echo date_format($date, 'd/m/Y') ?> à <?php echo date_format($date, 'H\hi') ?></p>
 
     <?php }else{ ?>
 
@@ -50,7 +51,12 @@ $commentsController = new CommentsController;
         } else{
             foreach($publishedEpisodes as $publishedEpisode){ ?>
             <li>
-                <a class="episodeLink" href="#" data-episode-number="<?php echo $publishedEpisode->number() ?>"> <?php echo $publishedEpisode->number() . ' : ' . $publishedEpisode->title(); ?> </a>
+                <a class="episodeLink"
+                 href="#"
+                 data-episode-number="<?php echo $publishedEpisode->number() ?>"
+                 data-number-of-comments="10">
+                    <?php echo $publishedEpisode->number() . ' : ' . $publishedEpisode->title(); ?>
+                </a>
             </li>
         <?php }
         } ?>
@@ -71,7 +77,9 @@ $commentsController = new CommentsController;
 
         <form id="commentForm" method="post" action="#">
             <input hidden type="number" name="episodeId" value="<?php echo $fullLastEpisode->id() ?>" >
+            <label for="author">Pseudo :</label>
             <input type="text" name="author" required>
+            <label for="content">Commentaire :</label>
             <textarea name="content" required></textarea>
             <input type="submit" value="Envoyer mon commentaire">
         </form>
@@ -87,21 +95,23 @@ $commentsController = new CommentsController;
             <?php foreach($comments as $comment){ ?>
                     <li>
                         <div>
-                            <?php echo $comment->author() ?>, le <?php echo $comment->creationDate() ?>
+                            <?php $date = date_create($comment->creationDate());
+                             echo $comment->author() ?>, le <?php echo date_format($date, 'd/m/Y') ?> à <?php echo date_format($date, 'H\hi') ?>
                         </div>
 
                         <p><?php echo $comment->content() ?></p>
 
-                        <form class="reportForm" method="post" action="#">
-                            <input hidden type="number" name="commentId" value="<?php echo $comment->id() ?>">
-                            <input type="submit" value="Signaler">
-                        </form>
+                        <button class="reportButton" data-comment-id="<?php echo $comment->id() ?>">
+                            Signaler
+                        </button>
 
                     </li>
 
             <?php } ?>
         </ol>
-
+        <?php if($commentsController->numberOfComments($episodeNumber) > 10){ ?>
+                <button id="seeAllCommentsButton" data-episode-number="<?php echo $episodeNumber ?>" data-number-of-comments="100">Voir tous les commentaires</button>
+        <?php } ?>
     </div>
 
 </article>

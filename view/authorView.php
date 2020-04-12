@@ -21,9 +21,10 @@ $commentsController = new CommentsController;
                 <p>Auncun épisode publié pour le moment.</p>
             <?php
             } else{
-                foreach($publishedEpisodes as $publishedEpisode){ ?>
+                foreach($publishedEpisodes as $publishedEpisode){
+                    $date = date_create($publishedEpisode->publicationDate());?>
                 <li>
-                    <a class="episodeLink" href="#" data-episode-number="<?php echo $publishedEpisode->number() ?>"> <?php echo $publishedEpisode->number() . ' : ' . $publishedEpisode->title() . ', le ' . $publishedEpisode->publicationDate(); ?></a>
+                    <a class="episodeLink" href="#" data-episode-number="<?php echo $publishedEpisode->number() ?>"> <?php echo $publishedEpisode->number() . ' : ' . $publishedEpisode->title() . ', le ' . date_format($date, 'd/m/Y') . ' à ' . date_format($date, 'H\hi'); ?></a>
                     <button class="deleteEpisodeButton" data-episode-id="<?php echo $publishedEpisode->id() ?>">Supprimer l'épisode</button>
                 </li>
             <?php }
@@ -69,11 +70,13 @@ $commentsController = new CommentsController;
             <p>Aucun commentaire à afficher.</p>
         <?php }else{ ?>
             <ol>
-                <?php foreach($comments as $comment){ ?>
+                <?php foreach($comments as $comment){
+
+                    $date = date_create($comment->creationDate());?>
 
                     <li>
                         <div>
-                            <?php echo $comment->author() ?> le <?php echo $comment->creationDate() ?>
+                            <?php echo $comment->author() ?> le <?php echo date_format($date, 'd/m/Y') ?> à <?php echo date_format($date, 'H\hi') ?>
                         </div>
 
                         <p><?php echo $comment->content() ?></p>
@@ -100,11 +103,13 @@ $commentsController = new CommentsController;
             <p>Aucun commentaire à afficher.</p>
         <?php }else{ ?>
             <ol>
-                <?php foreach($comments as $comment){ ?>
+                <?php foreach($comments as $comment){
+
+                    $date = date_create($comment->creationDate());?>
 
                     <li>
                         <div>
-                            <?php echo $comment->author() ?> le <?php echo $comment->creationDate() ?>
+                            <?php echo $comment->author() ?> le <?php echo date_format($date, 'd/m/Y') ?> à <?php echo date_format($date, 'H\hi') ?>
                         </div>
 
                         <p><?php echo $comment->content() ?></p>

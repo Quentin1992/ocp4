@@ -16,16 +16,29 @@ class UsersManager extends Database{
     }
 
 
-    public function sendNewUser($id, $name, $status, $hashedPassword){
+    public function sendNewUser(User $user){
 
-        //requête insert dans users
+        $sql = 'INSERT INTO users(user_pseudo, user_password, user_email) VALUES(:pseudo, :password, :email)';
+        $query = $this->db->prepare($sql);
+
+        $query->bindValue(':pseudo', $user->pseudo(), PDO::PARAM_STR);
+        $query->bindValue(':password', $user->password(), PDO::PARAM_STR);
+        $query->bindValue(':email', $user->email(), PDO::PARAM_STR);
+        $query->execute();
 
     }
 
 
-    public function goCheckIdentity($name, $hashedPassword){
+    public function getUser($pseudo){
 
-        //requête select dans users
+        $sql = 'SELECT * FROM users WHERE user_pseudo = "' . $pseudo . '"';
+        $query = $this->db->query($sql);
+        
+        $data = $query->fetch(PDO::FETCH_ASSOC);
+
+        $user = new User($data['user_id'], $data['user_pseudo'], $data['user_status'], $data['user_password'], $data['user_email'], $data['user_registration_date']);
+
+        return $user;
 
     }
 

@@ -6,9 +6,20 @@ require_once($path);
 class CommentsController extends CommentsManager{
 
 
-    //methods for reader
+    //CREATE
 
-    public function episodeCommentsList(int $episodeId, $numberOfComments){
+    public function addComment($id, $pseudo, $creationDate, $content, $episodeId){
+
+        $comment = new Comment($id, $pseudo, $creationDate, $content, $episodeId);
+
+        $this->sendComment($comment);
+
+    }
+
+
+    //READ
+
+    public function episodeCommentsList($episodeId, $numberOfComments){
 
         return $this->getEpisodeCommentsList($episodeId, $numberOfComments);
 
@@ -28,14 +39,14 @@ class CommentsController extends CommentsManager{
     }
 
 
-    public function addComment($id, $pseudo, $creationDate, $content, $episodeId){
+    public function numberOfComments(int $episodeNumber){
 
-        $comment = new Comment($id, $pseudo, $creationDate, $content, $episodeId);
-
-        $this->sendComment($comment);
+        return $this->countEpisodeComments($episodeNumber);
 
     }
 
+
+    //UPDATE
 
     public function validateComment($commentId){
 
@@ -50,6 +61,8 @@ class CommentsController extends CommentsManager{
 
     }
 
+
+    //DELETE
 
     public function deleteComment($commentId){
 

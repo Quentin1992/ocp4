@@ -5,15 +5,21 @@ class User{
     //properties
 
     private $id;
-    private $name;
+    private $pseudo;
     private $status;
+    private $password;
+    private $email;
+    private $registrationDate;
 
 
-    public function __construct($id, $name, $status){
+    public function __construct($id, $pseudo, $status, $password, $email, $registrationDate){
         $this->hydrate([
             'id' => $id,
-            'name' => $name,
-            'status' => $status
+            'pseudo' => $pseudo,
+            'status' => $status,
+            'password' => $password,
+            'email' => $email,
+            'registrationDate' => $registrationDate
         ]);
     }
 
@@ -34,27 +40,44 @@ class User{
     //getters
 
     public function id(){ return $this->id; }
-    public function name(){ return $this->name; }
+    public function pseudo(){ return $this->pseudo; }
     public function status(){ return $this->status; }
+    public function password(){ return $this->password; }
+    public function email(){ return $this->email; }
+    public function registrationDate(){ return $this->registrationDate; }
 
 
     //setters
 
     public function setId($id){
         $id = (int) $id;
-
         if($id > 0)
             $this->id = $id;
     }
 
-    public function setName($name){
-        if(is_string($name))
-            $this->name = $name;
+    public function setPseudo($pseudo){
+        if(is_string($pseudo))
+            $this->pseudo = $pseudo;
     }
 
-    public function setName($status){
+    public function setStatus($status){
         if(is_string($status))
             $this->status = $status;
+    }
+
+    public function setPassword($password){
+        if(is_string($password))
+            $this->password = $password;
+    }
+
+    public function setEmail($email){
+        if(is_string($email))
+            $this->email = $email;
+    }
+
+    public function setRegistrationDate($registrationDate){
+        if(is_string($registrationDate))
+            $this->registrationDate = $registrationDate;
     }
 
 }

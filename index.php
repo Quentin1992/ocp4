@@ -3,6 +3,8 @@ require_once('controller/CommentsController.php');
 $commentsController = new CommentsController;
 require_once('controller/EpisodesController.php');
 $episodesController = new EpisodesController;
+require_once('controller/UsersController.php');
+$usersController = new UsersController;
 
 
 //actions handler
@@ -17,9 +19,13 @@ if (isset($_POST['action'])) {
 
         //send back the comment to display with creation date
         $lastComment = $commentsController->episodeCommentsList($_POST['episodeId'], 1);
+
+        $date = date_create($lastComment[0]->creationDate());
+        $creationDate = 'le ' . date_format($date, 'd/m/Y') . ' à ' . date_format($date, 'H\hi');
+
         $lastCommentData = array(
             'author' => $lastComment[0]->author(),
-            'creationDate' => $lastComment[0]->creationDate(),
+            'creationDate' => $creationDate,
             'content' => $lastComment[0]->content()
         );
         echo json_encode($lastCommentData);
@@ -30,15 +36,18 @@ if (isset($_POST['action'])) {
 
     if($_POST['action'] == "getEpisodeComments"){
 
-        $comments = $commentsController->episodeCommentsList($_POST['episodeNumber'], 10);
+        $comments = $commentsController->episodeCommentsList($_POST['episodeNumber'], $_POST['numberOfComments']);
         $commentsData = [];
 
         foreach ($comments as $key => $comment) {
 
+            $date = date_create($comment->creationDate());
+            $creationDate = 'le ' . date_format($date, 'd/m/Y') . ' à ' . date_format($date, 'H\hi');
+
             $commentsData[] = $commentData = array(
                 'id' => $comment->id(),
                 'author' => $comment->author(),
-                'creationDate' => $comment->creationDate(),
+                'creationDate' => $creationDate,
                 'content' => $comment->content()
             );
 
@@ -70,7 +79,6 @@ if (isset($_POST['action'])) {
         $episodesController->addEpisode(null, $_POST['number'], null, $_POST['publicationDate'], $_POST['title'], $_POST['content']);
     }
 
-
     //READ EPISODE
 
     if($_POST['action'] == "getEpisode"){
@@ -98,6 +106,23 @@ if (isset($_POST['action'])) {
     if($_POST['action'] == "deleteEpisode"){
         $episodesController->deleteEpisode($_POST['episodeId']);
     }
+
+    //USERS ACTIONS
+    //CREATE USERS
+
+    if ($_POST['action'] == "addUser") {
+        //on a les bonnes infos qui arrivent
+        $usersController->addUser(null, $_POST['pseudo'], null, $_POST['password'], $_POST['email'], null);
+    }
+
+    //READ USERS
+
+    if($_POST['action'] == "connectUser"){
+
+        echo $usersController->connectUser($_POST['pseudo'], $_POST['password']);
+
+    }
+
 
 }
 else header("Location: http://localhost/ocp4/view/readerView.php");

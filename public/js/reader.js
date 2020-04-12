@@ -1,3 +1,6 @@
+//COMMENTS
+//CREATE COMMENTS
+
 //comment function event
 $("#commentForm").on("submit", function(e){
 
@@ -13,14 +16,17 @@ $("#commentForm").on("submit", function(e){
 
         var li = $("<li>");
         //create and add comment title and content
-        var div = $("<div>").innerHTML = lastCommentData.author + ", le " + lastCommentData.creationDate;
+        var div = $("<div>").innerHTML = lastCommentData.author + ", " + lastCommentData.creationDate;
         var p = $("<p>").innerHTML = lastCommentData.content;
         li.append(div); li.append("<br /><br />");
         li.append(p); li.append("<br /><br />");
 
         //insert the new comment
         $("#commentsList").prepend(li);
-        $("#commentsList li").last().remove();
+        if($("#commentsList li").length == 11){
+            console.log($("#commentsList li").length);
+            $("#commentsList li").last().remove();
+        }
 
         //clear form inputs
         $("#commentForm")[0].author.value = "";
@@ -33,55 +39,15 @@ $("#commentForm").on("submit", function(e){
 });
 
 
-//report comment function event
-$(".reportForm").on("submit", function(e){
-
-    var query = new FormData();
-    query.append("action", "reportComment");
-    query.append("commentId", e.target.commentId.value);
-
-    ajaxPost("http://localhost/ocp4/index.php", query, function(){
-
-        var p = document.createElement("p");
-        p.innerHTML = "Ce commentaire a été signalé. Il sera vérifié par l'auteur.";
-        e.target.replaceWith(p);
-
-    });
-
-    e.preventDefault();
-
-});
-
-
-//display episode event
-$(".episodeLink").on("click", function(e){
-
-    var query = new FormData();
-    query.append("action", "getEpisode");
-    query.append("episodeNumber", e.target.getAttribute("data-episode-number"));
-
-    ajaxPost("http://localhost/ocp4/index.php", query, function(response){
-
-        var episodeData = JSON.parse(response);
-
-        $("article h2").html(episodeData.number + ' - ' + episodeData.title);
-        $("article p").first().html(episodeData.content);
-
-        //for the comment form
-        $("#commentForm input").first().val(episodeData.id);
-
-    });
-
-    e.preventDefault();
-
-});
+//READ COMMENTS
 
 //display episode comments event
-$(".episodeLink").on("click", function(e){
+$(".episodeLink, #seeAllCommentsButton").on("click", function(e){
 
     var query = new FormData();
     query.append("action", "getEpisodeComments");
     query.append("episodeNumber", e.target.getAttribute("data-episode-number"));
+    query.append("numberOfComments", e.target.getAttribute("data-number-of-comments"));
 
     ajaxPost("http://localhost/ocp4/index.php", query, function(response){
 
@@ -94,7 +60,7 @@ $(".episodeLink").on("click", function(e){
 
             var li = $("<li>");
             //create comment title and content
-            var div = $("<div>").html($(this)[0].author + ", le " + $(this)[0].creationDate);
+            var div = $("<div>").html($(this)[0].author + ", " + $(this)[0].creationDate);
             var p = $("<p>").html($(this)[0].content);
             //create report form
             var form = $("<form>", {
@@ -120,10 +86,71 @@ $(".episodeLink").on("click", function(e){
             commentsList.append(li);
         });
 
-        console.log($("#commentsList li").first());
+    });
+
+    e.preventDefault();
+
+});
+
+
+//UPDATE COMMENTS
+
+//report comment function event
+$(".reportButton").on("click", function(e){
+
+    var query = new FormData();
+    query.append("action", "reportComment");
+    query.append("commentId", e.target.getAttribute("data-comment-id"));
+
+    ajaxPost("http://localhost/ocp4/index.php", query, function(){
+
+        var p = document.createElement("p");
+        p.innerHTML = "Ce commentaire a été signalé. Il sera vérifié par l'auteur.";
+        e.target.replaceWith(p);
 
     });
 
     e.preventDefault();
 
 });
+
+
+//DELETE COMMENTS
+
+
+//EPISODES
+//CREATE EPISODES
+
+
+//READ EPISODES
+
+//display episode event
+$(".episodeLink").on("click", function(e){
+
+    var query = new FormData();
+    query.append("action", "getEpisode");
+    query.append("episodeNumber", e.target.getAttribute("data-episode-number"));
+
+    ajaxPost("http://localhost/ocp4/index.php", query, function(response){
+
+        var episodeData = JSON.parse(response);
+
+        $("article h2").html(episodeData.number + ' - ' + episodeData.title);
+        $("article p").first().html(episodeData.content);
+
+        //for the comment form
+        $("#commentForm input").first().val(episodeData.id);
+
+        $("#seeAllCommentsButton").attr("data-episode-number", episodeData.number);
+
+    });
+
+    e.preventDefault();
+
+});
+
+
+//UPDATE EPISODES
+
+
+//DELETE EPISODES
