@@ -23,6 +23,8 @@ class CommentsController extends CommentsManager{
 
         return $this->getEpisodeCommentsList($episodeId, $numberOfComments);
 
+        //return $this->getComments($episodeId, null, $numberOfComments);
+
     }
 
 

@@ -1,36 +1,18 @@
+const comments = new Comments();
+
 //COMMENTS
 //CREATE COMMENTS
 
 //comment function event
 $("#commentForm").on("submit", function(e){
 
-    var query = new FormData();
-    query.append("action", "addComment");
-    query.append("content", e.target.content.value);
-    query.append("author", e.target.author.value);
-    query.append("episodeId", e.target.episodeId.value);
+    comments.addComment(e.target.content.value, e.target.author.value, e.target.episodeId.value, function(commentData){
 
-    ajaxPost("http://localhost/ocp4/index.php", query, function(response){
+        comments.displayComment(commentData, "#commentsList");
 
-        var lastCommentData = JSON.parse(response);
+        comments.limitListLength("#commentsList", 10);
 
-        var li = $("<li>");
-        //create and add comment title and content
-        var div = $("<div>").innerHTML = lastCommentData.author + ", " + lastCommentData.creationDate;
-        var p = $("<p>").innerHTML = lastCommentData.content;
-        li.append(div); li.append("<br /><br />");
-        li.append(p); li.append("<br /><br />");
-
-        //insert the new comment
-        $("#commentsList").prepend(li);
-        if($("#commentsList li").length == 11){
-            console.log($("#commentsList li").length);
-            $("#commentsList li").last().remove();
-        }
-
-        //clear form inputs
-        $("#commentForm")[0].author.value = "";
-        $("#commentForm")[0].content.value = "";
+        e.target.remove();
 
     });
 

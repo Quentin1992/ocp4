@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8" />
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+</head>
+
 <?php
 require_once('../controller/EpisodesController.php');
 require_once('../controller/CommentsController.php');
@@ -58,7 +64,7 @@ $commentsController = new CommentsController;
 
 
 <!-- listing new and reported comments -->
-<div>
+<div id="comments">
 
     <h2>Commentaires</h2>
 
@@ -130,6 +136,21 @@ $commentsController = new CommentsController;
 </div>
 
 
+<div id="users">
+
+    <h2>Utilisateurs</h2>
+
+    <ol id="usersList">
+
+    </ol>
+
+    <button id="addUserButton">Ajouter un utilisateur</button>
+
+</div>
+
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script type="text/javascript" src="../public/js/ajax.js"></script>
+<script type="text/javascript" src="../public/js/User.js"></script>
+<script type="text/javascript" src="../public/js/UsersHandler.js"></script>
 <script type="text/javascript" src="../public/js/author.js"></script>

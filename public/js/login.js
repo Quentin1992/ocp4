@@ -75,8 +75,11 @@ $("#loginForm").on("submit", function(e){
 
     ajaxPost("http://localhost/ocp4/index.php", query, function(response){
 
-        if(response == "reader")
+        if(response == "reader"){
+
             window.location.pathname = "ocp4/view/readerView.php";
+
+        }
         else if (response == "writer")
             window.location.pathname = "ocp4/view/authorView.php";
         else $("#loginForm p").html(response);

@@ -35,6 +35,32 @@ class UsersController extends UsersManager{
             return $user->status();
 
         }
+    }
+
+
+    public function usersList(){
+
+        return $this->getUsersList();
+
+    }
+
+
+    //UPDATE
+
+    public function updateUser($id, $pseudo, $status, $password, $email){
+
+        $password = password_hash($password, PASSWORD_DEFAULT);
+        $user = new User($id, $pseudo, $status, $password, $email, null);
+        $this->sendUserUpdate($user);
+
+    }
+
+
+    //DELETE
+
+    public function deleteUser($id){
+
+        $this->sendUserDeletion($id);
 
     }
 

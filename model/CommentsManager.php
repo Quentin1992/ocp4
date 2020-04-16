@@ -128,4 +128,48 @@ class CommentsManager extends Database{
 
     }
 
+
+    // public function getComments($episodeId, $category, $numberOfComments){
+    //
+    //     $sql = 'SELECT * FROM comments';
+    //
+    //     if(isset($episodeId) || isset($category)){
+    //         //if isset where condition
+    //         $sql = $sql . ' WHERE ';
+    //         //if isset episodeId condition
+    //         if(isset($episodeId))
+    //             $sql = $sql . 'episode_id = ' . $episodeId;
+    //         //if there are two where conditions
+    //         if(isset($episodeId) && isset($category))
+    //             $sql = $sql . ' AND ';
+    //
+    //         if(isset($category)){
+    //             //if isset category condition
+    //             if($category == "new")
+    //                 $sql = $sql . 'comment_checked = 0';
+    //             elseif($category == "reported")
+    //                 $sql = $sql . 'comment_reported = 1';
+    //         }
+    //     }
+    //
+    //     $sql = $sql . ' ORDER BY comment_creation_date DESC';
+    //     //if isset limit number
+    //     if(isset($numberOfComments))
+    //         $sql = $sql . ' LIMIT ' . $numberOfComments;
+    //
+    //     $query = $this->db->query($sql);
+    //
+    //     $data = $query->execute();
+    //
+    //     while ($data = $query->fetch(PDO::FETCH_ASSOC)){
+    //
+    //         $comments[] = new Comment($data['comment_id'], $data['comment_author'], $data['comment_creation_date'], $data['comment_content'], $data['episode_id']);
+    //
+    //     }
+    //
+    //     return $comments;
+    //
+    // }
+
+
 }

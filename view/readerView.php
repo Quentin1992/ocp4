@@ -1,4 +1,4 @@
-<?php
+<?php session_start();
 $root = realpath($_SERVER["DOCUMENT_ROOT"]);
 
 $path = $root . '/ocp4/controller/EpisodesController.php';
@@ -20,7 +20,12 @@ $commentsController = new CommentsController;
     <!--<img>-->
     <p>Découvrez les épisodes du nouveau roman de Jean Forteroche au fur et à mesure de son écriture.</p>
 
-    <a href="../view/loginView.php">Se connecter</a>
+    <?php if(isset($_SESSION['pseudo'])){ ?>
+            <p>Bonjour <?php echo $_SESSION['pseudo'] ?></p>
+    <?php } else{ ?>
+            <a href="../view/loginView.php">Se connecter</a>
+    <?php } ?>
+
 
 </header>
 
@@ -118,4 +123,5 @@ $commentsController = new CommentsController;
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script type="text/javascript" src="../public/js/ajax.js"></script>
+<script type="text/javascript" src="../public/js/Comments.js"></script>
 <script type="text/javascript" src="../public/js/reader.js"></script>

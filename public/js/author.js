@@ -62,9 +62,9 @@ $(document).on("submit", "#newEpisodeForm", function(e){
 
     ajaxPost("http://localhost/ocp4/index.php", query, function(response){
 
-        $("#newEpisodeDiv")[0].remove();
+        $("#newEpisodeForm").replaceWith($("<p>").html("Vous avez créé l'épisode " + e.target.episodeNumber.value + " : " + e.target.title.value + "."));
 
-        //confirm publication
+        //display episode in the list ?
 
     });
     e.preventDefault();
@@ -72,6 +72,25 @@ $(document).on("submit", "#newEpisodeForm", function(e){
 
 
 //READ EPISODE
+
+//add episode event
+$(document).on("submit", "#newEpisodeForm", function(e){
+
+    var query = new FormData();
+    query.append("action", "getEpisode");
+    query.append("number", e.target.episodeNumber.value);
+    query.append("title", e.target.title.value);
+    query.append("content", e.target.content.value);
+    query.append("publicationDate", e.target.publicationDate.value);
+
+    ajaxPost("http://localhost/ocp4/index.php", query, function(response){
+
+        $("#newEpisodeForm").replaceWith($("<p>").html("Vous avez créé l'épisode " + e.target.episodeNumber.value + " : " + e.target.title.value + "."));
+
+    });
+    e.preventDefault();
+});
+
 
 //work on existing episode event
 $(".episodeLink").on("click", function(e){
@@ -84,7 +103,8 @@ $(".episodeLink").on("click", function(e){
 
         var episodeData = JSON.parse(response);
 
-        $("#updateEpisodeDiv").html("");
+        $("#updateEpisodeDiv").remove();
+        $("#newEpisodeDiv").remove();
 
         var updateDiv = $("<div>", {
             id: "updateEpisodeDiv"
@@ -97,32 +117,97 @@ $(".episodeLink").on("click", function(e){
             method: "post",
             action: "#"
         });
+
         $("<input>", {
             hidden: "true",
             type: "number",
             name: "episodeId",
             value: episodeData.id
         }).appendTo(updateForm);
+
         $("<input>", {
             type: "number",
             name: "episodeNumber",
             value: episodeData.number
         }).appendTo(updateForm);
+
         $("<input>", {
             type: "text",
             name: "title",
             value: episodeData.title
         }).appendTo(updateForm);
+
         $("<textarea>", {
             id: "myTextArea",
             name: "content",
             html: episodeData.content
         }).appendTo(updateForm);
+
+        tinymce.init({
+            selector: '#mytextarea'
+        });
+
         $("<input>", {
             type: "datetime",
             name: "publicationDate",
             value: episodeData.publicationDate
         }).appendTo(updateForm);
+
+        $("<span>", { html: "Publication le  " }).appendTo(updateForm);
+
+        var selectDay = $("<select>", { id: "day" });
+        for(i=1; i <= 31; i++){
+            $("<option>", {
+                value: i,
+                html: i
+            }).appendTo(selectDay);
+        }
+        selectDay.appendTo(updateForm);
+
+        $("<span>", { html: " / " }).appendTo(updateForm);
+
+        var selectMonth = $("<select>", { id: "month" });
+        for(i=1; i <= 12; i++){
+            $("<option>", {
+                value: i,
+                html: i
+            }).appendTo(selectMonth);
+        }
+        selectMonth.appendTo(updateForm);
+
+        $("<span>", { html: " / " }).appendTo(updateForm);
+
+        var selectYear = $("<select>", { id: "year" });
+        for(i=2020; i <= 2025; i++){
+            $("<option>", {
+                value: i,
+                html: i
+            }).appendTo(selectYear);
+        }
+        selectYear.appendTo(updateForm);
+
+        $("<span>", { html: "  à  " }).appendTo(updateForm);
+
+        var selectHour = $("<select>", { id: "hour" });
+        for(i=0; i <= 23; i++){
+            $("<option>", {
+                value: i,
+                html: i
+            }).appendTo(selectHour);
+        }
+        selectHour.appendTo(updateForm);
+
+        $("<span>", { html: " h " }).appendTo(updateForm);
+
+        var selectMinute = $("<select>", { id: "minute" });
+        for(i=0; i <= 59; i++){
+            $("<option>", {
+                value: i,
+                html: i
+            }).appendTo(selectMinute);
+        }
+        selectMinute.appendTo(updateForm);
+
         $("<input>", {
             type: "submit",
             value: "Mettre à jour cet épisode"
@@ -151,10 +236,7 @@ $(document).on("submit", "#updateEpisodeForm", function(e){
 
     ajaxPost("http://localhost/ocp4/index.php", query, function(response){
 
-        //clear form inputs
-        $("#updateEpisodeDiv")[0].remove()
-
-        //confirm publication
+        $("#updateEpisodeForm").replaceWith($("<p>").html("Vous avez mis à jour cet épisode."));
 
     });
     e.preventDefault();
@@ -180,18 +262,35 @@ $(".deleteEpisodeButton").on("click", function(e){
 });
 
 
+//USERS
+//CREATE USERS
+
+const usersHandler = new UsersHandler();
+
+usersHandler.getUsersList("#usersList");
+
+
+//UPDATE USERS
+
+$
+
+
+
+
+
 //NOT CRUD
 
 //display new episode div event
 $("#newEpisodeButton").on("click", function(e){
 
     $("#updateEpisodeDiv").remove();
+    $("#newEpisodeDiv").remove();
 
     var newEpisodeDiv = $("<div>", {
         id: "newEpisodeDiv"
     });
 
-    $("<h2>").html("Création d'un nouvel épisode.").appendTo(newEpisodeDiv);
+    $("<h3>").html("Création d'un nouvel épisode.").appendTo(newEpisodeDiv);
 
     var newEpisodeForm = $("<form>", {
         id: "newEpisodeForm",
