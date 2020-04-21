@@ -19,7 +19,7 @@ $commentsController = new CommentsController;
 
     <div>
         <h3>Episodes publiés</h3>
-        <?php $publishedEpisodes = $episodesController->publishedList(); ?>
+        <?php $publishedEpisodes = $episodesController->publishedEpisodes(); ?>
 
         <ol>
             <?php
@@ -144,13 +144,12 @@ $commentsController = new CommentsController;
 
     </ol>
 
-    <button id="addUserButton">Ajouter un utilisateur</button>
-
 </div>
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script type="text/javascript" src="../public/js/ajax.js"></script>
 <script type="text/javascript" src="../public/js/User.js"></script>
+<script type="text/javascript" src="../public/js/EpisodesHandler.js"></script>
 <script type="text/javascript" src="../public/js/UsersHandler.js"></script>
 <script type="text/javascript" src="../public/js/author.js"></script>

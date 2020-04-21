@@ -21,7 +21,7 @@ class CommentsController extends CommentsManager{
 
     public function episodeCommentsList($episodeId, $numberOfComments){
 
-        return $this->getEpisodeCommentsList($episodeId, $numberOfComments);
+        return $this->getEpisodeComments($episodeId, $numberOfComments);
 
         //return $this->getComments($episodeId, null, $numberOfComments);
 
@@ -42,34 +42,26 @@ class CommentsController extends CommentsManager{
 
 
     public function numberOfComments(int $episodeNumber){
-
         return $this->countEpisodeComments($episodeNumber);
-
     }
 
 
     //UPDATE
 
     public function validateComment($commentId){
-
         $this->sendCommentValidation($commentId);
-
     }
 
 
     public function reportComment($commentId){
-
         $this->sendCommentReport($commentId);
-
     }
 
 
     //DELETE
 
     public function deleteComment($commentId){
-
-        $this->sendDeleteComment($commentId);
-
+        $this->sendCommentDeletion($commentId);
     }
 
 }

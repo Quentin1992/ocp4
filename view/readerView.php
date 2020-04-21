@@ -8,7 +8,7 @@ $episodesController = new EpisodesController;
 $path = $root . '/ocp4/controller/CommentsController.php';
 require_once($path);
 $commentsController = new CommentsController;
- ?>
+?>
 
  <head>
      <link rel="stylesheet" type="text/css" href="../public/css/style.css">
@@ -16,15 +16,10 @@ $commentsController = new CommentsController;
 
 <header>
 
-    <h1>Nouveau roman de Jean Forteroche</h1>
-    <!--<img>-->
+    <h1>Billet simple pour l'Alaska</h1>
     <p>Découvrez les épisodes du nouveau roman de Jean Forteroche au fur et à mesure de son écriture.</p>
 
-    <?php if(isset($_SESSION['pseudo'])){ ?>
-            <p>Bonjour <?php echo $_SESSION['pseudo'] ?></p>
-    <?php } else{ ?>
-            <a href="../view/loginView.php">Se connecter</a>
-    <?php } ?>
+    <p id="welcomeMessage"></p>
 
 
 </header>
@@ -32,96 +27,56 @@ $commentsController = new CommentsController;
 
 <aside>
 
-    <h2>Prochain épisode</h2>
-    <?php $upcomingEpisode = $episodesController->upcomingEpisode();
+    <div id="upcomingEpisode">
 
-    if($upcomingEpisode != null){
+        <h2>Prochain épisode</h2>
 
-        $date = date_create($upcomingEpisode->publicationDate()); ?>
-        <p>Prochain épisode : <?php echo $upcomingEpisode->number() ?> - <span><?php echo $upcomingEpisode->title() ?></span>, le <?php echo date_format($date, 'd/m/Y') ?> à <?php echo date_format($date, 'H\hi') ?></p>
+    </div>
 
-    <?php }else{ ?>
 
-        <p>Le prochain épisode arrive bientôt</p>
+    <div id="publishedEpisodes">
 
-    <?php } ?>
+        <h2>Episodes publiés</h2>
 
-    <h2>Episodes publiés</h2>
-    <?php $publishedEpisodes = $episodesController->publishedList(); ?>
-    <ol>
-        <?php
-        if(empty($publishedEpisodes)){ ?>
-            <p>Auncun épisode publié pour le moment.</p>
-        <?php
-        } else{
-            foreach($publishedEpisodes as $publishedEpisode){ ?>
-            <li>
-                <a class="episodeLink"
-                 href="#"
-                 data-episode-number="<?php echo $publishedEpisode->number() ?>"
-                 data-number-of-comments="10">
-                    <?php echo $publishedEpisode->number() . ' : ' . $publishedEpisode->title(); ?>
-                </a>
-            </li>
-        <?php }
-        } ?>
-    </ol>
+        <ol >
+
+        </ol>
+
+    </div>
 
 </aside>
 
 
 <article>
 
-    <?php $fullLastEpisode = $episodesController->fullLastEpisode(); ?>
-    <h2><?php echo $fullLastEpisode->number() ?> - <?php echo $fullLastEpisode->title() ?></h2>
-    <p><?php echo $fullLastEpisode->content() ?></p>
+    <div id=currentEpisode>
 
-    <div>
+    </div>
 
-        <h4>Commenter</h4>
+    <div id="comments">
 
-        <form id="commentForm" method="post" action="#">
-            <input hidden type="number" name="episodeId" value="<?php echo $fullLastEpisode->id() ?>" >
-            <label for="author">Pseudo :</label>
-            <input type="text" name="author" required>
-            <label for="content">Commentaire :</label>
-            <textarea name="content" required></textarea>
-            <input type="submit" value="Envoyer mon commentaire">
-        </form>
+        <div id="addCommentDiv">
 
-        <h4>Commentaires</h4>
+        </div>
 
-        <?php
-        $episodeNumber = $episodesController->lastEpisodeNumber();
-        $comments = $commentsController->episodeCommentsList($episodeNumber, 10);
-        ?>
+        <div>
 
-        <ol id="commentsList">
-            <?php foreach($comments as $comment){ ?>
-                    <li>
-                        <div>
-                            <?php $date = date_create($comment->creationDate());
-                             echo $comment->author() ?>, le <?php echo date_format($date, 'd/m/Y') ?> à <?php echo date_format($date, 'H\hi') ?>
-                        </div>
+            <h4>Commentaires</h4>
 
-                        <p><?php echo $comment->content() ?></p>
+            <ol id="commentsList">
 
-                        <button class="reportButton" data-comment-id="<?php echo $comment->id() ?>">
-                            Signaler
-                        </button>
+            </ol>
 
-                    </li>
+        </div>
 
-            <?php } ?>
-        </ol>
-        <?php if($commentsController->numberOfComments($episodeNumber) > 10){ ?>
-                <button id="seeAllCommentsButton" data-episode-number="<?php echo $episodeNumber ?>" data-number-of-comments="100">Voir tous les commentaires</button>
-        <?php } ?>
     </div>
 
 </article>
 
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script type="text/javascript" src="../public/js/ajax.js"></script>
-<script type="text/javascript" src="../public/js/Comments.js"></script>
+<script type="text/javascript" src="../public/js/UsersHandler.js"></script>
+<script type="text/javascript" src="../public/js/EpisodesHandler.js"></script>
+<script type="text/javascript" src="../public/js/CommentsHandler.js"></script>
 <script type="text/javascript" src="../public/js/reader.js"></script>

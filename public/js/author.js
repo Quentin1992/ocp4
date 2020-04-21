@@ -48,6 +48,7 @@ $(".deleteCommentButton").on("click", function(e){
 
 
 //EPISODES
+const episodesHandler = new EpisodesHandler();
 //CREATE EPISODE
 
 //add episode event
@@ -72,6 +73,8 @@ $(document).on("submit", "#newEpisodeForm", function(e){
 
 
 //READ EPISODE
+
+episodesHandler.getPublishedEpisodes("#episodes", "author");
 
 //add episode event
 $(document).on("submit", "#newEpisodeForm", function(e){
@@ -263,16 +266,21 @@ $(".deleteEpisodeButton").on("click", function(e){
 
 
 //USERS
+const usersHandler = new UsersHandler();
+
 //CREATE USERS
 
-const usersHandler = new UsersHandler();
+usersHandler.displayAddUserButton("#users");
+
+
+//READ USERS
 
 usersHandler.getUsersList("#usersList");
 
 
 //UPDATE USERS
 
-$
+
 
 
 

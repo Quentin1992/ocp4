@@ -62,11 +62,13 @@ class EpisodesManager extends Database{
     }
 
 
-    public function getPublishedList(){
+    public function getPublishedEpisodes($numberOfEpisodes){
 
         $publishedEpisodes = [];
 
         $sql = 'SELECT * FROM episodes WHERE episode_publication_date < now() ORDER BY episode_publication_date DESC';
+        if(isset($numberOfEpisodes))
+            $sql = $sql . " LIMIT " . $numberOfEpisodes;
         $query = $this->db->query($sql);
 
         while($data = $query->fetch(PDO::FETCH_ASSOC)){

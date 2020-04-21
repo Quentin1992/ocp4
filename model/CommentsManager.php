@@ -35,14 +35,12 @@ class CommentsManager extends Database{
 
     //READ
 
-    public function getEpisodeCommentsList($episodeId, $numberOfComments){
+    public function getEpisodeComments($episodeId, $numberOfComments){
 
         $comments = [];
 
-        $sql = 'SELECT * FROM comments WHERE episode_id =' . $episodeId . ' ORDER BY comment_creation_date DESC LIMIT ' . $numberOfComments;
+        $sql = 'SELECT * FROM comments WHERE episode_id = ' . $episodeId . ' ORDER BY comment_creation_date DESC LIMIT ' . $numberOfComments;
         $query = $this->db->query($sql);
-
-        $data = $query->execute();
 
         while ($data = $query->fetch(PDO::FETCH_ASSOC)){
 
@@ -118,7 +116,7 @@ class CommentsManager extends Database{
 
     //DELETE
 
-    public function sendDeleteComment($commentId){
+    public function sendCommentDeletion($commentId){
 
         $sql = 'DELETE FROM `comments` WHERE `comment_id` = ' . $commentId;
 

@@ -19,26 +19,13 @@ if (isset($_POST['action'])) {
 
             $commentsController->addComment(null, $_POST['author'], null, $_POST['content'], $_POST['episodeId']);
 
-            //send back the comment to display with creation date
-            $lastComment = $commentsController->episodeCommentsList($_POST['episodeId'], 1);
-
-            $date = date_create($lastComment[0]->creationDate());
-            $creationDate = 'le ' . date_format($date, 'd/m/Y') . ' à ' . date_format($date, 'H\hi');
-
-            $lastCommentData = array(
-                'author' => $lastComment[0]->author(),
-                'creationDate' => $creationDate,
-                'content' => $lastComment[0]->content()
-            );
-            echo json_encode($lastCommentData);
-
             break;
 
         //READ COMMENT
 
         case 'getEpisodeComments':
 
-            $comments = $commentsController->episodeCommentsList($_POST['episodeNumber'], $_POST['numberOfComments']);
+            $comments = $commentsController->episodeCommentsList($_POST['episodeId'], $_POST['numberOfComments']);
             $commentsData = [];
 
             foreach ($comments as $key => $comment) {
@@ -50,7 +37,8 @@ if (isset($_POST['action'])) {
                     'id' => $comment->id(),
                     'author' => $comment->author(),
                     'creationDate' => $creationDate,
-                    'content' => $comment->content()
+                    'content' => $comment->content(),
+                    'episodeId' => $comment->episodeId()
                 );
 
             }
@@ -74,6 +62,7 @@ if (isset($_POST['action'])) {
             $commentsController->deleteComment($_POST['commentId']);
             break;
 
+
         //EPISODES ACTIONS
         //CREATE EPISODE
 
@@ -90,11 +79,72 @@ if (isset($_POST['action'])) {
             $episodeData = array(
                 'id' => $episode->id(),
                 'number' => $episode->number(),
+                'author' => $episode->author(),
                 'publicationDate' => $episode->publicationDate(),
                 'title' => $episode->title(),
                 'content' => $episode->content()
             );
             echo json_encode($episodeData);
+            break;
+
+        case 'getUpcomingEpisode':
+
+            $upcomingEpisode = $episodesController->upcomingEpisode();
+
+            $date = date_create($upcomingEpisode->publicationDate());
+            $publicationDate = 'le ' . date_format($date, 'd/m/Y') . ' à ' . date_format($date, 'H\hi') . '.';
+
+            $upcomingEpisodeData = array(
+                'id' => $upcomingEpisode->id(),
+                'number' => $upcomingEpisode->number(),
+                'author' => $upcomingEpisode->author(),
+                'publicationDate' => $publicationDate,
+                'title' => $upcomingEpisode->title(),
+                'content' => $upcomingEpisode->content()
+            );
+            echo json_encode($upcomingEpisodeData);
+            break;
+
+        case 'getPublishedEpisodes':
+
+            $publishedEpisodes = $episodesController->publishedEpisodes(null);
+
+            $publishedEpisodesData = [];
+
+            foreach ($publishedEpisodes as $key => $episode) {
+
+                $date = date_create($episode->publicationDate());
+                $publicationDate = 'le ' . date_format($date, 'd/m/Y') . ' à ' . date_format($date, 'H\hi');
+
+                $publishedEpisodesData[] = array(
+                    'id' => $episode->id(),
+                    'number' => $episode->number(),
+                    'author' => $episode->author(),
+                    'publicationDate' => $publicationDate,
+                    'title' => $episode->title(),
+                    'content' => $episode->content(),
+                );
+
+            }
+            echo json_encode($publishedEpisodesData);
+            break;
+
+        case 'getLastPublishedEpisode':
+
+            $lastPublishedEpisode = $episodesController->publishedEpisodes(1);
+
+            $date = date_create($lastPublishedEpisode[0]->publicationDate());
+            $publicationDate = 'le ' . date_format($date, 'd/m/Y') . ' à ' . date_format($date, 'H\hi') . '.';
+
+            $lastPublishedEpisodeData = array(
+                'id' => $lastPublishedEpisode[0]->id(),
+                'number' => $lastPublishedEpisode[0]->number(),
+                'author' => $lastPublishedEpisode[0]->author(),
+                'publicationDate' => $publicationDate,
+                'title' => $lastPublishedEpisode[0]->title(),
+                'content' => $lastPublishedEpisode[0]->content()
+            );
+            echo json_encode($lastPublishedEpisodeData);
             break;
 
         //UPDATE EPISODE
@@ -108,6 +158,7 @@ if (isset($_POST['action'])) {
         case 'deleteEpisode':
             $episodesController->deleteEpisode($_POST['episodeId']);
             break;
+
 
         //USERS ACTIONS
         //CREATE USERS

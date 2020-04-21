@@ -16,6 +16,10 @@ class UsersManager extends Database{
     }
 
 
+    //methods
+
+    //CREATE
+
     public function sendNewUser(User $user){
 
         $sql = 'INSERT INTO users(user_pseudo, user_password, user_email) VALUES(:pseudo, :password, :email)';
@@ -28,6 +32,8 @@ class UsersManager extends Database{
 
     }
 
+
+    //READ
 
     public function getUsersList(){
 
@@ -62,6 +68,8 @@ class UsersManager extends Database{
     }
 
 
+    //UPDATE
+
     public function sendUserUpdate($user){
 
         $sql = 'UPDATE users SET user_pseudo = :pseudo, user_status = :status, user_password = :password, user_email = :email WHERE user_id = :id';
@@ -77,6 +85,8 @@ class UsersManager extends Database{
 
     }
 
+
+    //DELETE
 
     public function sendUserDeletion($id){
 
