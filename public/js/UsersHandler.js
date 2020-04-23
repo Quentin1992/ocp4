@@ -348,14 +348,11 @@ class UsersHandler {
                 window.location.pathname = "ocp4/view/readerView.php";
 
             }
-            else if (response == "writer")
+            else if (status == "writer")
                 window.location.pathname = "ocp4/view/authorView.php";
             else $("#loginForm p").html(status);
 
         });
-
-        e.preventDefault();
-
     }
 
 

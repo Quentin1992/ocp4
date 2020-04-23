@@ -34,6 +34,13 @@ class EpisodesController extends EpisodesManager{
     }
 
 
+    public function upcomingEpisodes($numberOfEpisodes){
+
+        return $this->getUpcomingEpisodes($numberOfEpisodes);
+
+    }
+
+
     public function publishedEpisodes($numberOfEpisodes){
 
         return $this->getPublishedEpisodes($numberOfEpisodes);
@@ -53,13 +60,6 @@ class EpisodesController extends EpisodesManager{
         $fullLastEpisode = $this->getFullLastEpisode();
 
         return $fullLastEpisode->number();
-
-    }
-
-
-    public function upcomingEpisodes(){
-
-        return $this->getUpcomingEpisodes();
 
     }
 

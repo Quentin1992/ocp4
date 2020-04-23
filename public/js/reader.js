@@ -1,12 +1,16 @@
-let episodesHandler = new EpisodesHandler("#upcomingEpisode", "#publishedEpisodes", "#currentEpisode", "reader");
+let converter = new Converter();
+let episodesHandler = new EpisodesHandler("#upcomingEpisode", "#publishedEpisodes ol", "#currentEpisode", "reader");
 let commentsHandler = new CommentsHandler("#addCommentDiv", "#commentsList", "reader");
 let usersHandler = new UsersHandler("reader", "#welcomeMessage", "#loginDiv");
 
 usersHandler.displayWelcomeMessage();
+
 //display of the upcoming episode in the aside
 episodesHandler.getUpcomingEpisode();
+
 //display of the published episodes list in the aside
 episodesHandler.getPublishedEpisodes();
+
 //display of the latest episode in the article, with its comment section
 episodesHandler.getLastPublishedEpisode();
 

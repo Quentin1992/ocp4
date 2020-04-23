@@ -94,11 +94,11 @@ class EpisodesManager extends Database{
     }
 
 
-    public function getUpcomingEpisodes(){
+    public function getUpcomingEpisodes($numberOfEpisodes){
 
         $upcomingEpisodes = [];
 
-        $sql = 'SELECT * FROM episodes WHERE episode_publication_date > now() ORDER BY episode_publication_date';
+        $sql = 'SELECT * FROM episodes WHERE episode_publication_date > now() ORDER BY episode_publication_date DESC LIMIT ' . $numberOfEpisodes;
         $query = $this->db->query($sql);
 
         while ($data = $query->fetch(PDO::FETCH_ASSOC)){

@@ -21,6 +21,7 @@ if (isset($_POST['action'])) {
 
             break;
 
+
         //READ COMMENT
 
         case 'getEpisodeComments':
@@ -30,13 +31,10 @@ if (isset($_POST['action'])) {
 
             foreach ($comments as $key => $comment) {
 
-                $date = date_create($comment->creationDate());
-                $creationDate = 'le ' . date_format($date, 'd/m/Y') . ' à ' . date_format($date, 'H\hi');
-
                 $commentsData[] = $commentData = array(
                     'id' => $comment->id(),
                     'author' => $comment->author(),
-                    'creationDate' => $creationDate,
+                    'creationDate' => $comment->creationDate(),
                     'content' => $comment->content(),
                     'episodeId' => $comment->episodeId()
                 );
@@ -45,6 +43,7 @@ if (isset($_POST['action'])) {
             echo json_encode($commentsData);
 
             break;
+
 
         //UPDATE COMMENT
 
@@ -55,6 +54,7 @@ if (isset($_POST['action'])) {
         case 'validateComment':
             $commentsController->validateComment($_POST['commentId']);
             break;
+
 
         //DELETE COMMENT
 
@@ -69,6 +69,7 @@ if (isset($_POST['action'])) {
         case 'addEpisode':
             $episodesController->addEpisode(null, $_POST['number'], null, $_POST['publicationDate'], $_POST['title'], $_POST['content']);
             break;
+
 
         //READ EPISODE
 
@@ -86,6 +87,7 @@ if (isset($_POST['action'])) {
             );
             echo json_encode($episodeData);
             break;
+
 
         case 'getUpcomingEpisode':
 
@@ -105,6 +107,29 @@ if (isset($_POST['action'])) {
             echo json_encode($upcomingEpisodeData);
             break;
 
+
+        case 'getUpcomingEpisodes':
+
+            $upcomingEpisodes = $episodesController->upcomingEpisodes($_POST['numberOfEpisodes']);
+
+            $upcomingEpisodesData = [];
+
+            foreach ($upcomingEpisodes as $key => $episode) {
+
+                $upcomingEpisodesData[] = array(
+                    'id' => $episode->id(),
+                    'number' => $episode->number(),
+                    'author' => $episode->author(),
+                    'publicationDate' => $episode->publicationDate(),
+                    'title' => $episode->title(),
+                    'content' => $episode->content(),
+                );
+
+            }
+            echo json_encode($upcomingEpisodesData);
+            break;
+
+
         case 'getPublishedEpisodes':
 
             $publishedEpisodes = $episodesController->publishedEpisodes(null);
@@ -113,14 +138,11 @@ if (isset($_POST['action'])) {
 
             foreach ($publishedEpisodes as $key => $episode) {
 
-                $date = date_create($episode->publicationDate());
-                $publicationDate = 'le ' . date_format($date, 'd/m/Y') . ' à ' . date_format($date, 'H\hi');
-
                 $publishedEpisodesData[] = array(
                     'id' => $episode->id(),
                     'number' => $episode->number(),
                     'author' => $episode->author(),
-                    'publicationDate' => $publicationDate,
+                    'publicationDate' => $episode->publicationDate(),
                     'title' => $episode->title(),
                     'content' => $episode->content(),
                 );
@@ -128,6 +150,7 @@ if (isset($_POST['action'])) {
             }
             echo json_encode($publishedEpisodesData);
             break;
+
 
         case 'getLastPublishedEpisode':
 
@@ -147,11 +170,13 @@ if (isset($_POST['action'])) {
             echo json_encode($lastPublishedEpisodeData);
             break;
 
+
         //UPDATE EPISODE
 
         case 'updateEpisode':
             $episodesController->updateEpisode($_POST['id'], $_POST['number'], null, $_POST['publicationDate'], $_POST['title'], $_POST['content']);
             break;
+
 
         //DELETE EPISODE
 
@@ -167,6 +192,7 @@ if (isset($_POST['action'])) {
             $usersController->addUser(null, $_POST['pseudo'], null, $_POST['password'], $_POST['email'], null);
             break;
 
+
         //READ USERS
 
         case 'connectUser':
@@ -180,6 +206,7 @@ if (isset($_POST['action'])) {
             }
 
             break;
+
 
         case 'getUsersList' :
 
@@ -205,16 +232,19 @@ if (isset($_POST['action'])) {
 
             break;
 
+
         //UPDATE USERS
 
         case 'updateUser' :
             $usersController->updateUser($_POST['id'], $_POST['pseudo'], $_POST['status'], $_POST['password'], $_POST['email']);
             break;
 
+
         //DELETE USERS
 
         case 'deleteUser' :
             $usersController->deleteUser($_POST['id']);
+
 
         default:
             // code...
