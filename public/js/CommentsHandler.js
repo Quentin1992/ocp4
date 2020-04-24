@@ -1,9 +1,11 @@
 class CommentsHandler {
 
-    constructor(addLocation, listLocation, side) {
+    constructor(addLocation, episodeList, newList, reportedList, side) {
         //comments display locations :
         this.addLocation = addLocation;
-        this.listLocation = listLocation;
+        this.episodeList = episodeList;
+        this.newList = newList;
+        this.reportedList = reportedList;
         //reader or author ?
         this.side = side;
     }
@@ -26,6 +28,36 @@ class CommentsHandler {
     };
 
 
+    displayAddCommentButton(episodeId){
+
+        $(commentsHandler.addLocation).html("");
+
+        let addCommentButton = $("<button>");
+        addCommentButton.html("Ajouter un commentaire");
+        addCommentButton.on("click", function(e){
+
+            $(commentsHandler.addLocation).html("");
+            if((usersHandler.pseudo != undefined) && (usersHandler.pseudo != "")){
+
+                commentsHandler.displayAddCommentForm(episodeId);
+                e.target.remove();
+
+            }
+            else{
+
+                commentsHandler.displayAddCommentButton(episodeId);
+                $("<p>", {
+                    html: "Vous devez être connecté pour publier un commentaire."
+                }).appendTo($(commentsHandler.addLocation));
+
+            }
+
+        });
+        $(commentsHandler.addLocation).append(addCommentButton);
+
+    }
+
+
     displayAddCommentForm(episodeId){
 
         let addCommentDiv = $("<div>");
@@ -36,14 +68,14 @@ class CommentsHandler {
             id: "addCommentForm"
         });
 
-        $("<label>", {
-            for: "pseudo",
-            html: "Pseudo : "
-        }).appendTo(addCommentForm);
-        $("<input>", {
-            type: "text",
-            name: "pseudo"
-        }).appendTo(addCommentForm);
+        // $("<label>", {
+        //     for: "pseudo",
+        //     html: "Pseudo : "
+        // }).appendTo(addCommentForm);
+        // $("<input>", {
+        //     type: "text",
+        //     name: "pseudo"
+        // }).appendTo(addCommentForm);
 
         $("<label>", {
             for: "content",
@@ -59,7 +91,7 @@ class CommentsHandler {
 
         addCommentForm.on("submit", function(e){
 
-            commentsHandler.addComment(e.target.content.value, e.target.pseudo.value, episodeId);
+            commentsHandler.addComment(e.target.content.value, usersHandler.pseudo, episodeId);
 
             e.target.parentElement.innerHTML = "";
 
@@ -76,48 +108,85 @@ class CommentsHandler {
     }
 
 
-    displayAddCommentButton(episodeId){
+    //READ
 
-        $(commentsHandler.addLocation).html("");
+    getComments(category){
 
-        let addCommentButton = $("<button>");
-        addCommentButton.html("Ajouter un commentaire");
-        addCommentButton.on("click", function(e){
+        let query = new FormData();
+        query.append("action", "getComments");
+        query.append("category", category);
 
-            $(commentsHandler.addLocation).html("");
+        ajaxPost("http://localhost/ocp4/index.php", query, function(response){
 
-            if(commentsHandler.pseudo != undefined){
+            let comments = JSON.parse(response);
 
-                commentsHandler.displayAddCommentForm(episodeId);
-                e.target.remove();
+            if(category == "new")
+                $(commentsHandler.newList)[0].innerHTML = "";
+
+            else if(category == "reported")
+                $(commentsHandler.reportedList)[0].innerHTML = "";
+
+            comments.forEach(function(commentData){
+
+                commentsHandler.displayComment(commentData, category);
+
+            });
+
+            // if(numberOfComments < 100)
+            //     commentsHandler.displaySeeAllCommentsButton(episodeId);
+
+        });
+    }
+
+
+    getEpisodeComments(episodeId, numberOfComments){
+
+        $(commentsHandler.episodeList)[0].innerHTML = "";
+
+        let query = new FormData();
+        query.append("action", "getEpisodeComments");
+        query.append("episodeId", episodeId);
+        query.append("numberOfComments", numberOfComments);
+
+        ajaxPost("http://localhost/ocp4/index.php", query, function(response){
+
+            let episodeComments = JSON.parse(response);
+
+            if(episodeComments.length == 0){
+
+                $(commentsHandler.episodeList).html("Aucun commentaire.");
 
             }
             else{
 
-                commentsHandler.displayAddCommentButton(episodeId);
-                $("<p>", {
-                    html: "Vous devez être connecté pour publier un commentaire."
-                }).appendTo($(commentsHandler.addLocation));
+                episodeComments.forEach(function(commentData){
 
+                    commentsHandler.displayComment(commentData, "episode");
 
+                    commentsHandler.countEpisodeComments(episodeId, function(numberOfEpisodeComments){
+
+                        if(numberOfEpisodeComments > episodeComments.length){
+
+                            commentsHandler.displaySeeAllCommentsButton(episodeId);
+
+                        }
+                    });
+                });
             }
-
         });
-        $(commentsHandler.addLocation).append(addCommentButton);
-
     }
 
 
-    //READ
-
-    displayComment(commentData){
+    displayComment(commentData, category){
 
         let commentLi = document.createElement("li");
 
         if(commentData != undefined){
 
+            let creationDate = converter.datetimeToTextConverter(commentData.creationDate);
+
             let titleDiv = document.createElement("div");
-            titleDiv.innerHTML = commentData.author + ", " + commentData.creationDate;
+            titleDiv.innerHTML = commentData.author + ", " + creationDate;
             commentLi.append(titleDiv);
 
             let contentP = document.createElement("p");
@@ -145,7 +214,23 @@ class CommentsHandler {
                 commentLi.append(reportButton);
 
             }
+            else if(commentsHandler.side == "author" && usersHandler.status == "author"){
 
+                let validateButton = document.createElement("button");
+                validateButton.innerHTML = "Valider";
+                validateButton.addEventListener("click", function(e){
+
+                    if(confirm("Valider ce commentaire ?")){
+
+                        commentsHandler.validateComment(commentData.id);
+
+                        let confirmP = document.createElement("p");
+                        confirmP.innerHTML = "Commentaire vérifié.";
+                        e.target.replaceWith(confirmP);
+
+                    }
+                });
+            }
         }
         else {
 
@@ -155,47 +240,25 @@ class CommentsHandler {
 
         }
 
-        $(this.listLocation).prepend(commentLi);
+        let location;
+        switch (category) {
+            case "new":
+                location = commentsHandler.newList;
+                break;
+            case "reported":
+                location = commentsHandler.reportedList;
+                break;
+            case "episode":
+                location = commentsHandler.episodeList;
+                break;
+            default:
+                break;
+
+        }
+
+        $(location).prepend(commentLi);
 
     };
-
-
-    getEpisodeComments(episodeId, numberOfComments){
-
-        $(commentsHandler.listLocation)[0].innerHTML = "";
-
-        let query = new FormData();
-        query.append("action", "getEpisodeComments");
-        query.append("episodeId", episodeId);
-        query.append("numberOfComments", numberOfComments);
-
-        ajaxPost("http://localhost/ocp4/index.php", query, function(response){
-
-            let episodeComments = JSON.parse(response);
-
-            if(episodeComments.length == 0){
-
-                $(commentsHandler.listLocation).html("Aucun commentaire.");
-
-            }
-            else{
-
-                episodeComments.forEach(function(commentData){
-
-                    commentsHandler.displayComment(commentData);
-
-                    commentsHandler.countEpisodeComments(episodeId, function(numberOfEpisodeComments){
-
-                        if(numberOfEpisodeComments > episodeComments.length){
-
-                            commentsHandler.displaySeeAllCommentsButton(episodeId);
-
-                        }
-                    });
-                });
-            }
-        });
-    }
 
 
     countEpisodeComments(episodeId, callback){
@@ -209,7 +272,6 @@ class CommentsHandler {
             callback(numberOfEpisodeComments);
 
         });
-
     }
 
 
@@ -224,34 +286,7 @@ class CommentsHandler {
 
         });
 
-        $(commentsHandler.listLocation).append(seeAllCommentsButton);
-
-    }
-
-
-    getComments(category){
-
-        let query = new FormData();
-        query.append("action", "getComments");
-        query.append("category", "new");
-        query.append("numberOfComments", numberOfComments);
-
-        ajaxPost("http://localhost/ocp4/index.php", query, function(response){
-
-            let episodeComments = JSON.parse(response);
-
-            $(commentsHandler.listLocation)[0].innerHTML = "";
-
-            episodeComments.forEach(function(commentData){
-
-                commentsHandler.displayComment(commentData);
-
-            });
-
-            if(numberOfComments < 100)
-                commentsHandler.displaySeeAllCommentsButton(episodeId);
-
-        });
+        $(commentsHandler.episodeList).append(seeAllCommentsButton);
 
     }
 

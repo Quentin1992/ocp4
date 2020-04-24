@@ -1,6 +1,7 @@
 class UsersHandler {
 
     constructor(side, welcomeLocation, loginLocation, listLocation) {
+
         this.side = side;
         //user informations :
         this.pseudo;
@@ -8,10 +9,13 @@ class UsersHandler {
         //display locations :
         this.welcomeLocation = welcomeLocation;
         this.loginLocation = loginLocation;
+
     }
+
 
     //CREATE
 
+    //display a button that display addUser form on click
     displayAddUserButton(){
 
         let addUserButton = document.createElement("button");
@@ -28,6 +32,7 @@ class UsersHandler {
     }
 
 
+    //displays a form with user data inputs, that triggers addUser on submit
     displayAddUserForm(){
 
         var addUserDiv = $("<div>", {
@@ -112,14 +117,6 @@ class UsersHandler {
 
                 usersHandler.addUser(e.target.pseudo.value, null, e.target.password.value, e.target.email.value);
 
-                if(usersHandler.side == "reader"){
-
-                    //send email with link to confirm
-                    //confirmation on the same page with ask for click on the email link
-                    //link to the next page
-
-                }
-
             }
 
             e.preventDefault();
@@ -144,6 +141,7 @@ class UsersHandler {
     }
 
 
+    //sends user data in a new entry in database
     addUser(pseudo, status, password, email){
 
         let query = new FormData();
@@ -162,24 +160,49 @@ class UsersHandler {
 
             else if(usersHandler.side == "reader"){
 
+                //usersHandler.sendConfirmationEmail(pseudo, password, email);
+
                 let confirmationDiv = $("<div>");
+
                 $("<p>", {
-                    html: "Le profil de " + pseudo + " a bien été créé."
+                    html: "Félicitations " + pseudo + ", votre profil a bien été créé."
                 }).appendTo(confirmationDiv);
-                $("<a>", {
-                    html: "Retourner sur le blog.",
-                    href: "http://localhost/ocp4/.php"
+                // $("<p>", {
+                //     html: "Un message a été envoyé à votre adresse mail. Merci de confirmer celle-ci en cliquant sur le lien qui s'y trouve."
+                // }).appendTo(confirmationDiv);
+                $("<p>", {
+                    html: "Vous pouvez dès à présent vous connecter."
                 }).appendTo(confirmationDiv);
+
+                $(usersHandler.welcomeLocation).append(confirmationDiv);
+
+                usersHandler.displayConnectButton();
 
             }
-
         });
-
     }
+
+
+    // sendConfirmationEmail(pseudo, password, email){
+    //
+    //     let query = new FormData();
+    //     query.append("action", "sendConfirmationEmail");
+    //     query.append("pseudo", pseudo);
+    //     query.append("password", password);
+    //     query.append("email", email);
+    //
+    //     ajaxPost("http://localhost/ocp4/index.php", query, function(response){
+    //
+    //         console.log(response);
+    //
+    //     });
+    //
+    // }
 
 
     //READ
 
+    //a list of all users
     getUsersList(where){
 
         let query = new FormData();
@@ -198,6 +221,7 @@ class UsersHandler {
     }
 
 
+    //user data in a list element
     displayUser(user, where){
 
         let li = document.createElement("li");
@@ -235,18 +259,20 @@ class UsersHandler {
     }
 
 
+    //a welcome sentence, with connect and adduser buttons
     displayWelcomeMessage(){
 
-        //$(usersHandler.welcomeLocation).html("");
+        $(usersHandler.welcomeLocation).html("");
 
         let welcomeP = document.createElement("p");
         welcomeP.innerHTML = "Bonjour ";
 
-        if(usersHandler.pseudo != undefined){
+        if((usersHandler.status == "reader") && (usersHandler.pseudo != undefined)){
 
             welcomeP.innerHTML = welcomeP.innerHTML + usersHandler.pseudo + ", ravis de vous revoir.";
             $(usersHandler.welcomeLocation).append(welcomeP);
-            //display logout button
+
+            usersHandler.displayDisconnectButton();
 
         }
         else {
@@ -254,14 +280,50 @@ class UsersHandler {
             welcomeP.innerHTML = welcomeP.innerHTML + "cher lecteur, bienvenue.";
             $(usersHandler.welcomeLocation).append(welcomeP);
 
-        }
+            usersHandler.displayConnectButton();
+            usersHandler.displayAddUserButton();
 
-        usersHandler.displayConnectButton();
-        usersHandler.displayAddUserButton();
+        }
 
     }
 
 
+    displayDisconnectButton(){
+
+        let logoutButton = $("<button>").html("Se déconnecter");
+
+        logoutButton.on("click", function(){
+
+            if(confirm("Etes-vous sûr de vouloir vous déconnecter ?")){
+
+                usersHandler.disconnectUser();
+
+            }
+        });
+
+        $(usersHandler.welcomeLocation).append(logoutButton);
+
+    }
+
+    disconnectUser(){
+
+        let query = new FormData();
+        query.append("action", "disconnectUser");
+
+        ajaxPost("http://localhost/ocp4/index.php", query, function(response){
+
+            usersHandler.pseudo = "";
+            usersHandler.status = "";
+
+            usersHandler.displayWelcomeMessage();
+            episodesHandler.getLastPublishedEpisode();
+
+        });
+
+    }
+
+
+    //a button that triggers connectUser form on click
     displayConnectButton(){
 
         let connectButton = document.createElement("button");
@@ -277,6 +339,7 @@ class UsersHandler {
     }
 
 
+    //a form that triggers connectUser function on submit
     displayConnectForm(){
 
         let connectDiv = $("<div>");
@@ -341,16 +404,27 @@ class UsersHandler {
         query.append("pseudo", pseudo);
         query.append("password", password);
 
-        ajaxPost("http://localhost/ocp4/index.php", query, function(status){
+        ajaxPost("http://localhost/ocp4/index.php", query, function(response){
 
-            if(status == "reader"){
+            if(response == "reader"){
 
-                window.location.pathname = "ocp4/view/readerView.php";
+                usersHandler.pseudo = pseudo;
+                usersHandler.status = response;
+
+                usersHandler.displayWelcomeMessage();
+
+                commentsHandler.displayAddCommentButton();
+
+                episodesHandler.getLastPublishedEpisode();
 
             }
-            else if (status == "writer")
+            else if (response == "writer")
                 window.location.pathname = "ocp4/view/authorView.php";
-            else $("#loginForm p").html(status);
+            else{
+
+                alert(response);
+
+            }
 
         });
     }
@@ -358,6 +432,7 @@ class UsersHandler {
 
     //UDPATE
 
+    //a form that triggers updateUser event
     displayUdapteUserForm(liElement, user){
 
         $(".updateUserDiv").remove();
@@ -417,6 +492,7 @@ class UsersHandler {
     }
 
 
+    //updates a user in database
     updateUser($id, $pseudo, $status, $password, $email){
 
         let query = new FormData();

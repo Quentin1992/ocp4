@@ -4,16 +4,8 @@
     <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 
-<?php
-require_once('../controller/EpisodesController.php');
-require_once('../controller/CommentsController.php');
 
-$episodesController = new EpisodesController;
-$commentsController = new CommentsController;
-?>
-
-<!-- listing published and upcoming episodes -->
-<div id=episodes>
+<div id="episodes">
 
     <h2>Episodes</h2>
 
@@ -42,8 +34,6 @@ $commentsController = new CommentsController;
         <h3>Travailler sur un épisode</h3>
 
         <div id="workOnEpisode">
-
-            <!-- <button id="newEpisodeButton">Créer un nouvel épisode</button> -->
 
         </div>
 

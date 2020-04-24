@@ -28,7 +28,7 @@ class CommentsController extends CommentsManager{
     }
 
 
-    public function authorCommentsList($category){
+    public function commentsList($category){
 
         if($category == "new")
             $where = "comment_checked = false";

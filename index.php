@@ -1,10 +1,26 @@
 <?php
+session_start();
+
 require_once('controller/CommentsController.php');
 $commentsController = new CommentsController;
 require_once('controller/EpisodesController.php');
 $episodesController = new EpisodesController;
 require_once('controller/UsersController.php');
 $usersController = new UsersController;
+
+
+if(isset($_SESSION['pseudo']) && isset($_SESSION['status'])){
+
+    setCookie("pseudo", $_SESSION['pseudo']);
+    setCookie("status", $_SESSION['status']);
+
+}
+else {
+
+    setCookie("pseudo", "");
+    setCookie("status", "");
+
+}
 
 
 //actions handler
@@ -27,6 +43,27 @@ if (isset($_POST['action'])) {
         case 'getEpisodeComments':
 
             $comments = $commentsController->episodeCommentsList($_POST['episodeId'], $_POST['numberOfComments']);
+            $commentsData = [];
+
+            foreach ($comments as $key => $comment) {
+
+                $commentsData[] = $commentData = array(
+                    'id' => $comment->id(),
+                    'author' => $comment->author(),
+                    'creationDate' => $comment->creationDate(),
+                    'content' => $comment->content(),
+                    'episodeId' => $comment->episodeId()
+                );
+
+            }
+            echo json_encode($commentsData);
+
+            break;
+
+
+        case 'getComments':
+
+            $comments = $commentsController->commentsList($_POST['category']);
             $commentsData = [];
 
             foreach ($comments as $key => $comment) {
@@ -192,21 +229,41 @@ if (isset($_POST['action'])) {
             $usersController->addUser(null, $_POST['pseudo'], null, $_POST['password'], $_POST['email'], null);
             break;
 
+        // case 'sendConfirmationEmail':
+        //
+        //     // The message
+        //     $message = 'Bonjour ' . $_POST['pseudo'] . ', meric d\'avoir créé un compte sur le blog de "Billet simple pour l\'Alaska".\r\n
+        //                 Pour rappel, votre mot de passe est ' . $_POST['password'] . '.\r\n
+        //                 Bienvenue dans l\'aventure !';
+        //
+        //     // In case any of our lines are larger than 70 characters, we should use wordwrap()
+        //     $message = wordwrap($message, 70, "\r\n");
+        //
+        //     // Send
+        //     mail($_POST['email'], 'En route pour l\'Alaska', $message);
+        //
+        //     break;
+
 
         //READ USERS
 
+        // case: 'readSession':
+        //     echo $_SESSION[$_POST['variableName']];
+        //     break;
+
         case 'connectUser':
+
             $status = $usersController->connectUser($_POST['pseudo'], $_POST['password']);
 
-            if($status == "reader"){
-                session_start();
+            if($status == ("reader" || "writer")){
                 $_SESSION['pseudo'] = $_POST['pseudo'];
                 $_SESSION['status'] = $status;
                 echo $status;
             }
-
+            else{
+                echo $status;
+            }
             break;
-
 
         case 'getUsersList' :
 
@@ -229,8 +286,11 @@ if (isset($_POST['action'])) {
 
             }
             echo json_encode($usersData);
-
             break;
+
+            case 'disconnectUser':
+                session_unset();
+                break;
 
 
         //UPDATE USERS
@@ -244,6 +304,7 @@ if (isset($_POST['action'])) {
 
         case 'deleteUser' :
             $usersController->deleteUser($_POST['id']);
+            break;
 
 
         default:
@@ -253,6 +314,8 @@ if (isset($_POST['action'])) {
 
 }
 else header("Location: http://localhost/ocp4/view/readerView.php");
+
+
 
 // if(isset($_SESSION['login']) && isset($_SESSION['password'])){
 //

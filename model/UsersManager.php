@@ -61,9 +61,7 @@ class UsersManager extends Database{
 
         $data = $query->fetch(PDO::FETCH_ASSOC);
 
-        $user = new User($data['user_id'], $data['user_pseudo'], $data['user_status'], $data['user_password'], $data['user_email'], $data['user_registration_date']);
-
-        return $user;
+        return $data;
 
     }
 

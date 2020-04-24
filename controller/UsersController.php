@@ -23,13 +23,24 @@ class UsersController extends UsersManager{
 
     public function connectUser($pseudo, $password){
 
-        $user = $this->getUser($pseudo);
+        $userData = $this->getUser($pseudo);
 
-        if(!password_verify($password, $user->password())){
+        //if pseudo exist in database
+        if($userData != false){
 
-            return "Cette association mot de passe et utilisateur est incorrecte.";
+            $user = new User($userData['user_id'], $userData['user_pseudo'], $userData['user_status'], $userData['user_password'], $userData['user_email'], $userData['user_registration_date']);
 
         }
+        //if pseudo doesn't exist in database
+        else return "Mot de passe ou pseudo incorrect.";
+
+        //if pseudo exist but password doesn't match
+        if(!password_verify($password, $user->password())){
+
+            return "Mot de passe ou pseudo incorrect.";
+
+        }
+        //if pseudo exist and password matches
         else{
 
             return $user->status();
