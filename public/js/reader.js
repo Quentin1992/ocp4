@@ -1,28 +1,21 @@
-function getCookie(cname) {
-  var name = cname + "=";
-  var decodedCookie = decodeURIComponent(document.cookie);
-  var ca = decodedCookie.split(';');
-  for(var i = 0; i <ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-}
-
 let side = "reader";
 
 let converter = new Converter();
 let episodesHandler = new EpisodesHandler("#upcomingEpisode p", "#publishedEpisodes ol", "#currentEpisode", side);
 let commentsHandler = new CommentsHandler("#addCommentDiv", "#commentsList", null, null, side);
-let usersHandler = new UsersHandler(side, "#welcomeMessage", "#loginDiv");
+let usersHandler = new UsersHandler(side, "#welcomeMessage", null, null, "#welcomeMessage");
 
-usersHandler.pseudo = getCookie("pseudo");
-usersHandler.status = getCookie("status");
+let query = new FormData;
+query.append("action", "getUserInSession");
+
+ajaxPost("http://localhost/ocp4/index.php", query, function(response){
+
+    let sessionUser = JSON.parse(response);
+
+    usersHandler.pseudo == sessionUser.pseudo;
+    usersHandler.status == sessionUser.status;
+
+});
 
 usersHandler.displayWelcomeMessage();
 

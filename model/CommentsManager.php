@@ -39,7 +39,7 @@ class CommentsManager extends Database{
 
         $comments = [];
 
-        $sql = 'SELECT * FROM comments WHERE episode_id = ' . $episodeId . ' ORDER BY comment_creation_date ASC LIMIT ' . $numberOfComments;
+        $sql = 'SELECT * FROM comments WHERE episode_id = ' . $episodeId . ' ORDER BY comment_creation_date DESC LIMIT ' . $numberOfComments;
         $query = $this->db->query($sql);
 
         while ($data = $query->fetch(PDO::FETCH_ASSOC)){
@@ -87,6 +87,19 @@ class CommentsManager extends Database{
 
 
     //UPDATE
+
+    public function sendCommentUpdate($commentId, $content){
+
+        $sql = 'UPDATE comments SET comment_content = :content WHERE comment_id = :id';
+        $query = $this->db->prepare($sql);
+
+        $query->bindValue(':content', $content, PDO::PARAM_STR);
+        $query->bindValue(':id', $commentId, PDO::PARAM_INT);
+
+        $query->execute();
+
+    }
+
 
     public function sendCommentReport($commentId){
 

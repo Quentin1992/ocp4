@@ -10,16 +10,38 @@ class UsersController extends UsersManager{
 
     //CREATE
 
-    public function addUser($id, $pseudo, $status, $password, $email, $registrationDate){
+    public function addUser($id, $pseudo, $status, $password, $email, $registrationDate, $isChecked, $getNewsletter){
 
         $password = password_hash($password, PASSWORD_DEFAULT);
-        $user = new User($id, $pseudo, $status, $password, $email, $registrationDate);
+        $user = new User($id, $pseudo, $status, $password, $email, $registrationDate, null, $getNewsletter);
         $this->sendNewUser($user);
 
     }
 
 
     //READ
+
+    public function isPseudoAvailable($pseudo){
+
+        if($this->checkPseudoAvailability($pseudo) == null)
+            $pseudoAvailability = true;
+        else $pseudoAvailability = false;
+
+        return $pseudoAvailability;
+
+    }
+
+
+    public function isEmailAvailable($email){
+
+        if($this->checkEmailAvailability($email) == null)
+            $emailAvailability = true;
+        else $emailAvailability = false;
+
+        return $emailAvailability;
+
+    }
+
 
     public function connectUser($pseudo, $password){
 
@@ -28,7 +50,7 @@ class UsersController extends UsersManager{
         //if pseudo exist in database
         if($userData != false){
 
-            $user = new User($userData['user_id'], $userData['user_pseudo'], $userData['user_status'], $userData['user_password'], $userData['user_email'], $userData['user_registration_date']);
+            $user = new User($userData['user_id'], $userData['user_pseudo'], $userData['user_status'], $userData['user_password'], $userData['user_email'], $userData['user_registration_date'], $userData['user_is_checked'], $userData['user_get_newsletter']);
 
         }
         //if pseudo doesn't exist in database
@@ -49,20 +71,28 @@ class UsersController extends UsersManager{
     }
 
 
-    public function usersList(){
+    public function usersList($category){
 
-        return $this->getUsersList();
+        return $this->getUsersList($category);
 
     }
 
 
     //UPDATE
 
-    public function updateUser($id, $pseudo, $status, $password, $email){
-
-        $password = password_hash($password, PASSWORD_DEFAULT);
-        $user = new User($id, $pseudo, $status, $password, $email, null);
+    public function updateUser($id, $pseudo, $status, $email, $getNewsletter){
+var_dump($getNewsletter);
+        //$password = password_hash($password, PASSWORD_DEFAULT);
+        $user = new User($id, $pseudo, $status, null, $email, null, null, $getNewsletter);
         $this->sendUserUpdate($user);
+
+    }
+
+
+    public function validateUser($id){
+
+        $user = new User($id, null, null, null, null, null, null, null);
+        $this->sendUserValidation($user);
 
     }
 

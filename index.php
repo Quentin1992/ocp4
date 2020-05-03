@@ -9,20 +9,6 @@ require_once('controller/UsersController.php');
 $usersController = new UsersController;
 
 
-if(isset($_SESSION['pseudo']) && isset($_SESSION['status'])){
-
-    setCookie("pseudo", $_SESSION['pseudo']);
-    setCookie("status", $_SESSION['status']);
-
-}
-else {
-
-    setCookie("pseudo", "");
-    setCookie("status", "");
-
-}
-
-
 //actions handler
 if (isset($_POST['action'])) {
 
@@ -82,11 +68,23 @@ if (isset($_POST['action'])) {
             break;
 
 
+        case 'countEpisodeComments':
+            $numberOfEpisodeComments = $commentsController->numberOfEpisodeComments($_POST['episodeId']);
+            echo $numberOfEpisodeComments;
+            break;
+
+
         //UPDATE COMMENT
+
+        case 'updateComment':
+            $commentsController->updateComment($_POST['id'], $_POST['content']);
+            break;
+
 
         case 'reportComment':
             $commentsController->reportComment($_POST['commentId']);
             break;
+
 
         case 'validateComment':
             $commentsController->validateComment($_POST['commentId']);
@@ -123,25 +121,6 @@ if (isset($_POST['action'])) {
                 'content' => $episode->content()
             );
             echo json_encode($episodeData);
-            break;
-
-
-        case 'getUpcomingEpisode':
-
-            $upcomingEpisode = $episodesController->upcomingEpisode();
-
-            $date = date_create($upcomingEpisode->publicationDate());
-            $publicationDate = 'le ' . date_format($date, 'd/m/Y') . ' à ' . date_format($date, 'H\hi') . '.';
-
-            $upcomingEpisodeData = array(
-                'id' => $upcomingEpisode->id(),
-                'number' => $upcomingEpisode->number(),
-                'author' => $upcomingEpisode->author(),
-                'publicationDate' => $publicationDate,
-                'title' => $upcomingEpisode->title(),
-                'content' => $upcomingEpisode->content()
-            );
-            echo json_encode($upcomingEpisodeData);
             break;
 
 
@@ -226,7 +205,7 @@ if (isset($_POST['action'])) {
         //CREATE USERS
 
         case 'addUser':
-            $usersController->addUser(null, $_POST['pseudo'], null, $_POST['password'], $_POST['email'], null);
+            $usersController->addUser(null, $_POST['pseudo'], null, $_POST['password'], $_POST['email'], null, null, $_POST['getNewsletter']);
             break;
 
         // case 'sendConfirmationEmail':
@@ -247,33 +226,41 @@ if (isset($_POST['action'])) {
 
         //READ USERS
 
-        // case: 'readSession':
-        //     echo $_SESSION[$_POST['variableName']];
-        //     break;
+        case 'getUserFromPseudo' :
 
-        case 'connectUser':
+            $user = $usersController->getUserFromPseudo();
 
-            $status = $usersController->connectUser($_POST['pseudo'], $_POST['password']);
-
-            if($status == ("reader" || "writer")){
-                $_SESSION['pseudo'] = $_POST['pseudo'];
-                $_SESSION['status'] = $status;
-                echo $status;
-            }
-            else{
-                echo $status;
-            }
+            $userData = array(
+                'id' => $lastPublishedEpisode[0]->id(),
+                'number' => $lastPublishedEpisode[0]->number(),
+                'author' => $lastPublishedEpisode[0]->author(),
+                'publicationDate' => $publicationDate,
+                'title' => $lastPublishedEpisode[0]->title(),
+                'content' => $lastPublishedEpisode[0]->content()
+            );
+            echo json_encode($lastPublishedEpisodeData);
             break;
+
+
+        //return a boolean
+        case 'isPseudoAvailable' :
+            $pseudoAvailability = $usersController->isPseudoAvailable($_POST['pseudo']);
+            echo json_encode($pseudoAvailability);
+        break;
+
+
+        case 'isEmailAvailable' :
+            $emailAvailability = $usersController->isEmailAvailable($_POST['email']);
+            echo json_encode($emailAvailability);
+        break;
+
 
         case 'getUsersList' :
 
-            $users = $usersController->usersList();
+            $users = $usersController->usersList($_POST['category']);
             $usersData = [];
 
             foreach ($users as $key => $user) {
-
-                $date = date_create($user->registrationDate());
-                $registrationDate = 'le ' . date_format($date, 'd/m/Y') . ' à ' . date_format($date, 'H\hi');
 
                 $usersData[] = array(
                     'id' => $user->id(),
@@ -281,22 +268,75 @@ if (isset($_POST['action'])) {
                     'status' => $user->status(),
                     'password' => $user->password(),
                     'email' => $user->email(),
-                    'registrationDate' => $user->registrationDate()
+                    'registrationDate' => $user->registrationDate(),
+                    'isChecked' => $user->isChecked(),
+                    'getNewsletter' => $user->getNewsletter()
                 );
 
             }
             echo json_encode($usersData);
             break;
 
-            case 'disconnectUser':
-                session_unset();
-                break;
+
+        case 'openUserSession':
+
+            $status = $usersController->connectUser($_POST['pseudo'], $_POST['password']);
+
+            if(($status == "reader") || ($status == "writer")){
+
+                $_SESSION['pseudo'] = $_POST['pseudo'];
+                $_SESSION['status'] = $status;
+
+                echo $status;
+
+            }
+            else{
+
+                echo $status;
+
+            }
+            break;
+
+
+        case 'getUserInSession':
+
+            if(isset($_SESSION['pseudo']) && isset($_SESSION['status'])){
+
+                $pseudo = $_SESSION['pseudo'];
+                $status = $_SESSION['status'];
+
+            }
+            else {
+
+                $pseudo = "";
+                $status = "";
+
+            }
+
+            $sessionUser = array(
+                'pseudo' => $pseudo,
+                'status' => $status
+            );
+
+            echo json_encode($sessionUser);
+            break;
+
+
+        case 'closeUserSession':
+            session_unset();
+            break;
 
 
         //UPDATE USERS
 
         case 'updateUser' :
-            $usersController->updateUser($_POST['id'], $_POST['pseudo'], $_POST['status'], $_POST['password'], $_POST['email']);
+
+            $usersController->updateUser($_POST['id'], $_POST['pseudo'], $_POST['status'], $_POST['email'], filter_var($_POST['getNewsletter'], FILTER_VALIDATE_BOOLEAN));
+            break;
+
+
+        case 'validateUser' :
+            $usersController->validateUser($_POST['id']);
             break;
 
 

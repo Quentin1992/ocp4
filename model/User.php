@@ -10,16 +10,21 @@ class User{
     private $password;
     private $email;
     private $registrationDate;
+    private $isChecked;
+    private $getNewsletter;
 
 
-    public function __construct($id, $pseudo, $status, $password, $email, $registrationDate){
+    public function __construct($id, $pseudo, $status, $password, $email, $registrationDate, $isChecked, $getNewsletter){
         $this->hydrate([
             'id' => $id,
             'pseudo' => $pseudo,
             'status' => $status,
             'password' => $password,
             'email' => $email,
-            'registrationDate' => $registrationDate
+            'registrationDate' => $registrationDate,
+            'isChecked' => $isChecked,
+            'getNewsletter' => $getNewsletter
+
         ]);
     }
 
@@ -45,6 +50,8 @@ class User{
     public function password(){ return $this->password; }
     public function email(){ return $this->email; }
     public function registrationDate(){ return $this->registrationDate; }
+    public function isChecked(){ return $this->isChecked; }
+    public function getNewsletter(){ return filter_var($this->getNewsletter, FILTER_VALIDATE_BOOLEAN); }
 
 
     //setters
@@ -78,6 +85,16 @@ class User{
     public function setRegistrationDate($registrationDate){
         if(is_string($registrationDate))
             $this->registrationDate = $registrationDate;
+    }
+
+    public function setIsChecked($isChecked){
+        if($isChecked == (true || false))
+            $this->isChecked = $isChecked;
+    }
+
+    public function setGetNewsletter($getNewsletter){
+        if($getNewsletter == (true || false))
+            $this->getNewsletter = $getNewsletter;
     }
 
 }

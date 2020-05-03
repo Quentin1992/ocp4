@@ -1,6 +1,6 @@
 class UsersHandler {
 
-    constructor(side, welcomeLocation, loginLocation, listLocation) {
+    constructor(side, welcomeLocation, validatedUsersList, newUsersList, addLocation) {
 
         this.side = side;
         //user informations :
@@ -8,7 +8,9 @@ class UsersHandler {
         this.status;
         //display locations :
         this.welcomeLocation = welcomeLocation;
-        this.loginLocation = loginLocation;
+        this.validatedUsersList = validatedUsersList;
+        this.newUsersList = newUsersList;
+        this.addLocation = addLocation;
 
     }
 
@@ -28,7 +30,8 @@ class UsersHandler {
 
         });
 
-        $(usersHandler.welcomeLocation).append(addUserButton);
+        $(usersHandler.addLocation).append(addUserButton);
+
     }
 
 
@@ -39,7 +42,7 @@ class UsersHandler {
             id: "addUserDiv"
         });
 
-        $("<h3>").html("Nouveau profil utilisateur :").appendTo(addUserDiv);
+        $("<h5>").html("Nouveau profil utilisateur :").appendTo(addUserDiv);
 
         let addUserForm = $("<form>", {
             id: "addUserForm",
@@ -51,10 +54,15 @@ class UsersHandler {
             for: "pseudo",
             html: "Pseudo : "
         }).appendTo(addUserForm);
-        $("<input>", {
+        let pseudoInput = $("<input>", {
             type: "text",
-            name: "pseudo"
-        }).appendTo(addUserForm);
+            name: "pseudo",
+            required: true
+        });
+        pseudoInput.on("input", function(e){
+            e.target.value = converter.deleteHtml(e.target.value);
+        });
+        pseudoInput.appendTo(addUserForm);
 
         if(usersHandler.side == "author"){
 
@@ -81,10 +89,29 @@ class UsersHandler {
             for: "password",
             html: "Mot de passe : "
         }).appendTo(addUserForm);
-        $("<input>", {
+        let passwordInput = $("<input>", {
             type: "password",
-            name: "password"
+            name: "password",
+            required: true
+        });
+        passwordInput.on("input", function(e){
+            e.target.value = converter.deleteHtml(e.target.value);
+        });
+        passwordInput.appendTo(addUserForm);
+
+        $("<label>", {
+            for: "confirmPassword",
+            html: "Confirmation du mot de passe : "
         }).appendTo(addUserForm);
+        let confirmPasswordInput = $("<input>", {
+            type: "password",
+            name: "confirmPassword",
+            required: true
+        });
+        confirmPasswordInput.on("input", function(e){
+            e.target.value = converter.deleteHtml(e.target.value);
+        });
+        confirmPasswordInput.appendTo(addUserForm);
 
         $("<label>", {
             for: "email",
@@ -97,11 +124,11 @@ class UsersHandler {
 
         $("<input>", {
             type: "checkbox",
-            name: "newsletter",
-            value: "true"
+            name: "getNewsletter",
+            checked: false
         }).appendTo(addUserForm);
         $("<label>", {
-            for: "newsletter",
+            for: "getNewsletter",
             html: "Etre averti lors de la publication d'un nouvel épisode."
         }).appendTo(addUserForm);
 
@@ -112,12 +139,48 @@ class UsersHandler {
 
         addUserForm.on("submit", function(e){
 
-            let action = confirm("Voulez-vous créer ce profil utilisateur ?");
-            if(action){
+            $(usersHandler.addLocation + " form p").remove();
 
-                usersHandler.addUser(e.target.pseudo.value, null, e.target.password.value, e.target.email.value);
+            usersHandler.isPseudoAvailable(e.target.pseudo.value, function(pseudoAvailability){
 
-            }
+                usersHandler.isEmailAvailable(e.target.email.value, function(emailAvailability){
+
+                    if(pseudoAvailability && emailAvailability && (e.target.password.value == e.target.confirmPassword.value)){
+
+                        if(confirm("Voulez-vous créer ce profil utilisateur ?")){
+
+                            let email;
+                            if(e.target.email.value.length == 0) { email = null; }
+                            else { email = e.target.email.value; }
+                            usersHandler.addUser(e.target.pseudo.value, null, e.target.password.value, email, e.target.getNewsletter.value);
+
+                        }
+
+                    } else {
+
+                        if(!pseudoAvailability){
+
+                            let helper = $("<p>").html("Ce pseudo est déjà pris.");
+                            helper.appendTo(e.target);
+
+                        }
+
+                        if(!emailAvailability){
+
+                            let helper = $("<p>").html("Cet adresse email est déjà prise.");
+                            helper.appendTo(e.target);
+
+                        }
+
+                        if(e.target.password.value != e.target.confirmPassword.value){
+
+                            let helper = $("<p>").html("Le mot de passe doit être identique dans les deux champs.");
+                            helper.appendTo(e.target);
+
+                        }
+                    }
+                });
+            });
 
             e.preventDefault();
 
@@ -129,20 +192,29 @@ class UsersHandler {
         cancelButton.html("Annuler");
         cancelButton.on("click", function(){
 
-            $(usersHandler.welcomeLocation).html("");
-            usersHandler.displayWelcomeMessage();
+            $(usersHandler.addLocation).html("");
 
+            if(usersHandler.side == "reader"){
+
+                usersHandler.displayWelcomeMessage();
+
+            }
+            else if(usersHandler.side == "author"){
+
+                usersHandler.displayAddUserButton();
+
+            }
         });
         addUserDiv.append(cancelButton);
 
-        $(usersHandler.welcomeLocation).html("");
-        $(usersHandler.welcomeLocation).append(addUserDiv);
+        $(usersHandler.addLocation).html("");
+        $(usersHandler.addLocation).append(addUserDiv);
 
     }
 
 
     //sends user data in a new entry in database
-    addUser(pseudo, status, password, email){
+    addUser(pseudo, status, password, email, getNewsletter){
 
         let query = new FormData();
         query.append("action", "addUser");
@@ -150,6 +222,7 @@ class UsersHandler {
         query.append("status", status);
         query.append("password", password);
         query.append("email", email);
+        query.append("getNewsletter", getNewsletter);
 
         ajaxPost("http://localhost/ocp4/index.php", query, function(response){
 
@@ -174,9 +247,9 @@ class UsersHandler {
                     html: "Vous pouvez dès à présent vous connecter."
                 }).appendTo(confirmationDiv);
 
-                $(usersHandler.welcomeLocation).append(confirmationDiv);
-
                 usersHandler.displayConnectButton();
+
+                $(usersHandler.addLocation).append(confirmationDiv);
 
             }
         });
@@ -202,59 +275,162 @@ class UsersHandler {
 
     //READ
 
-    //a list of all users
-    getUsersList(where){
+    getUserFromPseudo(pseudo, calback{
+
+        let query = new FormData();
+        query.append("action", "getUserFromPseudo");
+        query.append("pseudo", pseudo);
+
+        ajaxPost("http://localhost/ocp4/index.php", query, function(response){
+
+            let userData = JSON.parse(response);
+
+            callback();
+
+        });
+
+    }
+
+
+    //a list of all unckecked (new) or checked (validated) users
+    getUsersList(category){
 
         let query = new FormData();
         query.append("action", "getUsersList");
+        query.append("category", category);
 
         ajaxPost("http://localhost/ocp4/index.php", query, function(response){
 
             let users = JSON.parse(response);
 
-            $("#usersList").html("");
+            if(category == "newUsers"){
+
+                $(usersHandler.newUsersList).html("");
+
+            }
+
+            if(category == "validatedUsers"){
+
+                $(usersHandler.validatedUsersList).html("");
+
+            }
 
             users.forEach(function(user){
-                usersHandler.displayUser(user, where);
+
+                usersHandler.displayUser(user, category);
+
             });
         });
     }
 
 
+    isPseudoAvailable(pseudo, callback){
+
+        let query = new FormData();
+        query.append("action", "isPseudoAvailable");
+        query.append("pseudo", pseudo);
+
+        ajaxPost("http://localhost/ocp4/index.php", query, function(response){
+
+            let pseudoAvailability = JSON.parse(response);
+            callback(pseudoAvailability);
+
+        });
+
+    }
+
+
+    isEmailAvailable(email, callback){
+
+        let query = new FormData();
+        query.append("action", "isEmailAvailable");
+        query.append("email", email);
+
+        ajaxPost("http://localhost/ocp4/index.php", query, function(response){
+
+            let emailAvailability = JSON.parse(response);
+            callback(emailAvailability);
+
+        });
+
+    }
+
+
     //user data in a list element
-    displayUser(user, where){
+    displayUser(user, category){
 
         let li = document.createElement("li");
+
+        let getNewsletter = "";
+        if(user.getNewsletter == true){
+
+            getNewsletter = " (abonné à la newsletter)";
+
+        } else if(user.getNewsletter == false){
+
+            getNewsletter = " (non abonné à la newsletter)";
+
+        }
 
         let p = document.createElement("p");
         p.innerHTML = user.pseudo
             + "<br />Statut : " + user.status
-            + "<br />Email : " + user.email
-            + "<br />Date d'inscription : " + user.registrationDate;
+            + "<br />Email : " + user.email + getNewsletter
+            + "<br />Date d'inscription : " + converter.datetimeToText(user.registrationDate);
         li.append(p);
 
+        if(category == "newUsers"){
+
+            let validateUserButton = document.createElement("button");
+            validateUserButton.innerHTML = "Valider";
+            validateUserButton.addEventListener("click", function(e){
+
+                if(confirm("Voulez-vous valider ce profil utilisateur ?")){
+
+                    usersHandler.validateUser(user.id);
+                    usersHandler.getUsersList("newUsers");
+                    usersHandler.getUsersList("validatedUsers");
+
+                }
+
+            });
+            li.append(validateUserButton);
+
+        }
+
         let updateUserButton = document.createElement("button");
-        updateUserButton.class = "updateUserButton";
-        updateUserButton.setAttribute("data-user-id", user.id);
         updateUserButton.innerHTML = "Modifier";
         updateUserButton.addEventListener("click", function(e){
-            usersHandler.displayUdapteUserForm(e.target.parentElement, user);
+
+            usersHandler.displayUdapteUserForm(user);
+
         });
         li.append(updateUserButton);
 
         let deleteUserButton = document.createElement("button");
-        deleteUserButton.class = "deleteUserButton";
-        deleteUserButton.setAttribute("data-user-id", user.id);
         deleteUserButton.innerHTML = "Supprimer";
         deleteUserButton.addEventListener("click", function(e){
 
-            let action = confirm("Voulez-vous supprimer ce profil utilisateur ?");
-            if(action)
+            if(confirm("Voulez-vous supprimer ce profil utilisateur ?")){
+
                 usersHandler.deleteUser(user.id);
+                usersHandler.getUsersList("newUsers");
+                usersHandler.getUsersList("validatedUsers");
+
+            }
         });
         li.append(deleteUserButton);
 
-        $(where).append(li);
+        if(category == "newUsers"){
+
+            $(usersHandler.newUsersList).append(li);
+
+        }
+        else if(category == "validatedUsers"){
+
+            $(usersHandler.validatedUsersList).append(li);
+
+        }
 
     }
 
@@ -262,29 +438,53 @@ class UsersHandler {
     //a welcome sentence, with connect and adduser buttons
     displayWelcomeMessage(){
 
-        $(usersHandler.welcomeLocation).html("");
+        usersHandler.getUserInSession(function(userInSession){
 
-        let welcomeP = document.createElement("p");
-        welcomeP.innerHTML = "Bonjour ";
+            $(usersHandler.welcomeLocation).html("");
 
-        if((usersHandler.status == "reader") && (usersHandler.pseudo != undefined)){
+            let welcomeP = document.createElement("p");
+            welcomeP.innerHTML = "Bonjour ";
 
-            welcomeP.innerHTML = welcomeP.innerHTML + usersHandler.pseudo + ", ravis de vous revoir.";
-            $(usersHandler.welcomeLocation).append(welcomeP);
+            if(userInSession.pseudo != (undefined || "")){
 
-            usersHandler.displayDisconnectButton();
+                getUserFromPseudo(userInSession.pseudo, function(userData){
 
-        }
-        else {
+                    welcomeP.innerHTML = welcomeP.innerHTML + userInSession.pseudo + ", ravi de vous revoir.";
+                    $(usersHandler.welcomeLocation).append(welcomeP);
 
-            welcomeP.innerHTML = welcomeP.innerHTML + "cher lecteur, bienvenue.";
-            $(usersHandler.welcomeLocation).append(welcomeP);
+                    usersHandler.displayDisconnectButton();
 
-            usersHandler.displayConnectButton();
-            usersHandler.displayAddUserButton();
+                    if(userInSession.status == "reader"){
 
-        }
+                        let updateUserButton = $("<button>").html("Modifier mon profil");
+                        updateUserButton.on("click", function(){
+    //here, user missing
+                            usersHandler.displayUdapteUserForm(user);
 
+                        });
+                        $(usersHandler.welcomeLocation).append(updateUserButton);
+
+                    }
+
+                    if(userInSession.status == "writer"){
+
+                        usersHandler.displayDashboardLink();
+
+                    }
+
+                });
+
+            }
+            else {
+
+                welcomeP.innerHTML = welcomeP.innerHTML + "cher lecteur, bienvenue.";
+                $(usersHandler.welcomeLocation).append(welcomeP);
+
+                usersHandler.displayConnectButton();
+                usersHandler.displayAddUserButton();
+
+            }
+        });
     }
 
 
@@ -296,7 +496,7 @@ class UsersHandler {
 
             if(confirm("Etes-vous sûr de vouloir vous déconnecter ?")){
 
-                usersHandler.disconnectUser();
+                usersHandler.closeUserSession();
 
             }
         });
@@ -305,15 +505,20 @@ class UsersHandler {
 
     }
 
-    disconnectUser(){
+
+    displayDashboardLink(){
+
+        $("<a>").html("Gestion du blog").attr("href", "http://localhost/ocp4/view/authorView.php").appendTo(usersHandler.welcomeLocation);
+
+    }
+
+
+    closeUserSession(){
 
         let query = new FormData();
-        query.append("action", "disconnectUser");
+        query.append("action", "closeUserSession");
 
         ajaxPost("http://localhost/ocp4/index.php", query, function(response){
-
-            usersHandler.pseudo = "";
-            usersHandler.status = "";
 
             usersHandler.displayWelcomeMessage();
             episodesHandler.getLastPublishedEpisode();
@@ -354,19 +559,29 @@ class UsersHandler {
             for: "pseudo",
             html: "Pseudo : "
         }).appendTo(connectForm);
-        $("<input>", {
+        let pseudoInput = $("<input>", {
             type: "text",
-            name: "pseudo"
-        }).appendTo(connectForm);
+            name: "pseudo",
+            required: true
+        });
+        pseudoInput.on("input", function(e){
+            e.target.value = converter.deleteHtml(e.target.value);
+        });
+        pseudoInput.appendTo(connectForm);
 
         $("<label>", {
             for: "password",
             html: "Mot de passe : "
         }).appendTo(connectForm);
-        $("<input>", {
+        let passwordInput = $("<input>", {
             type: "password",
-            name: "password"
-        }).appendTo(connectForm);
+            name: "password",
+            required: true
+        });
+        passwordInput.on("input", function(e){
+            e.target.value = converter.deleteHtml(e.target.value);
+        });
+        passwordInput.appendTo(connectForm);
         $("<input>", {
             type: "submit",
             value: "Se connecter"
@@ -374,7 +589,7 @@ class UsersHandler {
 
         connectForm.on("submit", function(e){
 
-            usersHandler.connectUser(e.target.pseudo.value, e.target.password.value);
+            usersHandler.openUserSession(e.target.pseudo.value, e.target.password.value);
 
             e.preventDefault();
         });
@@ -397,19 +612,17 @@ class UsersHandler {
     }
 
 
-    connectUser(pseudo, password){
+    openUserSession(pseudo, password){
 
         var query = new FormData;
-        query.append("action", "connectUser");
+        query.append("action", "openUserSession");
         query.append("pseudo", pseudo);
         query.append("password", password);
 
         ajaxPost("http://localhost/ocp4/index.php", query, function(response){
 
-            if(response == "reader"){
-
-                usersHandler.pseudo = pseudo;
-                usersHandler.status = response;
+            //if we got a status, it means the combination pseudo/password is correct
+            if((response == "reader") || (response == "writer")){
 
                 usersHandler.displayWelcomeMessage();
 
@@ -418,8 +631,6 @@ class UsersHandler {
                 episodesHandler.getLastPublishedEpisode();
 
             }
-            else if (response == "writer")
-                window.location.pathname = "ocp4/view/authorView.php";
             else{
 
                 alert(response);
@@ -430,10 +641,26 @@ class UsersHandler {
     }
 
 
+    getUserInSession(callback){
+
+        let query = new FormData;
+        query.append("action", "getUserInSession");
+
+        ajaxPost("http://localhost/ocp4/index.php", query, function(response){
+
+            let userInSession = JSON.parse(response);
+
+            callback(userInSession);
+
+        });
+
+    }
+
+
     //UDPATE
 
     //a form that triggers updateUser event
-    displayUdapteUserForm(liElement, user){
+    displayUdapteUserForm(user){
 
         $(".updateUserDiv").remove();
 
@@ -441,34 +668,53 @@ class UsersHandler {
             class: "updateUserDiv"
         });
 
-        $("<h3>").html("Mise à jour du profil utilisateur.").appendTo(updateUserDiv);
+        $("<h5>").html('Mise à jour du profil de ' + user.pseudo).appendTo(updateUserDiv);
 
         let updateUserForm = $("<form>", {
             id: "updateUserForm",
-            method: "post",
             action: "#"
         });
 
+        $("<label>", {
+            for: "pseudo",
+            html: "Pseudo :"
+        }).appendTo(updateUserForm);
         $("<input>", {
             type: "text",
             name: "pseudo",
             value: user.pseudo
+        }).appendTo(updateUserForm);
+
+        $("<label>", {
+            for: "status",
+            html: "Statut :"
         }).appendTo(updateUserForm);
         $("<input>", {
             type: "text",
             name: "status",
             value: user.status
         }).appendTo(updateUserForm);
-        $("<input>", {
-            type: "password",
-            name: "password",
-            value: user.password
+
+        $("<label>", {
+            for: "email",
+            html: "Email :"
         }).appendTo(updateUserForm);
         $("<input>", {
             type: "email",
             name: "email",
             value: user.email
         }).appendTo(updateUserForm);
+
+        $("<input>", {
+            type: "checkbox",
+            name: "newsletter",
+            checked: false
+        }).appendTo(updateUserForm);
+        $("<label>", {
+            for: "newsletter",
+            html: "Etre averti lors de la publication d'un nouvel épisode."
+        }).appendTo(updateUserForm);
+
         $("<input>", {
             type: "submit",
             value: "Envoyer les modifications"
@@ -476,36 +722,71 @@ class UsersHandler {
 
         updateUserForm.on("submit", function(e){
 
-            let action = confirm("Voulez-vous mettre à jour le profil utilisateur ?");
-            if(action)
-                usersHandler.updateUser(user.id, e.target.pseudo.value, e.target.status.value, e.target.password.value, e.target.email.value);
-            else e.target.parentElement.remove();
+            if(confirm("Voulez-vous mettre à jour le profil utilisateur ?")){
+
+                usersHandler.updateUser(user.id, e.target.pseudo.value, e.target.status.value, htmlspecialchars(e.target.email.value), e.target.newsletter.checked);
+
+            }
+            else { e.target.parentElement.remove(); }
 
             e.preventDefault();
 
         });
 
+        let cancelButton = $("<button>").html("Annuler");
+        cancelButton.on("click", function(){
+
+            $(usersHandler.addLocation).html("");
+
+            if(usersHandler.side == "reader"){
+
+                usersHandler.displayWelcomeMessage();
+
+            }
+            else if(usersHandler.side == "author"){
+
+                usersHandler.displayAddUserButton();
+
+            }
+        });
+        updateUserForm.append(cancelButton);
+
         updateUserForm.appendTo(updateUserDiv);
 
-        updateUserDiv.appendTo(liElement);
+        $(usersHandler.addLocation).html("");
+        updateUserDiv.appendTo($(usersHandler.addLocation));
 
     }
 
 
     //updates a user in database
-    updateUser($id, $pseudo, $status, $password, $email){
+    updateUser(id, pseudo, status, email, getNewsletter){
 
         let query = new FormData();
         query.append("action", "updateUser");
-        query.append("id", $id);
-        query.append("pseudo", $pseudo);
-        query.append("status", $status);
-        query.append("password", $password);
-        query.append("email", $email);
+        query.append("id", id);
+        query.append("pseudo", pseudo);
+        query.append("status", status);
+        query.append("email", email);
+        query.append("getNewsletter", getNewsletter);
+
 
         ajaxPost("http://localhost/ocp4/index.php", query, function(response){
 
-            usersHandler.getUsersList("#usersList");
+            usersHandler.getUsersList("newUsers");
+            usersHandler.getUsersList("validatedUsers");
+
+        });
+    }
+
+
+    validateUser(userId){
+
+        let query = new FormData();
+        query.append("action", "validateUser");
+        query.append("id", userId);
+
+        ajaxPost("http://localhost/ocp4/index.php", query, function(response){
 
         });
     }
@@ -513,11 +794,11 @@ class UsersHandler {
 
     //DELETE
 
-    deleteUser($id){
+    deleteUser(id){
 
         let query = new FormData();
         query.append("action", "deleteUser");
-        query.append("id", $id);
+        query.append("id", id);
 
         ajaxPost("http://localhost/ocp4/index.php", query, function(response){
 

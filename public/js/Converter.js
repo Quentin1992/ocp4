@@ -1,7 +1,7 @@
 class Converter {
 
     //turn "2020-01-01 00:00:00" into "le 01/01/2020 à 00:00"
-    datetimeToTextConverter(datetime){
+    datetimeToText(datetime){
 
         let date = new Date(datetime);
 
@@ -27,7 +27,7 @@ class Converter {
 
 
     //turn separate numbers into "2020-01-01 00:00:00" format
-    intToDatetimeConverter(day, month, year, hour, minute){
+    intToDatetime(day, month, year, hour, minute){
 
         if(day.length < 2){ day = "0" + day; }
         if(month.length < 2){ month = "0" + month; }
@@ -40,7 +40,7 @@ class Converter {
 
 
     //turn a "2020-01-01 00:00:00" datetime into separate numbers in array
-    datetimeToIntConverter(datetime){
+    datetimeToInt(datetime){
 
         let date = new Date(datetime);
 
@@ -53,6 +53,28 @@ class Converter {
         };
 
         return datetimeNumbers;
+
+    }
+
+
+    //escape html special characters
+    escapeHtml(unsafe) {
+
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+    deleteHtml(unsafe){
+
+        return unsafe
+            .replace(/&/g, "")
+            .replace(/</g, "")
+            .replace(/>/g, "");
 
     }
 

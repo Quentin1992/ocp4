@@ -61,9 +61,7 @@ class EpisodesHandler {
 
             let upcomingEpisode = JSON.parse(response);
 
-            $(episodesHandler.upcomingList).html("");
-
-            episodesHandler.displayUpcomingEpisode(upcomingEpisode);
+            episodesHandler.displayUpcomingEpisode(upcomingEpisode[0]);
 
         });
 
@@ -150,16 +148,16 @@ class EpisodesHandler {
     //displays a one line prensentation of an upcoming episode
     displayUpcomingEpisode(upcomingEpisode){
 
-        let p = document.createElement("p");
+        let display;
 
-        if(upcomingEpisode.title == null)
-            p.innerHTML = "Le prochain épisode arrive bientôt."
+        if(upcomingEpisode == undefined)
+            display = "Le prochain épisode arrive bientôt."
         else {
-            p.innerHTML = "Prochain épisode : " + upcomingEpisode.number
-                + " - <span>" + upcomingEpisode.title + "</span>, "
-                + upcomingEpisode.publicationDate;
+            display = upcomingEpisode.number
+                + " - <span>" + upcomingEpisode.title + "</span><br />"
+                + converter.datetimeToText(upcomingEpisode.publicationDate) + ".";
         }
-        $(this.upcomingList).append(p);
+        $(this.upcomingList).html(display);
     }
 
 
@@ -187,9 +185,25 @@ class EpisodesHandler {
 
         let listElement = document.createElement("li");
 
+        let publicationDate;
+        if(usersHandler.side == "reader"){
+            publicationDate = "";
+        } else{
+            publicationDate = ", " + converter.datetimeToText(episodeData.publicationDate);
+        }
+
         let episodeLink = document.createElement("a");
-        episodeLink.innerHTML = episodeData.number + " : " + episodeData.title + ", " + converter.datetimeToTextConverter(episodeData.publicationDate) + ".";
+        episodeLink.innerHTML = "Episode " + episodeData.number + " : <span>" + episodeData.title + "</span>" + publicationDate + ".";
         episodeLink.href = "#";
+
+        let episodePreview = document.createElement("div");
+        episodePreview.innerHTML = episodeData.content;
+
+        let previewP = document.createElement("p");
+        previewP.innerHTML = episodePreview.textContent.substr(0, 256) + "...";
+        episodeLink.append(previewP);
+
+
         episodeLink.addEventListener("click", function(e){
 
             if(episodesHandler.side == "reader"){
@@ -237,10 +251,10 @@ class EpisodesHandler {
         $(this.currentLocation).html("");
 
         let episodeTitle = $("<h3>");
-        episodeTitle.html(episodeData.number + ' - ' + episodeData.title);
+        episodeTitle.html('Episode ' + episodeData.number + ' - ' + episodeData.title);
         $(this.currentLocation).append(episodeTitle);
 
-        let episodeContent = $("<p>");
+        let episodeContent = $("<div>");
         episodeContent.html(episodeData.content);
         $(this.currentLocation).append(episodeContent);
 
@@ -256,7 +270,7 @@ class EpisodesHandler {
 
         $(episodesHandler.currentLocation).html("");
 
-        $("<h4>").html("Création d'un nouvel épisode").appendTo(episodesHandler.currentLocation);
+        $("<h5>").html("Création d'un nouvel épisode").appendTo(episodesHandler.currentLocation);
 
         episodesHandler.displayEpisodeForm();
 
@@ -269,9 +283,9 @@ class EpisodesHandler {
 
         let episodeForm = $("<form>", {
             id: "episodeForm",
-            method: "post",
             action: "#"
         });
+
         //episode number
         $("<label>", {
             for: "episodeNumber",
@@ -279,8 +293,10 @@ class EpisodesHandler {
         }).appendTo(episodeForm);
         $("<input>", {
             type: "number",
-            name: "episodeNumber"
+            name: "episodeNumber",
+            required: true
         }).appendTo(episodeForm);
+
         //title
         $("<label>", {
             for: "title",
@@ -288,21 +304,17 @@ class EpisodesHandler {
         }).appendTo(episodeForm);
         $("<input>", {
             type: "text",
-            name: "title"
+            name: "title",
+            required: true
         }).appendTo(episodeForm);
-        //content ?
-        $("<label>", {
-            for: "content",
-            html: "Contenu : "
-        }).appendTo(episodeForm);
+
+        //content
         $("<textarea>", {
-            id: "myTextArea",
-            name: "content"
+            id: "episodeContent",
+            name: "content",
+            required: true
         }).appendTo(episodeForm);
-        //content ?
-        tinymce.init({
-            selector: '#mytextarea'
-        });
+
         //datetime
         $("<span>", { html: "Publication le  " }).appendTo(episodeForm);
         //day
@@ -351,7 +363,11 @@ class EpisodesHandler {
         $("<span>", { html: " h " }).appendTo(episodeForm);
         //minutes
         let selectMinutes = $("<select>", { id: "minutes" });
-        for(let i=0; i <= 45; i = i + 15){
+        $("<option>", {
+            value: 0,
+            html: "00"
+        }).appendTo(selectMinutes);
+        for(let i=15; i <= 45; i = i + 15){
             $("<option>", {
                 value: i,
                 html: i
@@ -374,7 +390,7 @@ class EpisodesHandler {
         //fills inputs if data given
         if(episodeData != undefined){
 
-            let datetimeNumbers = converter.datetimeToIntConverter(episodeData.publicationDate);
+            let datetimeNumbers = converter.datetimeToInt(episodeData.publicationDate);
 
             episodeForm[0].episodeNumber.value = episodeData.number;
             episodeForm[0].title.value = episodeData.title;
@@ -390,19 +406,28 @@ class EpisodesHandler {
         //submit event
         episodeForm.on("submit", function(e){
 
-            let publicationDate = converter.intToDatetimeConverter(e.target.day.value, e.target.month.value, e.target.year.value, e.target.hours.value, e.target.minutes.value);
+            tinyMCE.triggerSave();
+
+            let publicationDate = converter.intToDatetime(e.target.day.value, e.target.month.value, e.target.year.value, e.target.hours.value, e.target.minutes.value);
 
             if(episodeData == undefined)
-                episodesHandler.addEpisode(e.target.episodeNumber.value, publicationDate, e.target.title.value, e.target.content.value);
+                episodesHandler.addEpisode(e.target.episodeNumber.value, publicationDate, htmlspecialchars(e.target.title.value), htmlspecialchars(e.target.content.value));
 
             else if(episodeData != undefined)
-                episodesHandler.updateEpisode(episodeData.id, e.target.episodeNumber.value, publicationDate, e.target.title.value, e.target.content.value);
+                episodesHandler.updateEpisode(episodeData.id, e.target.episodeNumber.value, publicationDate, htmlspecialchars(e.target.title.value), htmlspecialchars(e.target.content.value));
 
             e.preventDefault();
 
         });
 
         episodeForm.appendTo(episodesHandler.currentLocation);
+
+        tinymce.remove();
+
+        tinymce.init({
+            selector: episodesHandler.currentLocation + ' form textarea',
+            menubar: false
+        });
 
     }
 
@@ -414,7 +439,7 @@ class EpisodesHandler {
 
         $(episodesHandler.currentLocation).html("");
 
-        $("<h4>").html('Mise à jour de l\'épisode ' + episodeData.number + " : " + episodeData.title).appendTo(episodesHandler.currentLocation);
+        $("<h5>").html('Mise à jour de l\'épisode ' + episodeData.number + " : " + episodeData.title).appendTo(episodesHandler.currentLocation);
 
         episodesHandler.displayEpisodeForm(episodeData);
 

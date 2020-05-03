@@ -1,23 +1,46 @@
+let side = "author";
+
 let converter = new Converter();
-let episodesHandler = new EpisodesHandler("#upcomingEpisodes ol", "#publishedEpisodes ol", "#workOnEpisode", "author");
-let commentsHandler = new CommentsHandler("#addCommentDiv", "#commentsList", "#newComments ol", "#reportedComments ol", "author");
-let usersHandler = new UsersHandler("reader", "#welcomeMessage", "#loginDiv");
+let episodesHandler = new EpisodesHandler("#upcomingEpisodes ol", "#publishedEpisodes ol", "#workOnEpisode div", side);
+let commentsHandler = new CommentsHandler("#addCommentDiv", "#commentsList", "#newComments ol", "#reportedComments ol", side);
+let usersHandler = new UsersHandler(side, "#welcomeMessage", "#validatedUsers ol", "#newUsers ol", "#createUser div");
 
-//displays the list of the published episodes
-episodesHandler.getPublishedEpisodes();
+let query = new FormData;
+query.append("action", "getUserInSession");
 
-//displays the list of the episodes with an upcoming date of publication
-episodesHandler.getUpcomingEpisodes();
+ajaxPost("http://localhost/ocp4/index.php", query, function(response){
 
-//displays the button that allows to create a new episode
-episodesHandler.displayNewEpisodeButton();
+    let sessionUser = JSON.parse(response);
 
-//get comments that have not been validated yet, from all episodes
-commentsHandler.getComments("new");
+    usersHandler.pseudo == sessionUser.pseudo;
+    usersHandler.status == sessionUser.status;
 
-//get reported comments from all episodes
-commentsHandler.getComments("reported");
+    if(sessionUser.status == "writer"){
 
+        //displays the list of the published episodes
+        episodesHandler.getPublishedEpisodes();
 
-usersHandler.displayAddUserButton("#users");
-usersHandler.getUsersList("#usersList");
+        //displays the list of the episodes with an upcoming date of publication
+        episodesHandler.getUpcomingEpisodes();
+
+        //displays the button that allows to create a new episode
+        episodesHandler.displayNewEpisodeButton();
+
+        //gets comments that have not been validated yet ("new"), from all episodes
+        commentsHandler.getComments("new");
+
+        //gets reported comments from all episodes
+        commentsHandler.getComments("reported");
+
+        //gets a list of validated users
+        usersHandler.getUsersList("validatedUsers");
+
+        //
+        usersHandler.getUsersList("newUsers");
+
+        //
+        usersHandler.displayAddUserButton();
+
+    }
+    
+});

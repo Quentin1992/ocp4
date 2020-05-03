@@ -1,85 +1,102 @@
-<?php session_start();
-$root = realpath($_SERVER["DOCUMENT_ROOT"]);
-
-$path = $root . '/ocp4/controller/EpisodesController.php';
-require_once($path);
-$episodesController = new EpisodesController;
-
-$path = $root . '/ocp4/controller/CommentsController.php';
-require_once($path);
-$commentsController = new CommentsController;
+<?php
+session_start();
 ?>
+<!DOCTYPE html>
 
- <head>
-     <link rel="stylesheet" type="text/css" href="../public/css/style.css">
- </head>
+<html>
 
-<header>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <h1>Billet simple pour l'Alaska</h1>
-    <p>Découvrez les épisodes du nouveau roman de Jean Forteroche au fur et à mesure de son écriture.</p>
+        <title>Un billet simple pour l'Alaska</title>
 
-    <p id="welcomeMessage"></p>
+        <link rel="icon" href="../public/images/ticket.ico" />
 
+        <link rel="stylesheet" href="../public/css/style.css" />
+        <link rel="stylesheet" href="../public/css/readerStyle.css" />
+    </head>
 
-</header>
+    <body>
 
+        <div id="welcomeMessage"></div>
 
-<aside>
+        <header>
 
-    <div id="upcomingEpisode">
+            <img src="../public/images/alaska.png" alt="skylines" />
 
-        <h2>Prochain épisode</h2>
+            <div>
+                <h1>Billet simple pour l'Alaska</h1>
+                <h2>Le nouveau roman de Jean Forteroche.</h2>
+                <p>Découvrez les épisodes au fur et à mesure de son écriture.</p>
+            </div>
 
-        <p></p>
+        </header>
 
-    </div>
+        <div id="content">
 
+            <aside>
 
-    <div id="publishedEpisodes">
+                <div id="upcomingEpisode">
 
-        <h2>Episodes publiés</h2>
+                    <h3>Prochain épisode</h3>
 
-        <ol>
+                    <p></p>
 
-        </ol>
+                </div>
 
-    </div>
+                <div id="publishedEpisodes">
 
-</aside>
+                    <h3>Episodes publiés</h3>
 
+                    <ol>
 
-<article>
+                    </ol>
 
-    <div id=currentEpisode>
+                </div>
 
-    </div>
+            </aside>
 
-    <div id="comments">
+            <article>
 
-        <div id="addCommentDiv">
+                <div id=currentEpisode>
+
+                </div>
+
+                <div id="comments">
+
+                    <div>
+
+                            <h4>Publier un commentaire</h4>
+
+                            <div id="addCommentDiv"></div>
+
+                    </div>
+
+                    <div>
+
+                        <h4>Commentaires</h4>
+
+                        <ol id="commentsList">
+
+                        </ol>
+
+                    </div>
+
+                </div>
+
+            </article>
 
         </div>
 
-        <div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script type="text/javascript" src="../public/js/ajax.js"></script>
+        <script type="text/javascript" src="../public/js/Converter.js"></script>
+        <script type="text/javascript" src="../public/js/UsersHandler.js"></script>
+        <script type="text/javascript" src="../public/js/EpisodesHandler.js"></script>
+        <script type="text/javascript" src="../public/js/CommentsHandler.js"></script>
+        <script type="text/javascript" src="../public/js/reader.js"></script>
 
-            <h4>Commentaires</h4>
+    </body>
 
-            <ol id="commentsList">
-
-            </ol>
-
-        </div>
-
-    </div>
-
-</article>
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script type="text/javascript" src="../public/js/ajax.js"></script>
-<script type="text/javascript" src="../public/js/Converter.js"></script>
-<script type="text/javascript" src="../public/js/UsersHandler.js"></script>
-<script type="text/javascript" src="../public/js/EpisodesHandler.js"></script>
-<script type="text/javascript" src="../public/js/CommentsHandler.js"></script>
-<script type="text/javascript" src="../public/js/reader.js"></script>
+</html>

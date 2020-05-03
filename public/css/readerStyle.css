@@ -1,0 +1,168 @@
+body{
+
+    background-color: #f2f2f2;
+
+}
+
+#welcomeMessage{
+
+    display: flex;
+    justify-content: end;
+    background-color: #bbbbbb;
+    color: #f2f2f2;
+    padding: 0em 2em;
+    height: 50px;
+
+}
+
+#welcomeMessage div {
+
+    position: absolute;
+    z-index: 1;
+    background-color: #bbb;
+    border-radius: 5px;
+    border: solid 2px #999;
+    margin-top: 50px;
+
+}
+
+#welcomeMessage button{
+
+    color: #f2f2f2;
+    margin: 0.3em;
+    padding: 0.3em;
+
+}
+
+#welcomeMessage a {
+
+    padding: 1em;
+
+}
+
+#content{
+
+    display: flex;
+    background-color: #dddddd;
+
+}
+
+#content div{
+
+    background-color: #f2f2f2;
+
+}
+
+#upcomingEpisode p {
+
+    padding: 2em;
+    margin: 0;
+    text-align: center;
+
+}
+
+aside{
+
+    flex: 1
+
+}
+
+aside span {
+
+    font-weight: 600;
+
+}
+
+aside h3{
+
+    padding: 0.5em;
+    text-align: center;
+
+}
+
+article{
+
+    flex: 4
+
+}
+
+article div p{
+
+    padding: 1em;
+    margin: 0;
+
+}
+
+article h4{
+
+    padding: 0.5em;
+    font-size: 1.4em;
+
+}
+
+aside, article{
+
+    margin: 1em;
+
+}
+
+a{
+
+    padding: 0.1em;
+    border: none;
+
+}
+
+form{
+
+    padding: 1em;
+
+}
+
+input{
+
+    margin: 1em;
+
+}
+
+button, input[type="submit"]{
+
+    color: #555555;
+    padding: 0.5em;
+    margin: 1em;
+    border-radius: 5px;
+    font-size: 1em;
+    background-color: inherit;
+
+}
+
+button:hover, input[type="submit"]:hover{
+
+    color: #111111;
+
+}
+
+li {
+
+    list-style-type: square;
+    padding: 1em;
+
+}
+
+li::marker {
+
+    color: #555555;
+
+}
+
+#commentsList button {
+
+    margin: 0;
+
+}
+
+#commentsList > button {
+
+    margin: 2em 0em;
+
+}

@@ -22,12 +22,13 @@ class UsersManager extends Database{
 
     public function sendNewUser(User $user){
 
-        $sql = 'INSERT INTO users(user_pseudo, user_password, user_email) VALUES(:pseudo, :password, :email)';
+        $sql = 'INSERT INTO users(user_pseudo, user_password, user_email, user_get_newsletter) VALUES(:pseudo, :password, :email, :getNewsletter)';
         $query = $this->db->prepare($sql);
 
         $query->bindValue(':pseudo', $user->pseudo(), PDO::PARAM_STR);
         $query->bindValue(':password', $user->password(), PDO::PARAM_STR);
         $query->bindValue(':email', $user->email(), PDO::PARAM_STR);
+        $query->bindValue(':getNewsletter', $user->getNewsletter(), PDO::PARAM_BOOL);
         $query->execute();
 
     }
@@ -35,17 +36,54 @@ class UsersManager extends Database{
 
     //READ
 
-    public function getUsersList(){
+    public function checkPseudoAvailability($pseudo){
+
+        $sql = 'SELECT user_pseudo FROM users WHERE user_pseudo = "' . $pseudo . '"';
+
+        $query = $this->db->query($sql);
+
+        $data = $query->fetch(PDO::FETCH_ASSOC);
+
+        return $data['user_pseudo'];
+
+    }
+
+
+    public function checkEmailAvailability($email){
+
+        $sql = 'SELECT * FROM users WHERE user_email = "' . $email . '"';
+
+        $query = $this->db->query($sql);
+
+        $data = $query->fetch(PDO::FETCH_ASSOC);
+
+        return $data['user_email'];
+
+    }
+
+
+    public function getUsersList($category){
 
         $users = [];
 
         $sql = 'SELECT * FROM users';
 
+        if($category == "newUsers"){
+
+            $sql = $sql . " WHERE user_is_checked = 0";
+
+        }
+        else if($category == "validatedUsers"){
+
+            $sql = $sql . " WHERE user_is_checked = 1";
+
+        }
+
         $query = $this->db->query($sql);
 
         while($data = $query->fetch(PDO::FETCH_ASSOC)){
 
-            $users[] = new User($data['user_id'], $data['user_pseudo'], $data['user_status'], $data['user_password'], $data['user_email'], $data['user_registration_date']);
+            $users[] = new User($data['user_id'], $data['user_pseudo'], $data['user_status'], $data['user_password'], $data['user_email'], $data['user_registration_date'], $data['user_is_checked'], $data['user_get_newsletter']);
 
         }
 
@@ -70,13 +108,26 @@ class UsersManager extends Database{
 
     public function sendUserUpdate($user){
 
-        $sql = 'UPDATE users SET user_pseudo = :pseudo, user_status = :status, user_password = :password, user_email = :email WHERE user_id = :id';
+        $sql = 'UPDATE users SET user_pseudo = :pseudo, user_status = :status, user_email = :email, user_get_newsletter = :getNewsletter WHERE user_id = :id';
         $query = $this->db->prepare($sql);
 
         $query->bindValue(':pseudo', $user->pseudo(), PDO::PARAM_STR);
         $query->bindValue(':status', $user->status(), PDO::PARAM_STR);
-        $query->bindValue(':password', $user->password(), PDO::PARAM_STR);
         $query->bindValue(':email', $user->email(), PDO::PARAM_STR);
+        $query->bindValue(':getNewsletter', $user->getNewsletter(), PDO::PARAM_BOOL);
+        $query->bindValue(':id', $user->id(), PDO::PARAM_INT);
+
+        $query->execute();
+
+    }
+
+
+    public function sendUserValidation($user){
+
+        $sql = 'UPDATE users SET user_is_checked = :isChecked WHERE user_id = :id';
+        $query = $this->db->prepare($sql);
+
+        $query->bindValue(':isChecked', 1, PDO::PARAM_INT);
         $query->bindValue(':id', $user->id(), PDO::PARAM_INT);
 
         $query->execute();

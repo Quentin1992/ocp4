@@ -41,12 +41,17 @@ class CommentsController extends CommentsManager{
     }
 
 
-    public function numberOfComments(int $episodeNumber){
-        return $this->countEpisodeComments($episodeNumber);
+    public function numberOfEpisodeComments($episodeId){
+        return $this->countEpisodeComments($episodeId);
     }
 
 
     //UPDATE
+
+    public function updateComment($commentId, $content){
+        $this->sendCommentUpdate($commentId, $content);
+    }
+
 
     public function validateComment($commentId){
         $this->sendCommentValidation($commentId);

@@ -36,22 +36,25 @@ class CommentsHandler {
         addCommentButton.html("Ajouter un commentaire");
         addCommentButton.on("click", function(e){
 
-            $(commentsHandler.addLocation).html("");
-            if((usersHandler.pseudo != undefined) && (usersHandler.pseudo != "")){
+            usersHandler.getUserInSession(function(userInSession){
 
-                commentsHandler.displayAddCommentForm(episodeId);
-                e.target.remove();
+                $(commentsHandler.addLocation).html("");
+                if(userInSession.pseudo != (undefined || "")){
 
-            }
-            else{
+                    commentsHandler.displayAddCommentForm(episodeId);
+                    e.target.remove();
 
-                commentsHandler.displayAddCommentButton(episodeId);
-                $("<p>", {
-                    html: "Vous devez être connecté pour publier un commentaire."
-                }).appendTo($(commentsHandler.addLocation));
+                }
+                else{
 
-            }
+                    commentsHandler.displayAddCommentButton(episodeId);
+                    $("<p>", {
+                        html: "Vous devez être connecté pour publier un commentaire."
+                    }).appendTo($(commentsHandler.addLocation));
 
+                }
+
+            });
         });
         $(commentsHandler.addLocation).append(addCommentButton);
 
@@ -60,30 +63,21 @@ class CommentsHandler {
 
     displayAddCommentForm(episodeId){
 
-        let addCommentDiv = $("<div>");
-
-        addCommentDiv.append($("<h4>").html("Publier un commentaire"));
-
         let addCommentForm = $("<form>", {
             id: "addCommentForm"
         });
-
-        // $("<label>", {
-        //     for: "pseudo",
-        //     html: "Pseudo : "
-        // }).appendTo(addCommentForm);
-        // $("<input>", {
-        //     type: "text",
-        //     name: "pseudo"
-        // }).appendTo(addCommentForm);
 
         $("<label>", {
             for: "content",
             html: "Commentaire : "
         }).appendTo(addCommentForm);
-        $("<textarea>", {
+        let contentInput = $("<textarea>", {
             name: "content"
-        }).appendTo(addCommentForm);
+        });
+        contentInput.on("input", function(e){
+            e.target.value = converter.deleteHtml(e.target.value);
+        });
+        contentInput.appendTo(addCommentForm);
         $("<input>", {
             type: "submit",
             value: "Envoyer mon commentaire"
@@ -91,19 +85,22 @@ class CommentsHandler {
 
         addCommentForm.on("submit", function(e){
 
-            commentsHandler.addComment(e.target.content.value, usersHandler.pseudo, episodeId);
-
-            e.target.parentElement.innerHTML = "";
-
-            commentsHandler.displayAddCommentButton(episodeId);
-
             e.preventDefault();
+
+            usersHandler.getUserInSession(function(userInSession){
+
+                commentsHandler.addComment(e.target.content.value, userInSession.pseudo, episodeId);
+
+                e.target.parentElement.innerHTML = "";
+
+                commentsHandler.displayAddCommentButton(episodeId);
+
+            });
+
         });
 
-        addCommentDiv.append(addCommentForm);
-
         $(this.addLocation).html("");
-        $(this.addLocation).append(addCommentDiv);
+        $(this.addLocation).append(addCommentForm);
 
     }
 
@@ -126,9 +123,13 @@ class CommentsHandler {
             else if(category == "reported")
                 $(commentsHandler.reportedList)[0].innerHTML = "";
 
-            comments.forEach(function(commentData){
+            usersHandler.getUserInSession(function(userInSession){
 
-                commentsHandler.displayComment(commentData, category);
+                comments.forEach(function(commentData){
+
+                    commentsHandler.displayComment(commentData, category, userInSession);
+
+                });
 
             });
 
@@ -157,11 +158,15 @@ class CommentsHandler {
                 $(commentsHandler.episodeList).html("Aucun commentaire.");
 
             }
-            else{
+            else {
 
-                episodeComments.forEach(function(commentData){
+                usersHandler.getUserInSession(function(userInSession){
 
-                    commentsHandler.displayComment(commentData, "episode");
+                    episodeComments.forEach(function(commentData){
+
+                        commentsHandler.displayComment(commentData, "episode", userInSession);
+
+                    });
 
                     commentsHandler.countEpisodeComments(episodeId, function(numberOfEpisodeComments){
 
@@ -177,44 +182,56 @@ class CommentsHandler {
     }
 
 
-    displayComment(commentData, category){
-
+    displayComment(commentData, category, userInSession){
+console.log(userInSession);
         let commentLi = document.createElement("li");
 
         if(commentData != undefined){
 
-            let creationDate = converter.datetimeToTextConverter(commentData.creationDate);
-
             let titleDiv = document.createElement("div");
-            titleDiv.innerHTML = commentData.author + ", " + creationDate;
+            titleDiv.innerHTML = commentData.author + ", " + converter.datetimeToText(commentData.creationDate) + ".";
             commentLi.append(titleDiv);
 
             let contentP = document.createElement("p");
             contentP.innerHTML = commentData.content;
             commentLi.append(contentP);
 
-            if(commentsHandler.side == "reader" && usersHandler.pseudo != undefined){
+            if((commentsHandler.side == "reader") && ((userInSession.pseudo != undefined) || (userInSession.pseudo != ""))){
 
-                let reportButton = document.createElement("button");
-                reportButton.innerHTML = "Signaler";
-                reportButton.addEventListener("click", function(e){
+                if(commentData.author != userInSession.pseudo){
 
-                    if(confirm("Signaler ce commentaire ?")){
+                    let reportButton = document.createElement("button");
+                    reportButton.innerHTML = "Signaler";
+                    reportButton.addEventListener("click", function(e){
 
-                        commentsHandler.reportComment(commentData.id, commentData.episodeId);
+                        if(confirm("Signaler ce commentaire ?")){
 
-                        let confirmP = document.createElement("p");
-                        confirmP.innerHTML = "Commentaire signalé, il sera bientôt vérifié par l'auteur.";
-                        e.target.replaceWith(confirmP);
+                            commentsHandler.reportComment(commentData.id, commentData.episodeId);
 
-                    }
+                            let confirmP = document.createElement("p");
+                            confirmP.innerHTML = "Commentaire signalé, il sera bientôt vérifié par l'auteur.";
+                            e.target.replaceWith(confirmP);
 
-                });
+                        }
+                    });
+                    commentLi.append(reportButton);
 
-                commentLi.append(reportButton);
+                }
+                else if(commentData.author == userInSession.pseudo){
 
+                    let updateButton = document.createElement("button");
+                    updateButton.innerHTML = "Modifier mon commentaire";
+                    updateButton.addEventListener("click", function(e){
+
+                        commentsHandler.displayUpdateCommentForm(commentData.id, commentData.episodeId, e.target);
+
+
+                    });
+                    commentLi.append(updateButton);
+
+                }
             }
-            else if(commentsHandler.side == "author" && usersHandler.status == "author"){
+            else if((commentsHandler.side == "author") && (userInSession.status == "writer")){
 
                 let validateButton = document.createElement("button");
                 validateButton.innerHTML = "Valider";
@@ -224,12 +241,26 @@ class CommentsHandler {
 
                         commentsHandler.validateComment(commentData.id);
 
-                        let confirmP = document.createElement("p");
-                        confirmP.innerHTML = "Commentaire vérifié.";
-                        e.target.replaceWith(confirmP);
+                        e.target.parentElement.remove();
 
                     }
                 });
+                commentLi.append(validateButton);
+
+                let deleteButton = document.createElement("button");
+                deleteButton.innerHTML = "Supprimer";
+                deleteButton.addEventListener("click", function(e){
+
+                    if(confirm("Supprimer ce commentaire ?")){
+
+                        commentsHandler.deleteComment(commentData.id);
+
+                        e.target.parentElement.remove();
+
+                    }
+                });
+                commentLi.append(deleteButton);
+
             }
         }
         else {
@@ -256,7 +287,7 @@ class CommentsHandler {
 
         }
 
-        $(location).prepend(commentLi);
+        $(location).append(commentLi);
 
     };
 
@@ -293,10 +324,96 @@ class CommentsHandler {
 
     //UPDATE
 
-    reportComment(commentId, episodeId){
+    displayUpdateCommentForm(commentId, episodeId, trigger){
+
+        let updateCommentForm = $("<form>", {
+            id: "updateCommentForm",
+            action: "#"
+        });
+
+        $("<label>", {
+            for: "content",
+            html: "Commentaire : "
+        }).appendTo(updateCommentForm);
+        let contentTextarea = $("<textarea>", {
+            name: "content",
+            html: trigger.parentElement.children[1].innerHTML,
+            required: true
+        });
+        contentTextarea.on("input", function(e){
+            e.target.value = converter.deleteHtml(e.target.value);
+        });
+        contentTextarea.appendTo(updateCommentForm);
+
+        $("<input>", {
+            type: "submit",
+            value: "Modifier mon commentaire"
+        }).appendTo(updateCommentForm);
+
+        updateCommentForm.on("submit", function(e){
+
+            commentsHandler.updateComment(commentId, e.target.content.value, episodeId);
+
+            e.target.remove();
+
+            e.preventDefault();
+
+        });
+        console.log(trigger.parentElement.children[2]);
+        trigger.parentElement.children[1].replaceWith(updateCommentForm[0]);
+        trigger.parentElement.children[2].remove();
+
+    }
+
+
+    updateComment(commentId, content, episodeId){
+
+        var query = new FormData();
+        query.append("action", "updateComment");
+        query.append("id", commentId);
+        query.append("content", content);
+
+        ajaxPost("http://localhost/ocp4/index.php", query, function(response){
+
+            commentsHandler.getEpisodeComments(episodeId, 10);
+
+        });
+
+    }
+
+
+    reportComment(commentId){
 
         let query = new FormData();
         query.append("action", "reportComment");
+        query.append("commentId", commentId);
+
+        ajaxPost("http://localhost/ocp4/index.php", query, function(response){
+
+        });
+
+    }
+
+
+    validateComment(commentId){
+
+        let query = new FormData();
+        query.append("action", "validateComment");
+        query.append("commentId", commentId);
+
+        ajaxPost("http://localhost/ocp4/index.php", query, function(response){
+
+        });
+
+    }
+
+
+    //DELETE
+
+    deleteComment(commentId){
+
+        let query = new FormData();
+        query.append("action", "deleteComment");
         query.append("commentId", commentId);
 
         ajaxPost("http://localhost/ocp4/index.php", query, function(response){
