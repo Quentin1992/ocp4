@@ -1,7 +1,7 @@
 let side = "reader";
 
 let converter = new Converter();
-let episodesHandler = new EpisodesHandler("#upcomingEpisode p", "#publishedEpisodes ol", "#currentEpisode", side);
+let episodesHandler = new EpisodesHandler("#upcomingEpisode div", "#publishedEpisodes ol", "#currentEpisode", side);
 let commentsHandler = new CommentsHandler("#addCommentDiv", "#commentsList", null, null, side);
 let usersHandler = new UsersHandler(side, "#welcomeMessage", null, null, "#welcomeMessage");
 

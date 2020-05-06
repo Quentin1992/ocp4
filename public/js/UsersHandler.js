@@ -42,7 +42,7 @@ class UsersHandler {
             id: "addUserDiv"
         });
 
-        $("<h5>").html("Nouveau profil utilisateur :").appendTo(addUserDiv);
+        $("<h3>").html("Nouveau profil utilisateur :").appendTo(addUserDiv);
 
         let addUserForm = $("<form>", {
             id: "addUserForm",
@@ -64,6 +64,8 @@ class UsersHandler {
         });
         pseudoInput.appendTo(addUserForm);
 
+        $("<br>").appendTo(addUserForm);
+
         if(usersHandler.side == "author"){
 
             $("<label>", {
@@ -83,6 +85,8 @@ class UsersHandler {
             }).appendTo(statusSelect);
             statusSelect.appendTo(addUserForm);
 
+            $("<br>").appendTo(addUserForm);
+
         }
 
         $("<label>", {
@@ -99,6 +103,8 @@ class UsersHandler {
         });
         passwordInput.appendTo(addUserForm);
 
+        $("<br>").appendTo(addUserForm);
+
         $("<label>", {
             for: "confirmPassword",
             html: "Confirmation du mot de passe : "
@@ -113,6 +119,8 @@ class UsersHandler {
         });
         confirmPasswordInput.appendTo(addUserForm);
 
+        $("<br>").appendTo(addUserForm);
+
         $("<label>", {
             for: "email",
             html: "Email : "
@@ -121,6 +129,8 @@ class UsersHandler {
             type: "email",
             name: "email"
         }).appendTo(addUserForm);
+
+        $("<br>").appendTo(addUserForm);
 
         $("<input>", {
             type: "checkbox",
@@ -131,6 +141,8 @@ class UsersHandler {
             for: "getNewsletter",
             html: "Etre averti lors de la publication d'un nouvel épisode."
         }).appendTo(addUserForm);
+
+        $("<br>").appendTo(addUserForm);
 
         $("<input>", {
             type: "submit",
@@ -275,7 +287,7 @@ class UsersHandler {
 
     //READ
 
-    getUserFromPseudo(pseudo, calback{
+    getUserFromPseudo(pseudo, callback){
 
         let query = new FormData();
         query.append("action", "getUserFromPseudo");
@@ -285,7 +297,7 @@ class UsersHandler {
 
             let userData = JSON.parse(response);
 
-            callback();
+            callback(userData);
 
         });
 
@@ -359,7 +371,9 @@ class UsersHandler {
     //user data in a list element
     displayUser(user, category){
 
-        let li = document.createElement("li");
+        let userLi = document.createElement("li");
+        let contentDiv = document.createElement("div");
+        let buttonsDiv = document.createElement("div");
 
         let getNewsletter = "";
         if(user.getNewsletter == true){
@@ -372,12 +386,12 @@ class UsersHandler {
 
         }
 
-        let p = document.createElement("p");
-        p.innerHTML = user.pseudo
+        let infoP = document.createElement("p");
+        infoP.innerHTML = user.pseudo
             + "<br />Statut : " + user.status
             + "<br />Email : " + user.email + getNewsletter
             + "<br />Date d'inscription : " + converter.datetimeToText(user.registrationDate);
-        li.append(p);
+        contentDiv.append(infoP);
 
         if(category == "newUsers"){
 
@@ -394,18 +408,22 @@ class UsersHandler {
                 }
 
             });
-            li.append(validateUserButton);
+            buttonsDiv.append(validateUserButton);
 
         }
 
-        let updateUserButton = document.createElement("button");
-        updateUserButton.innerHTML = "Modifier";
-        updateUserButton.addEventListener("click", function(e){
+        if(category == "validatedUsers"){
 
-            usersHandler.displayUdapteUserForm(user);
+            let updateUserButton = document.createElement("button");
+            updateUserButton.innerHTML = "Modifier";
+            updateUserButton.addEventListener("click", function(e){
 
-        });
-        li.append(updateUserButton);
+                usersHandler.displayUdapteUserForm(user);
+
+            });
+            buttonsDiv.append(updateUserButton);
+
+        }
 
         let deleteUserButton = document.createElement("button");
         deleteUserButton.innerHTML = "Supprimer";
@@ -419,16 +437,19 @@ class UsersHandler {
 
             }
         });
-        li.append(deleteUserButton);
+        buttonsDiv.append(deleteUserButton);
+
+        userLi.append(contentDiv);
+        userLi.append(buttonsDiv);
 
         if(category == "newUsers"){
 
-            $(usersHandler.newUsersList).append(li);
+            $(usersHandler.newUsersList).append(userLi);
 
         }
         else if(category == "validatedUsers"){
 
-            $(usersHandler.validatedUsersList).append(li);
+            $(usersHandler.validatedUsersList).append(userLi);
 
         }
 
@@ -447,7 +468,7 @@ class UsersHandler {
 
             if(userInSession.pseudo != (undefined || "")){
 
-                getUserFromPseudo(userInSession.pseudo, function(userData){
+                usersHandler.getUserFromPseudo(userInSession.pseudo, function(userData){
 
                     welcomeP.innerHTML = welcomeP.innerHTML + userInSession.pseudo + ", ravi de vous revoir.";
                     $(usersHandler.welcomeLocation).append(welcomeP);
@@ -458,8 +479,8 @@ class UsersHandler {
 
                         let updateUserButton = $("<button>").html("Modifier mon profil");
                         updateUserButton.on("click", function(){
-    //here, user missing
-                            usersHandler.displayUdapteUserForm(user);
+
+                            usersHandler.displayUdapteUserForm(userData);
 
                         });
                         $(usersHandler.welcomeLocation).append(updateUserButton);
@@ -508,7 +529,7 @@ class UsersHandler {
 
     displayDashboardLink(){
 
-        $("<a>").html("Gestion du blog").attr("href", "http://localhost/ocp4/view/authorView.php").appendTo(usersHandler.welcomeLocation);
+        $("<a>").html("Gestion du blog").attr("href", "authorView.php").appendTo(usersHandler.welcomeLocation);
 
     }
 
@@ -549,7 +570,7 @@ class UsersHandler {
 
         let connectDiv = $("<div>");
 
-        connectDiv.append($("<h4>").html("Connexion au blog"));
+        connectDiv.append($("<h3>").html("Connexion au blog"));
 
         let connectForm = $("<form>", {
             id: "connectForm"
@@ -569,6 +590,8 @@ class UsersHandler {
         });
         pseudoInput.appendTo(connectForm);
 
+        $("<br>").appendTo(connectForm);
+
         $("<label>", {
             for: "password",
             html: "Mot de passe : "
@@ -582,6 +605,9 @@ class UsersHandler {
             e.target.value = converter.deleteHtml(e.target.value);
         });
         passwordInput.appendTo(connectForm);
+
+        $("<br>").appendTo(connectForm);
+
         $("<input>", {
             type: "submit",
             value: "Se connecter"
@@ -641,6 +667,18 @@ class UsersHandler {
     }
 
 
+    updatePseudoInSession(pseudo){
+
+        var query = new FormData;
+        query.append("action", "updatePseudoInSession");
+        query.append("pseudo", pseudo);
+
+        ajaxPost("http://localhost/ocp4/index.php", query, function(response){
+
+        });
+    }
+
+
     getUserInSession(callback){
 
         let query = new FormData;
@@ -653,7 +691,6 @@ class UsersHandler {
             callback(userInSession);
 
         });
-
     }
 
 
@@ -677,43 +714,96 @@ class UsersHandler {
 
         $("<label>", {
             for: "pseudo",
-            html: "Pseudo :"
+            html: "Pseudo : "
         }).appendTo(updateUserForm);
         $("<input>", {
             type: "text",
             name: "pseudo",
-            value: user.pseudo
+            value: user.pseudo,
+            required: true
         }).appendTo(updateUserForm);
 
-        $("<label>", {
-            for: "status",
-            html: "Statut :"
-        }).appendTo(updateUserForm);
-        $("<input>", {
-            type: "text",
-            name: "status",
-            value: user.status
-        }).appendTo(updateUserForm);
+        $("<br>").appendTo(updateUserForm);
+
+        if(usersHandler.side == "author"){
+
+            $("<label>", {
+                for: "status",
+                html: "Statut : "
+            }).appendTo(updateUserForm);
+            let statusSelect = $("<select>", {
+                name: "status"
+            });
+            $("<option>", {
+                value: "reader",
+                html: "lecteur"
+            }).appendTo(statusSelect);
+            $("<option>", {
+                value: "author",
+                html: "auteur"
+            }).appendTo(statusSelect);
+            statusSelect.appendTo(updateUserForm);
+
+            $("<br>").appendTo(updateUserForm);
+
+        }
 
         $("<label>", {
             for: "email",
-            html: "Email :"
+            html: "Email : "
         }).appendTo(updateUserForm);
         $("<input>", {
             type: "email",
             name: "email",
-            value: user.email
+            value: user.email,
+            required: true
         }).appendTo(updateUserForm);
+
+        $("<br>").appendTo(updateUserForm);
 
         $("<input>", {
             type: "checkbox",
             name: "newsletter",
-            checked: false
+            checked: user.getNewsletter
         }).appendTo(updateUserForm);
         $("<label>", {
             for: "newsletter",
             html: "Etre averti lors de la publication d'un nouvel épisode."
         }).appendTo(updateUserForm);
+
+        $("<br>").appendTo(updateUserForm);
+
+        if(usersHandler.side == "reader"){
+
+            $("<label>", {
+                for: "newPassword",
+                html: "Nouveau mot de passe : "
+            }).appendTo(updateUserForm);
+            let newPasswordInput = $("<input>", {
+                type: "password",
+                name: "newPassword",
+                placeholder: "Pas de changement"
+            });
+            newPasswordInput.one("focus", function(e){
+
+                $("<input>", {
+                    type: "password",
+                    name: "confirmNewPassword",
+                    placeholder: "Pas de changement"
+                }).insertAfter(e.target);
+                $("<label>", {
+                    for: "confirmNewPassword",
+                    html: "Confirmer le nouveau mot de passe : "
+                }).insertAfter(e.target);
+
+                $("<br>").insertAfter(e.target);
+
+            });
+            newPasswordInput.appendTo(updateUserForm);
+
+        }
+
+        $("<br>").appendTo(updateUserForm);
 
         $("<input>", {
             type: "submit",
@@ -722,12 +812,35 @@ class UsersHandler {
 
         updateUserForm.on("submit", function(e){
 
-            if(confirm("Voulez-vous mettre à jour le profil utilisateur ?")){
+            if(usersHandler.side == "reader"){
 
-                usersHandler.updateUser(user.id, e.target.pseudo.value, e.target.status.value, htmlspecialchars(e.target.email.value), e.target.newsletter.checked);
+                let newPassword = "";
+
+                if(e.target.newPassword.value != ""){
+
+                    if(e.target.newPassword.value == e.target.confirmNewPassword.value){
+
+                        newPassword = e.target.newPassword.value;
+
+                    }
+                    else {
+
+                        $("<span>").html("Le mot de passe doit être identique dans les deux champs.").insertAfter(e.target.confirmNewPassword);
+
+                    }
+
+                }
+
+                usersHandler.updateUser(user.id, e.target.pseudo.value, JSON.stringify(null), newPassword, e.target.email.value, e.target.newsletter.checked);
+                usersHandler.updatePseudoInSession(e.target.pseudo.value);
+                usersHandler.displayWelcomeMessage();
 
             }
-            else { e.target.parentElement.remove(); }
+            else {
+
+                usersHandler.updateUser(user.id, e.target.pseudo.value, e.target.status.value, e.target.email.value, e.target.newsletter.checked);
+
+            }
 
             e.preventDefault();
 
@@ -756,26 +869,40 @@ class UsersHandler {
         $(usersHandler.addLocation).html("");
         updateUserDiv.appendTo($(usersHandler.addLocation));
 
+        if(usersHandler.side == "author"){
+
+            $("html").animate({
+                scrollTop: $("#createUser").offset().top
+            }, 1000);
+
+        }
     }
 
 
     //updates a user in database
-    updateUser(id, pseudo, status, email, getNewsletter){
+    updateUser(id, pseudo, status, password, email, getNewsletter){
 
         let query = new FormData();
         query.append("action", "updateUser");
         query.append("id", id);
         query.append("pseudo", pseudo);
         query.append("status", status);
+        query.append("password", password);
         query.append("email", email);
         query.append("getNewsletter", getNewsletter);
-
 
         ajaxPost("http://localhost/ocp4/index.php", query, function(response){
 
             usersHandler.getUsersList("newUsers");
             usersHandler.getUsersList("validatedUsers");
 
+            if(usersHandler.side == "author"){
+
+                $("html").animate({
+                    scrollTop: $("#newUsers").offset().top
+                }, 1000);
+
+            }
         });
     }
 

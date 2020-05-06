@@ -172,14 +172,11 @@ if (isset($_POST['action'])) {
 
             $lastPublishedEpisode = $episodesController->publishedEpisodes(1);
 
-            $date = date_create($lastPublishedEpisode[0]->publicationDate());
-            $publicationDate = 'le ' . date_format($date, 'd/m/Y') . ' à ' . date_format($date, 'H\hi') . '.';
-
             $lastPublishedEpisodeData = array(
                 'id' => $lastPublishedEpisode[0]->id(),
                 'number' => $lastPublishedEpisode[0]->number(),
                 'author' => $lastPublishedEpisode[0]->author(),
-                'publicationDate' => $publicationDate,
+                'publicationDate' => $lastPublishedEpisode[0]->publicationDate(),
                 'title' => $lastPublishedEpisode[0]->title(),
                 'content' => $lastPublishedEpisode[0]->content()
             );
@@ -190,6 +187,9 @@ if (isset($_POST['action'])) {
         //UPDATE EPISODE
 
         case 'updateEpisode':
+
+            $episode = new Episode($id, $number, $author, $publicationDate, $title, $content);
+
             $episodesController->updateEpisode($_POST['id'], $_POST['number'], null, $_POST['publicationDate'], $_POST['title'], $_POST['content']);
             break;
 
@@ -228,17 +228,19 @@ if (isset($_POST['action'])) {
 
         case 'getUserFromPseudo' :
 
-            $user = $usersController->getUserFromPseudo();
+            $user = $usersController->getUserFromPseudo($_POST['pseudo']);
 
             $userData = array(
-                'id' => $lastPublishedEpisode[0]->id(),
-                'number' => $lastPublishedEpisode[0]->number(),
-                'author' => $lastPublishedEpisode[0]->author(),
-                'publicationDate' => $publicationDate,
-                'title' => $lastPublishedEpisode[0]->title(),
-                'content' => $lastPublishedEpisode[0]->content()
+                'id' => $user->id(),
+                'pseudo' => $user->pseudo(),
+                'status' => $user->status(),
+                'email' => $user->email(),
+                'registrationDate' => $user->registrationDate(),
+                'isChecked' => $user->isChecked(),
+                'getNewsletter' => $user->getNewsletter()
             );
-            echo json_encode($lastPublishedEpisodeData);
+
+            echo json_encode($userData);
             break;
 
 
@@ -330,8 +332,12 @@ if (isset($_POST['action'])) {
         //UPDATE USERS
 
         case 'updateUser' :
+            $usersController->updateUser($_POST['id'], $_POST['pseudo'], json_decode($_POST['status']), $_POST['password'], $_POST['email'], filter_var($_POST['getNewsletter'], FILTER_VALIDATE_BOOLEAN));
+            break;
 
-            $usersController->updateUser($_POST['id'], $_POST['pseudo'], $_POST['status'], $_POST['email'], filter_var($_POST['getNewsletter'], FILTER_VALIDATE_BOOLEAN));
+
+        case 'updatePseudoInSession':
+            $_SESSION['pseudo'] = $_POST['pseudo'];
             break;
 
 

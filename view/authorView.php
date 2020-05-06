@@ -14,7 +14,16 @@ session_start();
         <link rel="icon" href="../public/images/ticket.ico" />
 
         <link rel="stylesheet" href="../public/css/style.css" />
+        <link rel="stylesheet" media="screen and (max-width: 426px)" href="../public/css/style-smartphone.css">
+        <link rel="stylesheet" media="screen and (max-width: 768px)" href="../public/css/style-tablet.css">
+        <link rel="stylesheet" media="screen and (max-width: 1024px)" href="../public/css/style-small.css">
+        <link rel="stylesheet" media="screen and (max-width: 1440px)" href="../public/css/style-medium.css">
+
         <link rel="stylesheet" href="../public/css/authorStyle.css" />
+        <link rel="stylesheet" media="screen and (max-width: 1440px)" href="../public/css/authorStyle-medium.css">
+        <link rel="stylesheet" media="screen and (max-width: 1024px)" href="../public/css/authorStyle-small.css">
+        <link rel="stylesheet" media="screen and (max-width: 768px)" href="../public/css/authorStyle-tablet.css">
+        <link rel="stylesheet" media="screen and (max-width: 426px)" href="../public/css/authorStyle-smartphone.css">
 
         <script src="https://cdn.tiny.cloud/1/v2g0h9wqfo8n3etwh8p7qj0qe1n27c5bwe99wdegs4rq6u1a/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
     </head>

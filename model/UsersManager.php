@@ -36,6 +36,20 @@ class UsersManager extends Database{
 
     //READ
 
+    public function goGetUserFromPseudo($pseudo){
+
+        $sql = 'SELECT * FROM users WHERE user_pseudo = "' . $pseudo . '"';
+        $query = $this->db->query($sql);
+
+        $data = $query->fetch(PDO::FETCH_ASSOC);
+
+        $user = new User($data['user_id'], $data['user_pseudo'], $data['user_status'], null, $data['user_email'], $data['user_registration_date'], $data['user_is_checked'], $data['user_get_newsletter']);
+
+        return $user;
+
+    }
+
+
     public function checkPseudoAvailability($pseudo){
 
         $sql = 'SELECT user_pseudo FROM users WHERE user_pseudo = "' . $pseudo . '"';
@@ -108,11 +122,24 @@ class UsersManager extends Database{
 
     public function sendUserUpdate($user){
 
-        $sql = 'UPDATE users SET user_pseudo = :pseudo, user_status = :status, user_email = :email, user_get_newsletter = :getNewsletter WHERE user_id = :id';
+        $sql = 'UPDATE users SET user_pseudo = :pseudo, ';
+        if($user->status() != null){
+            $sql = $sql . 'user_status = :status, ';
+        }
+        if($user->password() != ""){
+            $sql = $sql . 'user_password = :password, ';
+        }
+        $sql = $sql . 'user_email = :email, user_get_newsletter = :getNewsletter WHERE user_id = :id';
+
         $query = $this->db->prepare($sql);
 
         $query->bindValue(':pseudo', $user->pseudo(), PDO::PARAM_STR);
-        $query->bindValue(':status', $user->status(), PDO::PARAM_STR);
+        if($user->status() != null){
+            $query->bindValue(':status', $user->status(), PDO::PARAM_STR);
+        }
+        if($user->password() != ("")){
+            $query->bindValue(':password', $user->password(), PDO::PARAM_STR);
+        }
         $query->bindValue(':email', $user->email(), PDO::PARAM_STR);
         $query->bindValue(':getNewsletter', $user->getNewsletter(), PDO::PARAM_BOOL);
         $query->bindValue(':id', $user->id(), PDO::PARAM_INT);

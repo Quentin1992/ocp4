@@ -148,16 +148,16 @@ class EpisodesHandler {
     //displays a one line prensentation of an upcoming episode
     displayUpcomingEpisode(upcomingEpisode){
 
-        let display;
-
         if(upcomingEpisode == undefined)
-            display = "Le prochain épisode arrive bientôt."
+            $(this.upcomingList).append($("<p>").html("Le prochain épisode arrive bientôt."));
         else {
-            display = upcomingEpisode.number
-                + " - <span>" + upcomingEpisode.title + "</span><br />"
-                + converter.datetimeToText(upcomingEpisode.publicationDate) + ".";
+            let teaserH4 = $("<h4>").html("Episode " + upcomingEpisode.number + " : <span>" + upcomingEpisode.title + "</span>");
+            $(this.upcomingList).append(teaserH4);
+
+            let teaserP = $("<p>").html(converter.datetimeToText(upcomingEpisode.publicationDate) + ".");
+            $(this.upcomingList).append(teaserP);
+
         }
-        $(this.upcomingList).html(display);
     }
 
 
@@ -184,6 +184,8 @@ class EpisodesHandler {
     createEpisodesListElement(episodeData){
 
         let listElement = document.createElement("li");
+        let contentDiv = document.createElement("div");
+        let buttonsDiv = document.createElement("div");
 
         let publicationDate;
         if(usersHandler.side == "reader"){
@@ -193,9 +195,11 @@ class EpisodesHandler {
         }
 
         let episodeLink = document.createElement("a");
-        episodeLink.innerHTML = "Episode " + episodeData.number + " : <span>" + episodeData.title + "</span>" + publicationDate + ".";
+        let episodeTitle = document.createElement("h4");
+        episodeTitle.innerHTML = "Episode " + episodeData.number + " : <span>" + episodeData.title + "</span>" + publicationDate + ".";
+        episodeLink.append(episodeTitle);
         episodeLink.href = "#";
-
+        //puts html content in a div in order to get text form after
         let episodePreview = document.createElement("div");
         episodePreview.innerHTML = episodeData.content;
 
@@ -220,12 +224,21 @@ class EpisodesHandler {
             e.preventDefault();
 
         });
-        listElement.append(episodeLink);
+        contentDiv.append(episodeLink);
 
         if(this.side == "author"){
 
+            let updateButton = document.createElement("button");
+            updateButton.innerHTML = "Modifier";
+            updateButton.addEventListener("click", function(){
+
+                episodesHandler.workOnExistingEpisode(episodeData);
+
+            });
+            buttonsDiv.append(updateButton);
+
             let deleteButton = document.createElement("button");
-            deleteButton.innerHTML = "Supprimer l'épisode";
+            deleteButton.innerHTML = "Supprimer";
             deleteButton.addEventListener("click", function(){
 
                 let toDelete = confirm("Voulez-vous supprimer l'épisode " + episodeData.number + ", " + episodeData.title + " ?");
@@ -236,9 +249,12 @@ class EpisodesHandler {
                 }
 
             });
-            listElement.append(deleteButton);
+            buttonsDiv.append(deleteButton);
 
         }
+
+        listElement.append(contentDiv);
+        listElement.append(buttonsDiv);
 
         return listElement;
 
@@ -411,10 +427,14 @@ class EpisodesHandler {
             let publicationDate = converter.intToDatetime(e.target.day.value, e.target.month.value, e.target.year.value, e.target.hours.value, e.target.minutes.value);
 
             if(episodeData == undefined)
-                episodesHandler.addEpisode(e.target.episodeNumber.value, publicationDate, htmlspecialchars(e.target.title.value), htmlspecialchars(e.target.content.value));
+                episodesHandler.addEpisode(e.target.episodeNumber.value, publicationDate, e.target.title.value, e.target.content.value);
 
             else if(episodeData != undefined)
-                episodesHandler.updateEpisode(episodeData.id, e.target.episodeNumber.value, publicationDate, htmlspecialchars(e.target.title.value), htmlspecialchars(e.target.content.value));
+                episodesHandler.updateEpisode(episodeData.id, e.target.episodeNumber.value, publicationDate, e.target.title.value, e.target.content.value);
+
+            $("html").animate({
+                scrollTop: $("#publishedEpisodes").offset().top
+            }, 1000);
 
             e.preventDefault();
 
@@ -442,6 +462,10 @@ class EpisodesHandler {
         $("<h5>").html('Mise à jour de l\'épisode ' + episodeData.number + " : " + episodeData.title).appendTo(episodesHandler.currentLocation);
 
         episodesHandler.displayEpisodeForm(episodeData);
+
+        $("html").animate({
+            scrollTop: $("#workOnEpisode").offset().top
+        }, 1000);
 
     }
 

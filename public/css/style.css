@@ -89,6 +89,7 @@ h4{
 h5 {
 
     font-size: 1em;
+    margin: 0;
 
 }
 
@@ -97,8 +98,6 @@ a{
     text-decoration: none;
     color: #555;
     padding: 1em;
-    border: solid 1px #999999;
-    border-radius: 5px;
 
 }
 

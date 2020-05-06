@@ -14,7 +14,16 @@ session_start();
         <link rel="icon" href="../public/images/ticket.ico" />
 
         <link rel="stylesheet" href="../public/css/style.css" />
+        <link rel="stylesheet" media="screen and (max-width: 426px)" href="../public/css/style-smartphone.css">
+        <link rel="stylesheet" media="screen and (max-width: 768px)" href="../public/css/style-tablet.css">
+        <link rel="stylesheet" media="screen and (max-width: 1024px)" href="../public/css/style-small.css">
+        <link rel="stylesheet" media="screen and (max-width: 1440px)" href="../public/css/style-medium.css">
+
         <link rel="stylesheet" href="../public/css/readerStyle.css" />
+        <link rel="stylesheet" media="screen and (max-width: 1440px)" href="../public/css/readerStyle-medium.css">
+        <link rel="stylesheet" media="screen and (max-width: 1024px)" href="../public/css/readerStyle-small.css">
+        <link rel="stylesheet" media="screen and (max-width: 768px)" href="../public/css/readerStyle-tablet.css">
+        <link rel="stylesheet" media="screen and (max-width: 426px)" href="../public/css/readerStyle-smartphone.css">
     </head>
 
     <body>
@@ -41,7 +50,7 @@ session_start();
 
                     <h3>Prochain épisode</h3>
 
-                    <p></p>
+                    <div></div>
 
                 </div>
 

@@ -21,6 +21,13 @@ class UsersController extends UsersManager{
 
     //READ
 
+    public function getUserFromPseudo($pseudo){
+
+        return $this->goGetUserFromPseudo($pseudo);
+
+    }
+
+
     public function isPseudoAvailable($pseudo){
 
         if($this->checkPseudoAvailability($pseudo) == null)
@@ -80,10 +87,13 @@ class UsersController extends UsersManager{
 
     //UPDATE
 
-    public function updateUser($id, $pseudo, $status, $email, $getNewsletter){
-var_dump($getNewsletter);
-        //$password = password_hash($password, PASSWORD_DEFAULT);
-        $user = new User($id, $pseudo, $status, null, $email, null, null, $getNewsletter);
+    public function updateUser($id, $pseudo, $status, $password, $email, $getNewsletter){
+
+        if($password != ""){
+            $password = password_hash($password, PASSWORD_DEFAULT);
+        }
+
+        $user = new User($id, $pseudo, $status, $password, $email, null, null, $getNewsletter);
         $this->sendUserUpdate($user);
 
     }

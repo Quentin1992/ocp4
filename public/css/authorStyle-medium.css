@@ -1,0 +1,17 @@
+header div {
+
+    padding: 0em 3em;
+
+}
+
+h1 {
+
+    font-size: 4em;
+
+}
+
+#episodesDisplay > div, #commentsDisplay > div, #usersDisplay > div, #workOnEpisode, #createUser {
+
+    margin: 2em;
+    
+}

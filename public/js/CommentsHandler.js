@@ -183,18 +183,21 @@ class CommentsHandler {
 
 
     displayComment(commentData, category, userInSession){
-console.log(userInSession);
+
         let commentLi = document.createElement("li");
+        let contentDiv = document.createElement("div");
+        let buttonsDiv = document.createElement("div");
+
 
         if(commentData != undefined){
 
             let titleDiv = document.createElement("div");
             titleDiv.innerHTML = commentData.author + ", " + converter.datetimeToText(commentData.creationDate) + ".";
-            commentLi.append(titleDiv);
+            contentDiv.append(titleDiv);
 
             let contentP = document.createElement("p");
             contentP.innerHTML = commentData.content;
-            commentLi.append(contentP);
+            contentDiv.append(contentP);
 
             if((commentsHandler.side == "reader") && ((userInSession.pseudo != undefined) || (userInSession.pseudo != ""))){
 
@@ -214,7 +217,7 @@ console.log(userInSession);
 
                         }
                     });
-                    commentLi.append(reportButton);
+                    buttonsDiv.append(reportButton);
 
                 }
                 else if(commentData.author == userInSession.pseudo){
@@ -227,7 +230,7 @@ console.log(userInSession);
 
 
                     });
-                    commentLi.append(updateButton);
+                    buttonsDiv.append(updateButton);
 
                 }
             }
@@ -245,7 +248,7 @@ console.log(userInSession);
 
                     }
                 });
-                commentLi.append(validateButton);
+                buttonsDiv.append(validateButton);
 
                 let deleteButton = document.createElement("button");
                 deleteButton.innerHTML = "Supprimer";
@@ -259,7 +262,7 @@ console.log(userInSession);
 
                     }
                 });
-                commentLi.append(deleteButton);
+                buttonsDiv.append(deleteButton);
 
             }
         }
@@ -267,28 +270,31 @@ console.log(userInSession);
 
             let contentP = document.createElement("p");
             contentP.innerHTML = "Aucun commentaire.";
-            commentLi.append(contentP);
+            contentDiv.append(contentP);
 
         }
+
+        commentLi.append(contentDiv);
+        commentLi.append(buttonsDiv);
 
         let location;
         switch (category) {
             case "new":
-                location = commentsHandler.newList;
+                $(commentsHandler.newList).append(commentLi);
                 break;
             case "reported":
-                location = commentsHandler.reportedList;
+                $(commentsHandler.reportedList).append(commentLi);
                 break;
             case "episode":
-                location = commentsHandler.episodeList;
+                $(commentsHandler.episodeList).append(commentLi);
+                break;
+            case "added":
+                $(commentsHandler.episodeList).prepend(commentLi);
                 break;
             default:
                 break;
 
         }
-
-        $(location).append(commentLi);
-
     };
 
 
