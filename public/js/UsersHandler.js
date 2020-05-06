@@ -534,21 +534,6 @@ class UsersHandler {
     }
 
 
-    closeUserSession(){
-
-        let query = new FormData();
-        query.append("action", "closeUserSession");
-
-        ajaxPost("http://localhost/ocp4/index.php", query, function(response){
-
-            usersHandler.displayWelcomeMessage();
-            episodesHandler.getLastPublishedEpisode();
-
-        });
-
-    }
-
-
     //a button that triggers connectUser form on click
     displayConnectButton(){
 
@@ -656,6 +641,8 @@ class UsersHandler {
 
                 episodesHandler.getLastPublishedEpisode();
 
+                episodesHandler.getPublishedEpisodes("desc");
+
             }
             else{
 
@@ -664,6 +651,25 @@ class UsersHandler {
             }
 
         });
+    }
+
+
+    closeUserSession(){
+
+        let query = new FormData();
+        query.append("action", "closeUserSession");
+
+        ajaxPost("http://localhost/ocp4/index.php", query, function(response){
+
+            usersHandler.displayWelcomeMessage();
+
+            //displays the first episode
+            episodesHandler.getEpisode(1);
+
+            episodesHandler.getPublishedEpisodes("asc");
+
+        });
+
     }
 
 
@@ -705,7 +711,7 @@ class UsersHandler {
             class: "updateUserDiv"
         });
 
-        $("<h5>").html('Mise à jour du profil de ' + user.pseudo).appendTo(updateUserDiv);
+        $("<h3>").html('Mise à jour du profil de ' + user.pseudo).appendTo(updateUserDiv);
 
         let updateUserForm = $("<form>", {
             id: "updateUserForm",

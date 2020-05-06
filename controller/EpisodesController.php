@@ -41,9 +41,9 @@ class EpisodesController extends EpisodesManager{
     }
 
 
-    public function publishedEpisodes($numberOfEpisodes){
+    public function publishedEpisodes($numberOfEpisodes, $sortOrder){
 
-        return $this->getPublishedEpisodes($numberOfEpisodes);
+        return $this->getPublishedEpisodes($numberOfEpisodes, $sortOrder);
 
     }
 

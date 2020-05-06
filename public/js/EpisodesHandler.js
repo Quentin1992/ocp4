@@ -50,6 +50,23 @@ class EpisodesHandler {
 
     //READ
 
+    getEpisode(episodeNumber){
+
+        let query = new FormData();
+        query.append("action", "getEpisode");
+        query.append("episodeNumber", episodeNumber);
+
+        ajaxPost("http://localhost/ocp4/index.php", query, function(response){
+
+            let episodeData = JSON.parse(response);
+
+            episodesHandler.displayEpisode(episodeData);
+
+        });
+
+    }
+
+
     //gets the next episode to be published on the blog
     getUpcomingEpisode(){
 
@@ -92,7 +109,9 @@ class EpisodesHandler {
     getLastPublishedEpisode(){
 
         let query = new FormData();
-        query.append("action", "getLastPublishedEpisode");
+        query.append("action", "getPublishedEpisodes");
+        query.append("numberOfEpisodes", JSON.stringify(1));
+        query.append("sortOrder", "desc");
 
         ajaxPost("http://localhost/ocp4/index.php", query, function(response){
 
@@ -100,7 +119,7 @@ class EpisodesHandler {
 
             //displays the episode and its comments
             $(episodesHandler.currentLocation).html("");
-            episodesHandler.displayEpisode(lastPublishedEpisode);
+            episodesHandler.displayEpisode(lastPublishedEpisode[0]);
 
         });
 
@@ -108,10 +127,12 @@ class EpisodesHandler {
 
 
     //gets all the episodes that have been published
-    getPublishedEpisodes(){
+    getPublishedEpisodes(sortOrder){
 
         let query = new FormData();
         query.append("action", "getPublishedEpisodes");
+        query.append("numberOfEpisodes", JSON.stringify(null));
+        query.append("sortOrder", sortOrder);
 
         ajaxPost("http://localhost/ocp4/index.php", query, function(response){
 
@@ -174,6 +195,9 @@ class EpisodesHandler {
 
             });
 
+            if(usersHandler.side == "reader")
+                $(episodesHandler.publishedList + " li:first-child div").css("backgroundColor", "#dddddd");
+
         }
         else $(episodesHandler.publishedList).append("Aucun épisode.");
 
@@ -204,7 +228,7 @@ class EpisodesHandler {
         episodePreview.innerHTML = episodeData.content;
 
         let previewP = document.createElement("p");
-        previewP.innerHTML = episodePreview.textContent.substr(0, 256) + "...";
+        previewP.innerHTML = episodePreview.textContent.substr(0, 180) + "...";
         episodeLink.append(previewP);
 
 
@@ -213,6 +237,15 @@ class EpisodesHandler {
             if(episodesHandler.side == "reader"){
 
                 episodesHandler.displayEpisode(episodeData);
+
+                //background coloration of the selected list element
+                let liElements = episodeLink.parentElement.parentElement.parentElement.children;
+                for(let i = 0; i < liElements.length; i++){
+
+                    liElements[i].children[0].style.backgroundColor = "#f2f2f2";
+
+                }
+                episodeLink.parentElement.style.backgroundColor = "#dddddd";
 
             }
             else if(episodesHandler.side == "author"){

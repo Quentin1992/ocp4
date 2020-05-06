@@ -148,7 +148,7 @@ if (isset($_POST['action'])) {
 
         case 'getPublishedEpisodes':
 
-            $publishedEpisodes = $episodesController->publishedEpisodes(null);
+            $publishedEpisodes = $episodesController->publishedEpisodes(json_decode($_POST['numberOfEpisodes']), $_POST['sortOrder']);
 
             $publishedEpisodesData = [];
 
@@ -165,22 +165,6 @@ if (isset($_POST['action'])) {
 
             }
             echo json_encode($publishedEpisodesData);
-            break;
-
-
-        case 'getLastPublishedEpisode':
-
-            $lastPublishedEpisode = $episodesController->publishedEpisodes(1);
-
-            $lastPublishedEpisodeData = array(
-                'id' => $lastPublishedEpisode[0]->id(),
-                'number' => $lastPublishedEpisode[0]->number(),
-                'author' => $lastPublishedEpisode[0]->author(),
-                'publicationDate' => $lastPublishedEpisode[0]->publicationDate(),
-                'title' => $lastPublishedEpisode[0]->title(),
-                'content' => $lastPublishedEpisode[0]->content()
-            );
-            echo json_encode($lastPublishedEpisodeData);
             break;
 
 
