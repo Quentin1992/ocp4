@@ -3,7 +3,6 @@
 class User{
 
     //properties
-
     private $id;
     private $pseudo;
     private $status;
@@ -12,7 +11,6 @@ class User{
     private $registrationDate;
     private $isChecked;
     private $getNewsletter;
-
 
     public function __construct($id, $pseudo, $status, $password, $email, $registrationDate, $isChecked, $getNewsletter){
         $this->hydrate([
@@ -24,26 +22,19 @@ class User{
             'registrationDate' => $registrationDate,
             'isChecked' => $isChecked,
             'getNewsletter' => $getNewsletter
-
         ]);
     }
 
-
     public function hydrate(array $donnees){
-
         foreach ($donnees as $key => $value){
-
             $method = 'set' . ucfirst($key);
-
             if (method_exists($this, $method)){
                 $this->$method($value);
             }
         }
     }
 
-
     //getters
-
     public function id(){ return $this->id; }
     public function pseudo(){ return $this->pseudo; }
     public function status(){ return $this->status; }
@@ -52,7 +43,6 @@ class User{
     public function registrationDate(){ return $this->registrationDate; }
     public function isChecked(){ return $this->isChecked; }
     public function getNewsletter(){ return filter_var($this->getNewsletter, FILTER_VALIDATE_BOOLEAN); }
-
 
     //setters
 
@@ -96,5 +86,4 @@ class User{
         if($getNewsletter == (true || false))
             $this->getNewsletter = $getNewsletter;
     }
-
 }

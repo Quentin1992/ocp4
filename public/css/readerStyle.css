@@ -1,22 +1,17 @@
 body{
-
     background-color: #f2f2f2;
-
 }
 
 #welcomeMessage{
-
     display: flex;
     justify-content: flex-end;
     background-color: #bbbbbb;
     color: #f2f2f2;
     padding: 0em 2em;
     height: 50px;
-
 }
 
 #welcomeMessage div {
-
     position: absolute;
     z-index: 1;
     background-color: #bbb;
@@ -24,195 +19,137 @@ body{
     border: solid 2px #999;
     margin-top: 50px;
     box-shadow: 5px 5px 5px #555;
-
 }
 
 #welcomeMessage button{
-
     color: #f2f2f2;
     margin: 0.3em;
     padding: 0.3em;
-
 }
 
 #welcomeMessage a {
-
     padding: 1em;
-
 }
 
 #welcomeMessage h3 {
-
     border-radius: 5px;
     padding: 0.5em;
-
 }
 
 #content{
-
     display: flex;
     background-color: #dddddd;
-
 }
 
 #content div{
-
     background-color: #f2f2f2;
     border-radius: 15px 15px 0px 0px;
-
 }
 
-
-
 #upcomingEpisode h4 {
-
     padding: 1em 1em 0em 1em;
-
 }
 
 #upcomingEpisode p {
-
     padding: 1em;
     margin: 0;
     text-align: center;
     font-size: 1.2em;
-
 }
 
 #publishedEpisodes div {
-
-    border-radius: 15px 0px 0px 15px;
-
+    border-radius: 25px 0px 0px 25px;
+    padding: 0em 1em;
 }
 
 aside{
-
     flex: 1
-
 }
 
 aside span {
-
     font-weight: 600;
-
 }
 
 aside h3{
-
     padding: 0.5em;
     text-align: center;
-
 }
 
 aside h4 {
-
     text-align: center;
     background-color: inherit;
     color: inherit;
-
 }
 
 aside ol {
-
     padding: 0em;
     margin: 0em;
-
 }
 
 aside li {
-
-    padding: 0em 1em 1em 1em;
-
+    padding: 0;
 }
 
 aside p {
-
     margin: 0;
-
 }
 
 article{
-
     flex: 4
-
 }
 
 article div p{
-
     padding: 1em;
     margin: 0;
-
 }
 
 article h4{
-
     padding: 0.5em;
     font-size: 1.4em;
-
 }
 
 aside, article{
-
     margin: 1em;
-
 }
 
 a{
-
     padding: 0.1em;
     border: none;
-
 }
 
 form{
-
     padding: 1em;
-
 }
 
 input{
-
     margin: 1em;
-
 }
 
 button, input[type="submit"]{
-
     color: #555555;
     padding: 0.5em;
     margin: 1em;
     border-radius: 5px;
     font-size: 1em;
     background-color: inherit;
-
 }
 
 button:hover, input[type="submit"]:hover{
-
     color: #111111;
-
 }
 
 li {
-
     padding: 1em;
-
 }
 
 li::marker {
-
     color: #555555;
-
 }
 
 #commentsList button {
-
     margin: 0;
-
 }
 
 #commentsList > button {
-
     margin: 2em 0em;
-
 }

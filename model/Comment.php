@@ -3,7 +3,6 @@
 class Comment{
 
     //properties
-
     private $id;
     private $author;
     private $creationDate;
@@ -12,6 +11,7 @@ class Comment{
     private $isReported;
     private $episodeId;
 
+    //methods
 
     public function __construct($id, $author, $creationDate, $content, $episodeId){
         $this->hydrate([
@@ -23,22 +23,16 @@ class Comment{
         ]);
     }
 
-
     public function hydrate(array $donnees){
-
         foreach ($donnees as $key => $value){
-
             $method = 'set' . ucfirst($key);
-
             if (method_exists($this, $method)){
                 $this->$method($value);
             }
         }
     }
 
-
     //getters
-
     public function id(){ return $this->id; }
     public function author(){ return $this->author; }
     public function creationDate(){ return $this->creationDate; }
@@ -47,12 +41,9 @@ class Comment{
     public function isReported(){ return $this->isReported; }
     public function episodeId(){ return $this->episodeId; }
 
-
     //setters
-
     public function setId($id){
         $id = (int) $id;
-
         if($id > 0)
             $this->id = $id;
     }
@@ -63,7 +54,6 @@ class Comment{
     }
 
     public function setCreationDate($creationDate){
-        //test format date
             $this->creationDate = $creationDate;
     }
 
@@ -86,9 +76,7 @@ class Comment{
 
     public function setEpisodeId($episodeId){
         $episodeId = (int) $episodeId;
-
         if($episodeId > 0)
             $this->episodeId = $episodeId;
     }
-
 }

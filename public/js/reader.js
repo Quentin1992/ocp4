@@ -5,34 +5,20 @@ let episodesHandler = new EpisodesHandler("#upcomingEpisode div", "#publishedEpi
 let commentsHandler = new CommentsHandler("#addCommentDiv", "#commentsList", null, null, side);
 let usersHandler = new UsersHandler(side, "#welcomeMessage", null, null, "#welcomeMessage");
 
-// usersHandler.getUserInSession(function(userInSession){
-//
-//     usersHandler.pseudo == userInSession.pseudo;
-//     usersHandler.status == userInSession.status;
-//
-// });
-
 usersHandler.displayWelcomeMessage();
-
 //display of the upcoming episode in the aside
 episodesHandler.getUpcomingEpisode();
-
 usersHandler.getUserInSession(function(userInSession){
-
     if(userInSession.status == "" || userInSession.status == undefined){
-
+        console.log("azerty");
         //display of the published episodes list in the aside
         episodesHandler.getPublishedEpisodes("asc");
         //displays the first episode
         episodesHandler.getEpisode(1);
-
     } else {
-
         //display of the published episodes list in the aside
         episodesHandler.getPublishedEpisodes("desc");
         //display of the latest episode in the article, with its comment section
         episodesHandler.getLastPublishedEpisode();
-
     }
-
 });

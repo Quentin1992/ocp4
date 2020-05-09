@@ -6,81 +6,80 @@ require_once($path);
 
 class EpisodesController extends EpisodesManager{
 
-
     //CREATE
 
     public function addEpisode($id, $number, $author, $publicationDate, $title, $content){
-
         $episode = new Episode($id, $number, $author, $publicationDate, $title, $content);
-
         $this->sendNewEpisode($episode);
-
     }
 
 
     //READ
 
     public function episode($episodeNumber){
-
-        return $this->getEpisode($episodeNumber);
-
+        $episode = $this->getEpisode($episodeNumber);
+        $episodeData = array(
+            'id' => $episode->id(),
+            'number' => $episode->number(),
+            'author' => $episode->author(),
+            'publicationDate' => $episode->publicationDate(),
+            'title' => $episode->title(),
+            'content' => $episode->content()
+        );
+        return json_encode($episodeData);
     }
-
-
-    public function upcomingEpisode(){
-
-        return $this->getUpcomingEpisode();
-
-    }
-
 
     public function upcomingEpisodes($numberOfEpisodes){
-
-        return $this->getUpcomingEpisodes($numberOfEpisodes);
-
+        $upcomingEpisodes = $this->getUpcomingEpisodes($numberOfEpisodes);
+        $upcomingEpisodesData = [];
+        foreach ($upcomingEpisodes as $key => $episode) {
+            $upcomingEpisodesData[] = array(
+                'id' => $episode->id(),
+                'number' => $episode->number(),
+                'author' => $episode->author(),
+                'publicationDate' => $episode->publicationDate(),
+                'title' => $episode->title(),
+                'content' => $episode->content(),
+            );
+        }
+        return json_encode($upcomingEpisodesData);
     }
-
 
     public function publishedEpisodes($numberOfEpisodes, $sortOrder){
-
-        return $this->getPublishedEpisodes($numberOfEpisodes, $sortOrder);
-
+        $publishedEpisodes = $this->getPublishedEpisodes($numberOfEpisodes, $sortOrder);
+        $publishedEpisodesData = [];
+        foreach ($publishedEpisodes as $key => $episode) {
+            $publishedEpisodesData[] = array(
+                'id' => $episode->id(),
+                'number' => $episode->number(),
+                'author' => $episode->author(),
+                'publicationDate' => $episode->publicationDate(),
+                'title' => $episode->title(),
+                'content' => $episode->content(),
+            );
+        }
+        return json_encode($publishedEpisodesData);
     }
-
 
     public function fullLastEpisode(){
-
         return $this->getFullLastEpisode();
-
     }
-
 
     public function lastEpisodeNumber(){
-
         $fullLastEpisode = $this->getFullLastEpisode();
-
         return $fullLastEpisode->number();
-
     }
-
 
     //UPDATE
 
     public function updateEpisode($id, $number, $author, $publicationDate, $title, $content){
-
         $episode = new Episode($id, $number, $author, $publicationDate, $title, $content);
-
         $this->sendUpdateEpisode($episode);
-
     }
-
 
     //DELETE
 
     public function deleteEpisode($episodeId){
-
         $this->sendDeleteEpisode($episodeId);
-
     }
-
 }
