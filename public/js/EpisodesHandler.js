@@ -19,6 +19,7 @@ class EpisodesHandler {
         query.append("title", title);
         query.append("content", content);
         ajaxPost("index.php", query, function(response){
+            console.log(response);
             episodesHandler.getPublishedEpisodes();
             episodesHandler.getUpcomingEpisodes();
             episodesHandler.displayNewEpisodeButton();
@@ -141,8 +142,9 @@ class EpisodesHandler {
         } else{
             publicationDate = ", " + converter.datetimeToText(episodeData.publicationDate);
         }
-        let episodeLink = $("<a>");
-        episodeLink.href= "#";
+        let episodeLink = $("<a>", {
+            href: "#"
+        });
         episodeLink.append($("<h4>").html("Episode " + episodeData.number + " : <span>" + episodeData.title + "</span>" + publicationDate + "."));
         let episodePreview = $("<div>").html(episodeData.content); //puts html content in a div in order to get plain text
         episodeLink.append($("<p>").html(episodePreview.text().substr(0, 180) + "..."));
@@ -186,13 +188,6 @@ class EpisodesHandler {
         commentsHandler.getEpisodeComments(episodeData.id, 10);
     }
 
-    //displays an empty episode form
-    workOnNewEpisode(){
-        $(episodesHandler.currentLocation).html("");
-        $(episodesHandler.currentLocation).append($("<h5>").html("Création d'un nouvel épisode"));
-        episodesHandler.displayEpisodeForm();
-    }
-
     //displays an episode form
     //if episodeData is defined, it fills the inputs and adapt the submit button
     displayEpisodeForm(episodeData){
@@ -223,8 +218,7 @@ class EpisodesHandler {
         //content
         $("<textarea>", {
             id: "episodeContent",
-            name: "content",
-            required: true
+            name: "content"
         }).appendTo(episodeForm);
         //datetime
         $("<span>", { html: "Publication le  " }).appendTo(episodeForm);
@@ -323,6 +317,16 @@ class EpisodesHandler {
             selector: episodesHandler.currentLocation + ' form textarea',
             menubar: false
         });
+    }
+
+    //displays an empty episode form
+    workOnNewEpisode(){
+        $(episodesHandler.currentLocation).html("");
+        $(episodesHandler.currentLocation).append($("<h5>").html("Création d'un nouvel épisode"));
+        episodesHandler.displayEpisodeForm();
+        $("html").animate({
+            scrollTop: $("#workOnEpisode").offset().top
+        }, 1000);
     }
 
     //UPDATE

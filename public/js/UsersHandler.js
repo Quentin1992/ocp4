@@ -26,7 +26,7 @@ class UsersHandler {
         var addUserDiv = $("<div>", {
             id: "addUserDiv"
         });
-        addUserDiv.append($("<h3>").html("Nouveau profil utilisateur :"));
+        addUserDiv.append($("<h5>").html("Nouveau profil utilisateur :"));
         let addUserForm = $("<form>", {
             id: "addUserForm",
             action: "#"

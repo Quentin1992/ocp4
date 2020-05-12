@@ -1,7 +1,4 @@
 <?php
-require_once('Database.php');
-require_once('Comment.php');
-
 class CommentsManager extends Database{
 
     //properties

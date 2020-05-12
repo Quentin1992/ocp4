@@ -1,9 +1,4 @@
 <?php
-$root = realpath($_SERVER["DOCUMENT_ROOT"]);
-$path = $root . '/ocp4/model/EpisodesManager.php';
-
-require_once($path);
-
 class EpisodesController extends EpisodesManager{
 
     //CREATE

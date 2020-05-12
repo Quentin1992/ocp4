@@ -1,7 +1,4 @@
 <?php
-require_once('Database.php');
-require_once('Episode.php');
-
 class EpisodesManager extends Database{
 
     //properties

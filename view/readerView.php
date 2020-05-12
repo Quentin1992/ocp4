@@ -7,7 +7,7 @@ $side = "reader";
 
 <header>
 
-    <img src="public/images/alaska.png" alt="skylines" />
+    <img src="public/images/alaska.PNG" alt="skylines" />
 
     <div>
         <h1>Billet simple pour l'Alaska</h1>

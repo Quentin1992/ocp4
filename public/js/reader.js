@@ -10,7 +10,6 @@ usersHandler.displayWelcomeMessage();
 episodesHandler.getUpcomingEpisode();
 usersHandler.getUserInSession(function(userInSession){
     if(userInSession.status == "" || userInSession.status == undefined){
-        console.log("azerty");
         //display of the published episodes list in the aside
         episodesHandler.getPublishedEpisodes("asc");
         //displays the first episode

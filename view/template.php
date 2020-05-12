@@ -28,12 +28,12 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-    <script type="text/javascript" src="public/js/ajax.js"></script>
-    <script type="text/javascript" src="public/js/Converter.js"></script>
-    <script type="text/javascript" src="public/js/UsersHandler.js"></script>
-    <script type="text/javascript" src="public/js/EpisodesHandler.js"></script>
-    <script type="text/javascript" src="public/js/CommentsHandler.js"></script>
-    <script type="text/javascript" src="public/js/<?= $side ?>.js"></script>
+    <script src="public/js/ajax.js"></script>
+    <script src="public/js/Converter.js"></script>
+    <script src="public/js/UsersHandler.js"></script>
+    <script src="public/js/EpisodesHandler.js"></script>
+    <script src="public/js/CommentsHandler.js"></script>
+    <script src="public/js/<?= $side ?>.js"></script>
 </head>
 
 

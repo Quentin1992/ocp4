@@ -4,7 +4,7 @@ $side = "author";
  ?>
 
 <header>
-    <img  src="public/images/alaska.png" alt="skylines" />
+    <img  src="public/images/alaska.PNG" alt="skylines" />
 
     <div id="headerText">
         <h1>Billet simple pour l'Alaska</h1>

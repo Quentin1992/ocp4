@@ -1,5 +1,4 @@
 <?php
-
 class View
 {
     // view title (defined in view file)

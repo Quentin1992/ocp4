@@ -18,7 +18,7 @@ class CommentsHandler {
         query.append("content", content);
         query.append("author", author);
         query.append("episodeId", episodeId);
-        ajaxPost("http://localhost/ocp4/index.php", query, function(response){
+        ajaxPost("index.php", query, function(response){
             commentsHandler.getEpisodeComments(episodeId, 10);
         });
     };
@@ -82,7 +82,7 @@ class CommentsHandler {
         let query = new FormData();
         query.append("action", "getComments");
         query.append("category", category);
-        ajaxPost("http://localhost/ocp4/index.php", query, function(response){
+        ajaxPost("index.php", query, function(response){
             let comments = JSON.parse(response);
             if(category == "new")
                 $(commentsHandler.newList).html("");
@@ -105,7 +105,7 @@ class CommentsHandler {
         ajaxPost("index.php", query, function(response){
             let episodeComments = JSON.parse(response);
             if(episodeComments.length == 0){
-                $(commentsHandler.episodeList).html("Aucun commentaire.");
+                $(commentsHandler.episodeList).append($("<li>").html("Aucun commentaire."));
             }
             else {
                 usersHandler.getUserInSession(function(userInSession){
@@ -130,13 +130,13 @@ class CommentsHandler {
             $("<div>").html(commentData.author + ", " + converter.datetimeToText(commentData.creationDate) + ".").appendTo(contentDiv);
             $("<p>").html(commentData.content).appendTo(contentDiv);
             //reader side, user connected
-            if((commentsHandler.side == "reader") && ((userInSession.pseudo != undefined) || (userInSession.pseudo != ""))){
+            if((commentsHandler.side == "reader") && ((userInSession.pseudo != undefined) && (userInSession.pseudo != ""))){
                 //if user hasn't written this comment : report button
                 if(commentData.author != userInSession.pseudo){
                     $("<button>").html("Signaler").on("click", function(e){
                         if(confirm("Signaler ce commentaire ?")){
                             commentsHandler.reportComment(commentData.id, commentData.episodeId);
-                            e.target.replaceWith($("p").html("Commentaire signalé, il sera bientôt vérifié par l'auteur."));
+                            e.target.replaceWith($("<p>").html("Commentaire signalé, il sera bientôt vérifié par l'auteur.")[0]);
                         }
                     }).appendTo(buttonsDiv);
                 }
@@ -197,10 +197,10 @@ class CommentsHandler {
     }
 
     displaySeeAllCommentsButton(episodeId){
-        $("<button>").html("Voir tous les commentaires").on("click", function(e){
-            e.target.remove();
+        $(commentsHandler.episodeList).append($("<li>").append($("<button>").html("Voir tous les commentaires").on("click", function(e){
+            e.target.parentElement.remove();
             commentsHandler.getEpisodeComments(episodeId, 100);
-        }).appendTo(commentsHandler.episodeList);
+        })));
     }
 
     //UPDATE
