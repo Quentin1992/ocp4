@@ -152,13 +152,15 @@ class CommentsHandler {
                 $("<button>").html("Valider").on("click", function(e){
                     if(confirm("Valider ce commentaire ?")){
                         commentsHandler.validateComment(commentData.id);
-                        e.target.parentElement.remove();
+                        e.target.parentElement.parentElement.remove();
+                        commentsHandler.getComments("new");
                     }
                 }).appendTo(buttonsDiv);
                 $("<button>").html("Supprimer").on("click", function(e){
                     if(confirm("Supprimer ce commentaire ?")){
                         commentsHandler.deleteComment(commentData.id);
-                        e.target.parentElement.remove();
+                        e.target.parentElement.parentElement.remove();
+                        commentsHandler.getComments("new");
                     }
                 }).appendTo(buttonsDiv);
             }

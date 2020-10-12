@@ -4,7 +4,7 @@ class CommentsController extends CommentsManager{
     //CREATE
 
     public function addComment($id, $pseudo, $creationDate, $content, $episodeId){
-        $comment = new Comment($id, $pseudo, $creationDate, $content, $episodeId);
+        $comment = new Comment($id, $pseudo, $creationDate, htmlspecialchars($content), $episodeId);
         $this->sendComment($comment);
     }
 
@@ -27,11 +27,7 @@ class CommentsController extends CommentsManager{
     }
 
     public function commentsList($category){
-        if($category == "new")
-            $where = "comment_checked = false";
-        if($category == "reported")
-            $where = "comment_reported = true";
-        $comments = $this->getAuthorCommentsList($where);
+        $comments = $this->getAuthorCommentsList($category);
         $commentsData = [];
         foreach ($comments as $key => $comment) {
             $commentsData[] = $commentData = array(
@@ -52,7 +48,7 @@ class CommentsController extends CommentsManager{
     //UPDATE
 
     public function updateComment($commentId, $content){
-        $this->sendCommentUpdate($commentId, $content);
+        $this->sendCommentUpdate($commentId, htmlspecialchars($content));
     }
 
     public function validateComment($commentId){

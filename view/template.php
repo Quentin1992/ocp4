@@ -11,10 +11,6 @@
     <link rel="icon" href="public/images/ticket.ico" />
 
     <link rel="stylesheet" href="public/css/style.css" />
-    <link rel="stylesheet" media="screen and (max-width: 426px)" href="public/css/style-smartphone.css">
-    <link rel="stylesheet" media="screen and (max-width: 768px)" href="public/css/style-tablet.css">
-    <link rel="stylesheet" media="screen and (max-width: 1024px)" href="public/css/style-small.css">
-    <link rel="stylesheet" media="screen and (max-width: 1440px)" href="public/css/style-medium.css">
 
     <link rel="stylesheet" href="public/css/<?= $side ?>Style.css" />
     <link rel="stylesheet" media="screen and (max-width: 1440px)" href="public/css/<?= $side ?>Style-medium.css">

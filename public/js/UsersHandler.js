@@ -122,13 +122,19 @@ class UsersHandler {
                         }
                     } else {
                         if(!pseudoAvailability){
-                            e.target.append($("<p>").html("Ce pseudo est déjà pris."));
+                            let warning = document.createElement("p");
+                            warning.innerHTML = "Ce pseudo est déjà pris.";
+                            e.target.appendChild(warning);
                         }
                         if(!emailAvailability){
-                            e.target.append($("<p>").html("Cet adresse email est déjà prise."));
+                            let warning = document.createElement("p");
+                            warning.innerHTML = "Cet adresse email est déjà prise.";
+                            e.target.appendChild(warning);
                         }
                         if(e.target.password.value != e.target.confirmPassword.value){
-                            e.target.append($("<p>").html("Le mot de passe doit être identique dans les deux champs."));
+                            let warning = document.createElement("p");
+                            warning.innerHTML = "Le mot de passe doit être identique dans les deux champs.";
+                            e.target.appendChild(warning);
                         }
                     }
                 });
@@ -247,19 +253,23 @@ class UsersHandler {
         } else if(user.getNewsletter == false){
             getNewsletter = " (non abonné à la newsletter)";
         }
+        let userStatus = "";
+        if(user.status == "reader")
+            userStatus = "lecteur";
+        if(user.status == "writer")
+            userStatus = "auteur";
         contentDiv.append($("<p>").html(user.pseudo
-            + "<br />Statut : " + user.status
+            + "<br />Statut : " + userStatus
             + "<br />Email : " + user.email + getNewsletter
             + "<br />Date d'inscription : " + converter.datetimeToText(user.registrationDate)));
         if(category == "newUsers"){
-            buttonsDiv.append();
-            $("<button>").html("Valider").on("click", function(e){
+            buttonsDiv.append($("<button>").html("Valider").on("click", function(e){
                 if(confirm("Voulez-vous valider ce profil utilisateur ?")){
                     usersHandler.validateUser(user.id);
                     usersHandler.getUsersList("newUsers");
                     usersHandler.getUsersList("validatedUsers");
                 }
-            });
+            }));
         }
         if(category == "validatedUsers"){
             buttonsDiv.append($("<button>").html("Modifier").on("click", function(e){

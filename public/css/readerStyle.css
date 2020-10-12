@@ -120,6 +120,11 @@ a{
 form{
     padding: 1em;
 }
+form > textarea {
+    font-family: Calibri;
+    padding: 0.5em;
+    font-size: 1em;
+}
 
 input{
     margin: 1em;

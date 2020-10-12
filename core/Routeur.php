@@ -112,10 +112,6 @@ class Routeur{
                     break;
                 default:
                     break;
-                //ROUTER
-                // case 'authorView' :
-                //     $this->indexController->author();
-                //     break;
             }
         }
         elseif(isset($_GET['action'])){

@@ -32,7 +32,11 @@ class CommentsManager extends Database{
         return $comments;
     }
 
-    public function getAuthorCommentsList($where){ //$where = 'comment_checked = false' || 'comment_reported = true'
+    public function getAuthorCommentsList($category){ //$where = 'comment_checked = false' || 'comment_reported = true'
+        if($category == "new")
+            $where = "comment_checked = false";
+        if($category == "reported")
+            $where = "comment_reported = true";
         $comments = [];
         $sql = 'SELECT * FROM comments WHERE ' . $where . ' ORDER BY comment_creation_date ASC';
         $query = $this->db->query($sql);

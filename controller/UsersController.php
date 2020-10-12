@@ -6,8 +6,8 @@ class UsersController extends UsersManager{
     //CREATE
 
     public function addUser($id, $pseudo, $status, $password, $email, $registrationDate, $isChecked, $getNewsletter){
-        $password = password_hash($password, PASSWORD_DEFAULT);
-        $user = new User($id, $pseudo, $status, $password, $email, $registrationDate, null, $getNewsletter);
+        $password = password_hash(htmlspecialchars($password), PASSWORD_DEFAULT);
+        $user = new User($id, htmlspecialchars($pseudo), $status, $password, htmlspecialchars($email), $registrationDate, null, $getNewsletter);
         $this->sendNewUser($user);
     }
 
@@ -114,9 +114,9 @@ class UsersController extends UsersManager{
 
     public function updateUser($id, $pseudo, $status, $password, $email, $getNewsletter){
         if($password != ""){
-            $password = password_hash($password, PASSWORD_DEFAULT);
+            $password = password_hash(htmlspecialchars($password), PASSWORD_DEFAULT);
         }
-        $user = new User($id, $pseudo, $status, $password, $email, null, null, $getNewsletter);
+        $user = new User($id, htmlspecialchars($pseudo), $status, $password, htmlspecialchars($email), null, null, $getNewsletter);
         $this->sendUserUpdate($user);
     }
 
